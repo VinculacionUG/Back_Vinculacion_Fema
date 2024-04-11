@@ -17,6 +17,7 @@ namespace Back_Vinculacion_Fema.Controllers
         {
             _context = context;
         }
+
         [HttpPost("CrearUsuario")]
         public async Task<ActionResult> RegisterUser(RegisterUserRequest request)
         {
