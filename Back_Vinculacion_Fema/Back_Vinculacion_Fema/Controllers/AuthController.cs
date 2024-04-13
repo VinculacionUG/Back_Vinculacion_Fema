@@ -10,7 +10,7 @@ namespace Back_Vinculacion_Fema.Controllers
     [Route("[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly vinculacionfemaContext _contexto;
+        private readonly vinculacionfemaContext _contexto; //Comentario 
 
         public AuthController(vinculacionfemaContext contexto)
         {
