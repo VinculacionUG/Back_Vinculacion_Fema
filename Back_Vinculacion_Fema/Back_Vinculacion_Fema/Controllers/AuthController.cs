@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Back_Vinculacion_Fema.Controllers
 {
+    //Prueba
     [ApiController]
     [Route("[controller]")]
     public class AuthController : ControllerBase
