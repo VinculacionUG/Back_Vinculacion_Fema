@@ -5,7 +5,7 @@ using Back_Vinculacion_Fema.Models.DbModels;
 using Back_Vinculacion_Fema.Models.RequestModels;
 using Back_Vinculacion_Fema.Models.Utilidades;
 using Microsoft.AspNetCore.Mvc;
-using System.Text;
+
 
 namespace Back_Vinculacion_Fema.Controllers
 {
@@ -23,12 +23,16 @@ namespace Back_Vinculacion_Fema.Controllers
         [HttpPost("login")]
         public IActionResult Authenticate(UserLoginRequest credentials)
         {
+            if (credentials == null || string.IsNullOrEmpty(credentials.Password))
+            {
+                return BadRequest("Las credenciales proporcionadas no son válidas.");
+            }
             var encryptedPassword = EncryptPassword(credentials.Password); ; //Debe consumir el metodo de cifrado
 
             User usuarioLogic = new User(_contexto);
             var usuario = usuarioLogic.GetUsuarioLogin(credentials.Nombre, encryptedPassword);
 
-            if (usuario == null)
+            if (usuario == null || string.IsNullOrEmpty(usuario.UserName))
             {
                 return Unauthorized();
             }
