@@ -23,7 +23,7 @@ namespace Back_Vinculacion_Fema.Controllers
         [HttpPost("login")]
         public IActionResult Authenticate(UserLoginRequest credentials)
         {
-            if (credentials == null || string.IsNullOrEmpty(credentials.Password))
+            if (credentials == null || string.IsNullOrEmpty(credentials.Password))  //Validación para no recibir null
             {
                 return BadRequest("Las credenciales proporcionadas no son válidas.");
             }
@@ -40,7 +40,7 @@ namespace Back_Vinculacion_Fema.Controllers
             return Ok(Token.GenerarToken(usuario.UserName));
         }
 
-        private string EncryptPassword(string password)
+        private string EncryptPassword(string password) // Encriptación del password
         {
             using (SHA256 sha256Hash = SHA256.Create())
             {
@@ -54,7 +54,7 @@ namespace Back_Vinculacion_Fema.Controllers
                 return builder.ToString();
             }
         }
-
+        //Hola
 
     }
 }
