@@ -876,6 +876,11 @@ namespace Back_Vinculacion_Fema.Models.DbModels
             OnModelCreatingPartial(modelBuilder);
         }
 
+        internal async Task SaveChangesAsync()
+        {
+            throw new NotImplementedException();
+        }
+
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 }
