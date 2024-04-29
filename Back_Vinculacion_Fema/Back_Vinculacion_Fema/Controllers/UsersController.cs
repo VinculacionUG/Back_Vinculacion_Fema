@@ -18,7 +18,7 @@ namespace Back_Vinculacion_Fema.Controllers
             _context = context;
         }
 
-        [HttpPost("CrearUsuario")]
+        [HttpPost("CrearUsuario")]  
         public async Task<ActionResult> RegisterUser(RegisterUserRequest request)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
