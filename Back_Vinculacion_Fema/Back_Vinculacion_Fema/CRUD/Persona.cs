@@ -16,7 +16,7 @@ namespace Back_Vinculacion_Fema.CRUD
 
         public TblFemaPersona? ObtenerPersona(string identificacion)
         {
-            return _cocntext.TblFemaPersonas.FirstOrDefault(u => u.Identificacion == identificacion);
+            return _context.TblFemaPersonas.FirstOrDefault(u => u.Identificacion == identificacion);
         }
 
         public decimal ObtenerPersonaId(string identificacion)

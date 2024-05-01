@@ -29,15 +29,6 @@ namespace Back_Vinculacion_Fema.CRUD
             return await _context.TblFemaUsuarios.AnyAsync(u => u.UserName == userName);
         }
 
-        public TblFemaPersona? ObtenerUsaurioUserName(string identificacion)
-        {
-            return _cocntext.TblFemaPersonas.FirstOrDefault(u => u.Identificacion == identificacion);
-        }
-
-        public decimal ObtenerUsuarioId(string userName)
-        {
-            return ObtenerUsuario(userName).;
-        }
 
         public async Task<String> ObtenerUsuarioConCorreo(string correo)
         {
@@ -121,34 +112,7 @@ namespace Back_Vinculacion_Fema.CRUD
             }
         }
 
-        public async Task<TblFemaRolesUsuario> CrearUsuarioRoles(RegisterUserRequest request, decimal idUsuario)
-        {
-            try
-            {
-                var user = new TblFemaUsuario
-                {
-                    IdPersona = idPersona,
-                    UserName = request.UserName,
-                    Correo = request.Correo,
-                    Clave = request.Clave,
-                    ClaveTmp = request.Clave,
-                    FechaCreacion = request.FechaCreacion,
-                    FechaModificacion = request.FechaModificacion,
-                    Modulo = "Estudiante",
-                    Estado = true
-                };
-
-                _context.TblFemaUsuarios.Add(user);
-
-                await _context.SaveChangesAsync();
-
-                return user;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error al crear el usuario", ex);
-            }
-        }
+       
 
 
     }
