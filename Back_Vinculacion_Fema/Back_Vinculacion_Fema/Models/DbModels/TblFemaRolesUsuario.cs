@@ -10,7 +10,7 @@ namespace Back_Vinculacion_Fema.Models.DbModels
         public DateTime FechaValides { get; set; }
         public bool Estado { get; set; }
 
-        public virtual TblFemaRole IdRolNavigation { get; set; } = null!;
+        public virtual TblFemaRoles IdRolNavigation { get; set; } = null!;
         public virtual TblFemaUsuario IdUsuarioNavigation { get; set; } = null!;
     }
 }

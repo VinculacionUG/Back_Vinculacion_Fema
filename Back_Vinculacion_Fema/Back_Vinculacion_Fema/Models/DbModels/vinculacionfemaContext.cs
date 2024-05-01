@@ -32,7 +32,7 @@ namespace Back_Vinculacion_Fema.Models.DbModels
         public virtual DbSet<TblFemaOpcione> TblFemaOpciones { get; set; } = null!;
         public virtual DbSet<TblFemaOpcionesRole> TblFemaOpcionesRoles { get; set; } = null!;
         public virtual DbSet<TblFemaPersona> TblFemaPersonas { get; set; } = null!;
-        public virtual DbSet<TblFemaRole> TblFemaRoles { get; set; } = null!;
+        public virtual DbSet<TblFemaRoles> TblFemaRoles { get; set; } = null!;
         public virtual DbSet<TblFemaRolesUsuario> TblFemaRolesUsuarios { get; set; } = null!;
         public virtual DbSet<TblFemaSubMenu> TblFemaSubMenus { get; set; } = null!;
         public virtual DbSet<TblFemaUsuario> TblFemaUsuarios { get; set; } = null!;
@@ -688,7 +688,7 @@ namespace Back_Vinculacion_Fema.Models.DbModels
                     .IsUnicode(false);
             });
 
-            modelBuilder.Entity<TblFemaRole>(entity =>
+            modelBuilder.Entity<TblFemaRoles>(entity =>
             {
                 entity.HasKey(e => e.IdRol)
                     .HasName("PK_Roles");
@@ -857,7 +857,7 @@ namespace Back_Vinculacion_Fema.Models.DbModels
 
                 entity.ToTable("TIPO_SUELO");
 
-                entity.Property(e => e.CodTipoSuelo)
+                entity.Property(e => e.CodTipoSuelo) 
                     .ValueGeneratedNever()
                     .HasColumnName("cod_tipo_suelo");
 

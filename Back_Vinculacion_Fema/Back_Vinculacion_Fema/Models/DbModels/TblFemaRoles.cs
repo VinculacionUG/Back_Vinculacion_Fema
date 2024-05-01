@@ -1,11 +1,12 @@
-﻿using System;
+﻿ using System;
 using System.Collections.Generic;
 
 namespace Back_Vinculacion_Fema.Models.DbModels
 {
-    public partial class TblFemaRole
+    public partial class TblFemaRoles
     {
-        public TblFemaRole()
+        
+        public TblFemaRoles()
         {
             TblFemaMenuUsuarios = new HashSet<TblFemaMenuUsuario>();
             TblFemaOpcionesRoles = new HashSet<TblFemaOpcionesRole>();
@@ -18,8 +19,10 @@ namespace Back_Vinculacion_Fema.Models.DbModels
         public DateTime? FechaModificacion { get; set; }
         public bool Estado { get; set; }
 
+        
         public virtual ICollection<TblFemaMenuUsuario> TblFemaMenuUsuarios { get; set; }
         public virtual ICollection<TblFemaOpcionesRole> TblFemaOpcionesRoles { get; set; }
         public virtual ICollection<TblFemaRolesUsuario> TblFemaRolesUsuarios { get; set; }
+        
     }
 }

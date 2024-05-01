@@ -12,10 +12,10 @@ namespace Back_Vinculacion_Fema.Models.DbModels
         }*/
 
         [Key]
-        public int cod_tipo_suelo { get; set; }
-        public string ? descripcion { get; set; }
-        public string ? estado { get; set; }
+        public int CodTipoSuelo { get; set; }
+        public string ? Descripcion { get; set; }
+        public string ? Estado { get; set; }
 
-        //public virtual ICollection<FemaSuelo> FemaSuelos { get; set; }
+        public virtual ICollection<FemaSuelo> FemaSuelos { get; set; }
     }
 }

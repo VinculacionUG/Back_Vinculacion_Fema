@@ -18,6 +18,23 @@ namespace Back_Vinculacion_Fema.Controllers
             _context = context;
         }
 
+        [HttpGet]
+        [Route("listarRoles")]
+        public IActionResult CargarRoles()
+        {
+            try
+            {
+                var rolesService = new User(_context);
+                var roles = rolesService.ListarRoles();
+                return Ok(roles);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error interno del servidor: {ex.Message}");
+            }
+        }
+
+
         [HttpPost("CrearUsuario")]
         public async Task<ActionResult> RegisterUser(RegisterUserRequest request)
         {
