@@ -16,7 +16,7 @@ namespace Back_Vinculacion_Fema.CRUD
         public List<TblFemaRoles> ListarRoles()
         {
             // Consultar los roles en la base de datos utilizando Entity Framework Core
-            var roles = _context.TblFemaRoles.ToList();
+            var roles = _context.Tbl_Fema_Roles.ToList();
 
             // Si prefieres utilizar una consulta LINQ explícita, puedes hacerlo así:
             // var roles = _contexto.Roles.Select(r => new Rol { id_rol = r.id_rol, descripcion = r.descripcion }).ToList();

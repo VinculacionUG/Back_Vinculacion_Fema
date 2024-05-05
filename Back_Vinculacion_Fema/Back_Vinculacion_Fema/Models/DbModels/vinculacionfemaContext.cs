@@ -25,20 +25,21 @@ namespace Back_Vinculacion_Fema.Models.DbModels
         public virtual DbSet<FemaPuntuacion> FemaPuntuacions { get; set; } = null!;
         public virtual DbSet<FemaSuelo> FemaSuelos { get; set; } = null!;
         public virtual DbSet<Ocupacion> Ocupacions { get; set; } = null!;
-        public virtual DbSet<TblFemaItem> TblFemaItems { get; set; } = null!;
-        public virtual DbSet<TblFemaMenu> TblFemaMenus { get; set; } = null!;
-        public virtual DbSet<TblFemaMenuUsuario> TblFemaMenuUsuarios { get; set; } = null!;
-        public virtual DbSet<TblFemaModulo> TblFemaModulos { get; set; } = null!;
-        public virtual DbSet<TblFemaOpcione> TblFemaOpciones { get; set; } = null!;
-        public virtual DbSet<TblFemaOpcionesRole> TblFemaOpcionesRoles { get; set; } = null!;
+        //public virtual DbSet<TblFemaItem> TblFemaItems { get; set; } = null!;
+        //public virtual DbSet<TblFemaMenu> TblFemaMenus { get; set; } = null!;
+        //public virtual DbSet<TblFemaMenuUsuario> TblFemaMenuUsuarios { get; set; } = null!;
+        //public virtual DbSet<TblFemaModulo> TblFemaModulos { get; set; } = null!;
+        //public virtual DbSet<TblFemaOpcione> TblFemaOpciones { get; set; } = null!;
+        //public virtual DbSet<TblFemaOpcionesRole> TblFemaOpcionesRoles { get; set; } = null!;
         public virtual DbSet<TblFemaPersona> TblFemaPersonas { get; set; } = null!;
-        public virtual DbSet<TblFemaRoles> TblFemaRoles { get; set; } = null!;
-        public virtual DbSet<TblFemaRolesUsuario> TblFemaRolesUsuarios { get; set; } = null!;
-        public virtual DbSet<TblFemaSubMenu> TblFemaSubMenus { get; set; } = null!;
+        public virtual DbSet<TblFemaRoles> Tbl_Fema_Roles { get; set; } = null!;
+        //public virtual DbSet<TblFemaRolesUsuario> TblFemaRolesUsuarios { get; set; } = null!;
+        //public virtual DbSet<TblFemaSubMenu> TblFemaSubMenus { get; set; } = null!;
         public virtual DbSet<TblFemaUsuario> TblFemaUsuarios { get; set; } = null!;
         public virtual DbSet<TipoEdificacion> TipoEdificacions { get; set; } = null!;
         public virtual DbSet<TipoPuntuacion> TipoPuntuacions { get; set; } = null!;
         public virtual DbSet<TipoSuelo> TipoSuelos { get; set; } = null!;
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -486,7 +487,7 @@ namespace Back_Vinculacion_Fema.Models.DbModels
                     .IsFixedLength();
             });
 
-            modelBuilder.Entity<TblFemaItem>(entity =>
+           /*modelBuilder.Entity<TblFemaItem>(entity =>
             {
                 entity.HasKey(e => e.IdItem)
                     .HasName("PK__Tbl_Fema__51E84262C101F54C");
@@ -509,9 +510,9 @@ namespace Back_Vinculacion_Fema.Models.DbModels
                     .WithMany(p => p.TblFemaItems)
                     .HasForeignKey(d => d.SubMenuId)
                     .HasConstraintName("FK__Tbl_Fema___SubMe__6383C8BA");
-            });
+            });*/
 
-            modelBuilder.Entity<TblFemaMenu>(entity =>
+            /*modelBuilder.Entity<TblFemaMenu>(entity =>
             {
                 entity.HasKey(e => e.IdMenu)
                     .HasName("PK__Tbl_Fema__4D7EA8E19B883AE6");
@@ -530,9 +531,9 @@ namespace Back_Vinculacion_Fema.Models.DbModels
                     .WithMany(p => p.TblFemaMenus)
                     .HasForeignKey(d => d.IdModulo)
                     .HasConstraintName("FK__Tbl_Fema___IdMod__5DCAEF64");
-            });
+            });*/
 
-            modelBuilder.Entity<TblFemaMenuUsuario>(entity =>
+            /*modelBuilder.Entity<TblFemaMenuUsuario>(entity =>
             {
                 entity.HasKey(e => new { e.IdMu, e.IdRol })
                     .HasName("PK__Tbl_Fema__4F1CD4BA670FD307");
@@ -557,9 +558,9 @@ namespace Back_Vinculacion_Fema.Models.DbModels
                     .HasForeignKey(d => d.IdRol)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_MenuUsuario_Roles");
-            });
+            });*/
 
-            modelBuilder.Entity<TblFemaModulo>(entity =>
+            /*modelBuilder.Entity<TblFemaModulo>(entity =>
             {
                 entity.HasKey(e => e.IdModulo)
                     .HasName("PK__Tbl_Fema__D9F15315B39BC280");
@@ -575,9 +576,9 @@ namespace Back_Vinculacion_Fema.Models.DbModels
                 entity.Property(e => e.Nombre)
                     .HasMaxLength(100)
                     .IsUnicode(false);
-            });
+            });*/
 
-            modelBuilder.Entity<TblFemaOpcione>(entity =>
+            /*modelBuilder.Entity<TblFemaOpcione>(entity =>
             {
                 entity.HasKey(e => e.IdOpciones)
                     .HasName("PK_Opciones");
@@ -596,9 +597,9 @@ namespace Back_Vinculacion_Fema.Models.DbModels
                 entity.Property(e => e.Opcion)
                     .HasMaxLength(50)
                     .IsUnicode(false);
-            });
+            });*/
 
-            modelBuilder.Entity<TblFemaOpcionesRole>(entity =>
+            /*modelBuilder.Entity<TblFemaOpcionesRole>(entity =>
             {
                 entity.HasKey(e => new { e.IdRolOp, e.IdRol, e.IdOpciones })
                     .HasName("PK_Opciones_Roles");
@@ -628,7 +629,7 @@ namespace Back_Vinculacion_Fema.Models.DbModels
                     .HasForeignKey(d => d.IdRol)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_OpcionesRoles_Roles");
-            });
+            });*/
 
             modelBuilder.Entity<TblFemaPersona>(entity =>
             {
@@ -688,57 +689,57 @@ namespace Back_Vinculacion_Fema.Models.DbModels
                     .IsUnicode(false);
             });
 
+            
             modelBuilder.Entity<TblFemaRoles>(entity =>
             {
-                entity.HasKey(e => e.IdRol)
-                    .HasName("PK_Roles");
+                entity.HasKey(e => e.id_rol)
+                    .HasName("id_rol");
 
                 entity.ToTable("Tbl_Fema_Roles");
 
-                entity.Property(e => e.IdRol)
-                    .HasColumnType("numeric(10, 0)")
+                entity.Property(e => e.id_rol)
+                    .HasColumnName("id_rol")
                     .ValueGeneratedOnAdd();
 
-                entity.Property(e => e.FechaCreacion)
-                    .HasColumnType("datetime")
-                    .HasColumnName("Fecha_creacion");
+                entity.Property(e => e.descripcion)
+                    .HasMaxLength(100)
+                    .IsUnicode(false)
+                    .HasColumnName("descripcion");
 
-                entity.Property(e => e.FechaModificacion)
+                entity.Property(e => e.fecha_creacion)
                     .HasColumnType("datetime")
-                    .HasColumnName("Fecha_modificacion");
+                    .HasColumnName("fecha_creacion");
 
-                entity.Property(e => e.Rol)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
             });
 
-            modelBuilder.Entity<TblFemaRolesUsuario>(entity =>
-            {
-                entity.HasKey(e => new { e.IdRol, e.IdUsuario })
-                    .HasName("PK_Roles_Usuarios");
 
-                entity.ToTable("Tbl_Fema_RolesUsuarios");
+            /*modelBuilder.Entity<TblFemaRolesUsuario>(entity =>
+           {
+               entity.HasKey(e => new { e.IdRol, e.IdUsuario })
+                   .HasName("PK_Roles_Usuarios");
 
-                entity.Property(e => e.IdRol).HasColumnType("numeric(10, 0)");
+               entity.ToTable("Tbl_Fema_RolesUsuarios");
 
-                entity.Property(e => e.IdUsuario).HasColumnType("numeric(10, 0)");
+               entity.Property(e => e.IdRol).HasColumnType("numeric(10, 0)");
 
-                entity.Property(e => e.FechaValides).HasColumnType("datetime");
+               entity.Property(e => e.IdUsuario).HasColumnType("numeric(10, 0)");
 
-                entity.HasOne(d => d.IdRolNavigation)
-                    .WithMany(p => p.TblFemaRolesUsuarios)
-                    .HasForeignKey(d => d.IdRol)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Roles_Usuarios_Roles");
+               entity.Property(e => e.FechaValides).HasColumnType("datetime");
 
-                entity.HasOne(d => d.IdUsuarioNavigation)
-                    .WithMany(p => p.TblFemaRolesUsuarios)
-                    .HasForeignKey(d => d.IdUsuario)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Roles_Usuarios");
-            });
+               entity.HasOne(d => d.IdRolNavigation)
+                   .WithMany(p => p.TblFemaRolesUsuarios)
+                   .HasForeignKey(d => d.IdRol)
+                   .OnDelete(DeleteBehavior.ClientSetNull)
+                   .HasConstraintName("FK_Roles_Usuarios_Roles");
 
-            modelBuilder.Entity<TblFemaSubMenu>(entity =>
+               entity.HasOne(d => d.IdUsuarioNavigation)
+                   .WithMany(p => p.TblFemaRolesUsuarios)
+                   .HasForeignKey(d => d.IdUsuario)
+                   .OnDelete(DeleteBehavior.ClientSetNull)
+                   .HasConstraintName("FK_Roles_Usuarios");
+           });*/
+
+            /*modelBuilder.Entity<TblFemaSubMenu>(entity =>
             {
                 entity.HasKey(e => e.SubMenuId)
                     .HasName("PK__Tbl_Fema__EA065C1985CBFB4E");
@@ -757,7 +758,7 @@ namespace Back_Vinculacion_Fema.Models.DbModels
                     .WithMany(p => p.TblFemaSubMenus)
                     .HasForeignKey(d => d.IdMenu)
                     .HasConstraintName("FK__Tbl_Fema___IdMen__60A75C0F");
-            });
+            });*/
 
             modelBuilder.Entity<TblFemaUsuario>(entity =>
             {

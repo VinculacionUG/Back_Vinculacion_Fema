@@ -1,28 +1,27 @@
 ﻿ using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Back_Vinculacion_Fema.Models.DbModels
 {
     public partial class TblFemaRoles
     {
-        
-        public TblFemaRoles()
+
+        /*public TblFemaRoles()
         {
             TblFemaMenuUsuarios = new HashSet<TblFemaMenuUsuario>();
             TblFemaOpcionesRoles = new HashSet<TblFemaOpcionesRole>();
             TblFemaRolesUsuarios = new HashSet<TblFemaRolesUsuario>();
-        }
-
-        public decimal IdRol { get; set; }
-        public string? Rol { get; set; }
-        public DateTime? FechaCreacion { get; set; }
-        public DateTime? FechaModificacion { get; set; }
-        public bool Estado { get; set; }
-
-        
+        }*/
+        [Key]
+        public short id_rol { get; set; }
+        public string descripcion { get; set; } = null!;
+        public DateTime fecha_creacion { get; set; }
+      
+        /*
         public virtual ICollection<TblFemaMenuUsuario> TblFemaMenuUsuarios { get; set; }
         public virtual ICollection<TblFemaOpcionesRole> TblFemaOpcionesRoles { get; set; }
         public virtual ICollection<TblFemaRolesUsuario> TblFemaRolesUsuarios { get; set; }
-        
+        */
     }
 }
