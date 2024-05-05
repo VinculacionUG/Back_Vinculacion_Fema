@@ -32,9 +32,9 @@ namespace Back_Vinculacion_Fema.Models.DbModels
         //public virtual DbSet<TblFemaOpcione> TblFemaOpciones { get; set; } = null!;
         //public virtual DbSet<TblFemaOpcionesRole> TblFemaOpcionesRoles { get; set; } = null!;
         public virtual DbSet<TblFemaPersona> TblFemaPersonas { get; set; } = null!;
-        public virtual DbSet<TblFemaRoles> TblFemaRoles { get; set; } = null!;
-        public virtual DbSet<TblFemaRolesUsuario> TblFemaRolesUsuarios { get; set; } = null!;
-        public virtual DbSet<TblFemaSubMenu> TblFemaSubMenus { get; set; } = null!;
+        public virtual DbSet<TblFemaRoles> Tbl_Fema_Roles { get; set; } = null!;
+        //public virtual DbSet<TblFemaRolesUsuario> TblFemaRolesUsuarios { get; set; } = null!;
+        //public virtual DbSet<TblFemaSubMenu> TblFemaSubMenus { get; set; } = null!;
         public virtual DbSet<TblFemaUsuario> TblFemaUsuarios { get; set; } = null!;
         public virtual DbSet<TipoEdificacion> TipoEdificacions { get; set; } = null!;
         public virtual DbSet<TipoPuntuacion> TipoPuntuacions { get; set; } = null!;

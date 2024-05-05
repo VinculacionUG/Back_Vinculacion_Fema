@@ -1,4 +1,4 @@
-﻿ using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -13,6 +13,7 @@ namespace Back_Vinculacion_Fema.Models.DbModels
             TblFemaOpcionesRoles = new HashSet<TblFemaOpcionesRole>();
             TblFemaRolesUsuarios = new HashSet<TblFemaRolesUsuario>();
         }*/
+
         [Key]
         public short id_rol { get; set; }
         public string descripcion { get; set; } = null!;

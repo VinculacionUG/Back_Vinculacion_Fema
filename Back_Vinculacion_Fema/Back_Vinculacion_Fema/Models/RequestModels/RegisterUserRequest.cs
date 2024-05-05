@@ -28,7 +28,7 @@
         #endregion
 
         #region Rol
-        public int IdRol { get; set; }
+        
         public string? Rol { get; set; }
       
         #endregion
