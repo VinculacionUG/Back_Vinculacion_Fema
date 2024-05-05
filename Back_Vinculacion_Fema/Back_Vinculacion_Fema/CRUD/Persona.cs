@@ -14,6 +14,8 @@ namespace Back_Vinculacion_Fema.CRUD
             _context = context;
         }
 
+
+
         public TblFemaPersona? ObtenerPersona(string identificacion)
         {
             return _context.TblFemaPersonas.FirstOrDefault(u => u.Identificacion == identificacion);
@@ -40,6 +42,7 @@ namespace Back_Vinculacion_Fema.CRUD
                     FechaNacimiento = request.FechaNacimiento,
                     Direccion = request.Direccion,
                     Sexo = request.Sexo,
+                    Id_rol = request.IdRol,
                     Contacto = request.Contacto,
                     Correo = request.Correo,
                     Estado = true

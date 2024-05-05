@@ -30,7 +30,7 @@ namespace Back_Vinculacion_Fema.Controllers
                 return Unauthorized();
             }
 
-            return Ok(Token.GenerarToken(usuario.UserName));
+            return Ok(Token.GenerarToken(usuario.NombreUsuario));
         }   
     }
 }

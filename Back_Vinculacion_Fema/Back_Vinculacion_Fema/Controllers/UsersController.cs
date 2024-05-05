@@ -3,6 +3,7 @@ using Back_Vinculacion_Fema.Models.DbModels;
 using Back_Vinculacion_Fema.Models.RequestModels;
 using Back_Vinculacion_Fema.Models.Utilidades;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace Back_Vinculacion_Fema.Controllers
@@ -34,8 +35,59 @@ namespace Back_Vinculacion_Fema.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("registrarUsuario")]
+        public async Task<IActionResult> RegistrarUsuario(TblFemaUsuario usuario)
+        {
+            try
+            {
+                if (usuario == null)
+                {
+                    return BadRequest("El objeto de usuario es nulo.");
+                }
 
-        [HttpPost("CrearUsuario")]
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                // Validación para evitar usuarios duplicados
+                var usuarioExiste = await _context.TblFemaUsuarios.FirstOrDefaultAsync(u => u.NombreUsuario == usuario.NombreUsuario);
+                if (usuarioExiste != null)
+                {
+                    return Conflict("El usuario ya existe.");
+                }
+
+                // Validación para evitar correos duplicados
+                var correoExiste = await _context.TblFemaUsuarios.FirstOrDefaultAsync(u => u.Correo == usuario.Correo);
+                if (correoExiste != null)
+                {
+                    return Conflict("El correo ya se encuentra registrado para otro usuario.");
+                }
+
+                _context.TblFemaUsuarios.Add(usuario);
+                await _context.SaveChangesAsync();
+
+                return Ok();
+            }
+            catch (DbUpdateException ex)
+            {
+                // Accede a la excepción interna para obtener más detalles
+                var detalleException = ex.InnerException;
+                while (detalleException?.InnerException != null)
+                {
+                    detalleException = detalleException.InnerException;
+                }
+
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Ocurrió un error al registrar el usuario: {detalleException?.Message}");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Ocurrió un error al registrar el usuario: {ex.Message}");
+            }
+        }
+
+        /*[HttpPost("CrearUsuario")]
         public async Task<ActionResult> RegisterUser(RegisterUserRequest request)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
@@ -64,7 +116,7 @@ namespace Back_Vinculacion_Fema.Controllers
                 await transaction.RollbackAsync();
                 return StatusCode(500, "Error interno del servidor "+ ex);
             }
-        }
+        }*/
 
         [HttpPut("Recuperacion/{_Correo}")]                     
         public async Task<ActionResult> Recovery(String _Correo, String motivo)
@@ -107,7 +159,7 @@ namespace Back_Vinculacion_Fema.Controllers
             }
         }
 
-        [HttpDelete("EliminarUsuario/{UserName}")]
+        /*[HttpDelete("EliminarUsuario/{UserName}")]
         public async Task<ActionResult> DeleteUser(String UserName)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
@@ -142,7 +194,7 @@ namespace Back_Vinculacion_Fema.Controllers
                 await transaction.RollbackAsync();
                 return StatusCode(500, "Error interno del servidor " + ex.Message);
             }
-        }
+        }*/
 
     }
 }

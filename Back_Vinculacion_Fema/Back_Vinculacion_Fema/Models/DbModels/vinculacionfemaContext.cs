@@ -32,9 +32,9 @@ namespace Back_Vinculacion_Fema.Models.DbModels
         //public virtual DbSet<TblFemaOpcione> TblFemaOpciones { get; set; } = null!;
         //public virtual DbSet<TblFemaOpcionesRole> TblFemaOpcionesRoles { get; set; } = null!;
         public virtual DbSet<TblFemaPersona> TblFemaPersonas { get; set; } = null!;
-        public virtual DbSet<TblFemaRoles> Tbl_Fema_Roles { get; set; } = null!;
-        //public virtual DbSet<TblFemaRolesUsuario> TblFemaRolesUsuarios { get; set; } = null!;
-        //public virtual DbSet<TblFemaSubMenu> TblFemaSubMenus { get; set; } = null!;
+        public virtual DbSet<TblFemaRoles> TblFemaRoles { get; set; } = null!;
+        public virtual DbSet<TblFemaRolesUsuario> TblFemaRolesUsuarios { get; set; } = null!;
+        public virtual DbSet<TblFemaSubMenu> TblFemaSubMenus { get; set; } = null!;
         public virtual DbSet<TblFemaUsuario> TblFemaUsuarios { get; set; } = null!;
         public virtual DbSet<TipoEdificacion> TipoEdificacions { get; set; } = null!;
         public virtual DbSet<TipoPuntuacion> TipoPuntuacions { get; set; } = null!;
@@ -50,6 +50,7 @@ namespace Back_Vinculacion_Fema.Models.DbModels
             }
         }
 
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<EvaluacionExterior>(entity =>
@@ -689,7 +690,6 @@ namespace Back_Vinculacion_Fema.Models.DbModels
                     .IsUnicode(false);
             });
 
-            
             modelBuilder.Entity<TblFemaRoles>(entity =>
             {
                 entity.HasKey(e => e.id_rol)
@@ -763,49 +763,51 @@ namespace Back_Vinculacion_Fema.Models.DbModels
             modelBuilder.Entity<TblFemaUsuario>(entity =>
             {
                 entity.HasKey(e => e.IdUsuario)
-                    .HasName("PK_Usuarios");
+                    .HasName("IdUsuario");
 
                 entity.ToTable("Tbl_Fema_Usuarios");
 
                 entity.Property(e => e.IdUsuario)
-                    .HasColumnType("numeric(10, 0)")
+                    .HasColumnName("IdUsuario")
                     .ValueGeneratedOnAdd();
 
-                entity.Property(e => e.Clave).HasMaxLength(100);
-
-                entity.Property(e => e.ClaveTmp).HasMaxLength(300);
+                entity.Property(e => e.NombreUsuario)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Correo)
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Estado)
-                    .IsRequired()
-                    .HasDefaultValueSql("((1))");
+                entity.Property(e => e.Clave).HasMaxLength(500);
 
-                entity.Property(e => e.FechaCreacion)
+                entity.Property(e => e.Token).HasMaxLength(500);
+
+                entity.Property(e => e.id_rol)
+                    .HasColumnName("id_rol");
+
+                entity.Property(e => e.Fecha_creacion)
                     .HasColumnType("datetime")
                     .HasColumnName("Fecha_creacion");
 
-                entity.Property(e => e.FechaModificacion)
+                entity.Property(e => e.Fecha_modificacion)
                     .HasColumnType("datetime")
                     .HasColumnName("Fecha_modificacion");
 
-                entity.Property(e => e.IdPersona).HasColumnType("numeric(10, 0)");
+                entity.Property(e => e.id_estado)
+                    .HasColumnName("id_estado");
 
-                entity.Property(e => e.Modulo)
+                //entity.Property(e => e.IdPersona).HasColumnType("numeric(10, 0)");
+
+                /*entity.Property(e => e.Modulo)
                     .HasMaxLength(100)
-                    .IsUnicode(false);
+                    .IsUnicode(false);*/
 
-                entity.Property(e => e.UserName)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.HasOne(d => d.IdPersonaNavigation)
+                /*entity.HasOne(d => d.IdPersonaNavigation)
                     .WithMany(p => p.TblFemaUsuarios)
                     .HasForeignKey(d => d.IdPersona)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Usuario_Persona");
+                    .HasConstraintName("FK_Usuario_Persona");*/
             });
 
             modelBuilder.Entity<TipoEdificacion>(entity =>
@@ -877,10 +879,10 @@ namespace Back_Vinculacion_Fema.Models.DbModels
             OnModelCreatingPartial(modelBuilder);
         }
 
-        internal async Task SaveChangesAsync()
+        /*internal async Task SaveChangesAsync()
         {
             throw new NotImplementedException();
-        }
+        }*/
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
