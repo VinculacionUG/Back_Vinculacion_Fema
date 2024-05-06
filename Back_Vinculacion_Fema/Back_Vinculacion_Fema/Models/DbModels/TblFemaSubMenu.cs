@@ -5,7 +5,7 @@ namespace Back_Vinculacion_Fema.Models.DbModels
 {
     public partial class TblFemaSubMenu
     {
-        public TblFemaSubMenu()
+        /*public TblFemaSubMenu()
         {
             TblFemaItems = new HashSet<TblFemaItem>();
         }
@@ -16,6 +16,6 @@ namespace Back_Vinculacion_Fema.Models.DbModels
         public string? Icono { get; set; }
 
         public virtual TblFemaMenu? IdMenuNavigation { get; set; }
-        public virtual ICollection<TblFemaItem> TblFemaItems { get; set; }
+        public virtual ICollection<TblFemaItem> TblFemaItems { get; set; }*/
     }
 }

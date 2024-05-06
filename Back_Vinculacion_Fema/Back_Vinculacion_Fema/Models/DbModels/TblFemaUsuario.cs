@@ -1,27 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Back_Vinculacion_Fema.Models.DbModels
 {
     public partial class TblFemaUsuario
     {
-        public TblFemaUsuario()
+        /*public TblFemaUsuario()
         {
             TblFemaRolesUsuarios = new HashSet<TblFemaRolesUsuario>();
-        }
+        }*/
 
-        public decimal IdUsuario { get; set; }
-        public decimal IdPersona { get; set; }
-        public string? UserName { get; set; }
-        public string? Correo { get; set; }
-        public string? Clave { get; set; }
-        public string? ClaveTmp { get; set; }
-        public DateTime? FechaCreacion { get; set; }
-        public DateTime? FechaModificacion { get; set; }
-        public string? Modulo { get; set; }
-        public bool? Estado { get; set; }
+        [Key]
+        public long IdUsuario { get; set; }
 
-        public virtual TblFemaPersona IdPersonaNavigation { get; set; } = null!;
-        public virtual ICollection<TblFemaRolesUsuario> TblFemaRolesUsuarios { get; set; }
+        [Required(ErrorMessage = "El campo NombreUsuario es obligatorio.")]
+        [MaxLength(50, ErrorMessage = "El campo NombreUsuario no puede tener más de 50 caracteres.")]
+        public string NombreUsuario { get; set; } = null!;
+
+        [Required(ErrorMessage = "El campo correo es obligatorio.")]
+        [MaxLength(50, ErrorMessage = "El campo Correo no puede tener más de 50 caracteres.")]
+        public string Correo { get; set; } = null!;
+        
+        [Required(ErrorMessage = "El campo clave es obligatorio.")]
+        [MaxLength(500, ErrorMessage = "El campo Clave no puede tener más de 500 caracteres.")]
+        public string Clave { get; set; } = null!;
+
+        [MaxLength(500, ErrorMessage = "El campo Token no puede tener más de 500 caracteres.")]
+        public string Token { get; set; } = null!;
+
+        [Required(ErrorMessage = "El campo id_rol es obligatorio.")]
+        public short id_rol { get; set; }
+
+        public DateTime? Fecha_creacion { get; set; }
+
+        public DateTime? Fecha_modificacion { get; set; }
+
+        [Required(ErrorMessage = "El campo id_estado es obligatorio.")]
+        public short id_estado { get; set; }
+
+        //public virtual TblFemaPersona IdPersonaNavigation { get; set; } = null!;
+        //public virtual ICollection<TblFemaRolesUsuario> TblFemaRolesUsuarios { get; set; }
     }
 }

@@ -5,10 +5,10 @@ namespace Back_Vinculacion_Fema.Models.DbModels
 {
     public partial class TblFemaPersona
     {
-        public TblFemaPersona()
+        /*public TblFemaPersona()
         {
             TblFemaUsuarios = new HashSet<TblFemaUsuario>();
-        }
+        }*/
 
         public decimal IdPersona { get; set; }
         public decimal IdTipo { get; set; }
@@ -24,7 +24,8 @@ namespace Back_Vinculacion_Fema.Models.DbModels
         public string? Contacto { get; set; }
         public string? Correo { get; set; }
         public bool? Estado { get; set; }
+        public int Id_rol { get; set; }
 
-        public virtual ICollection<TblFemaUsuario> TblFemaUsuarios { get; set; }
+        /*public virtual ICollection<TblFemaUsuario> TblFemaUsuarios { get; set; }*/
     }
 }
