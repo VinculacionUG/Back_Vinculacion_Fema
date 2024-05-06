@@ -22,6 +22,7 @@ namespace Back_Vinculacion_Fema.Controllers
         {
             var encryptedPassword = credentials.Password; //Debe consumir el metodo de cifrado
 
+
             User usuarioLogic = new User(_contexto);
             var usuario = usuarioLogic.GetUsuarioLogin(credentials.Nombre, encryptedPassword);
 
