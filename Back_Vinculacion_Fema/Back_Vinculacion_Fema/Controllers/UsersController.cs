@@ -230,6 +230,11 @@ namespace Back_Vinculacion_Fema.Controllers
         [HttpPut("Recuperacion/{_Correo}")]                     
         public async Task<ActionResult> Recovery(String _Correo, String motivo)
         {
+            //Validar que el campo de correo electrónico no esté vacío
+            if (string.IsNullOrEmpty(_Correo))
+            {
+                return BadRequest("El campo de correo electrónico no puede estar vacío.");
+            }
             //motivo hace referencia a si se está recuperando la contraseña o el usuario
             //motivo puede ser "USUARIO" o "CLAVE"
             using var transaction = await _context.Database.BeginTransactionAsync();
