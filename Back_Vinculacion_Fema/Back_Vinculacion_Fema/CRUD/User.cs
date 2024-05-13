@@ -23,10 +23,10 @@ namespace Back_Vinculacion_Fema.CRUD
             return roles;
         }
 
-        /*
+        
         public async Task<bool> ObtenerUsuario(string userName)
         {
-            return await _context.TblFemaUsuarios.AnyAsync(u => u.UserName == userName);//
+            return await _context.TblFemaUsuarios.AnyAsync(u => u.NombreUsuario == userName);//
         }
 
 

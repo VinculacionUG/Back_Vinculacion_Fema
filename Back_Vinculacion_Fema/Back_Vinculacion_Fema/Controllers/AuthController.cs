@@ -27,18 +27,18 @@ namespace Back_Vinculacion_Fema.Controllers
             {
                 return BadRequest("Las credenciales proporcionadas no son válidas.");
             }
-            var encryptedPassword = EncryptPassword(credentials.Password); ; //Debe consumir el metodo de cifrado
+            var encryptedPassword = credentials.Password; ; //Debe consumir el metodo de cifrado
 
 
             User usuarioLogic = new User(_contexto);
             var usuario = usuarioLogic.GetUsuarioLogin(credentials.Nombre, encryptedPassword);
 
-            if (usuario == null || string.IsNullOrEmpty(usuario.UserName))
+            if (usuario == null || string.IsNullOrEmpty(usuario.NombreUsuario))
             {
                 return Unauthorized();
             }
 
-            return Ok(Token.GenerarToken(usuario.UserName));
+            return Ok(Token.GenerarToken(usuario.NombreUsuario));
         }   
     }
 }
