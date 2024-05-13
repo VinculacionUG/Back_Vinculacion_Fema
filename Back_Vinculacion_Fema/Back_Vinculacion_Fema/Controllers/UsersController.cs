@@ -19,6 +19,7 @@ namespace Back_Vinculacion_Fema.Controllers
             _context = context;
         }
 
+
         [HttpGet]
         [Route("listarRoles")]
         public IActionResult CargarRoles()
@@ -88,6 +89,9 @@ namespace Back_Vinculacion_Fema.Controllers
         }
 
         /*[HttpPost("CrearUsuario")]
+
+        [HttpPost("CrearUsuario")]  
+
         public async Task<ActionResult> RegisterUser(RegisterUserRequest request)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
