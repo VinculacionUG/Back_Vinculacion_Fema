@@ -88,6 +88,111 @@ namespace Back_Vinculacion_Fema.Controllers
             }
         }
 
+
+        [HttpPost]
+        [Route("ActualizarContraseña")]
+        public async Task<IActionResult> ActualizarContraseña(string usuario, string contraseñaActual, string nuevaContraseña)
+        {
+            try
+            {
+                //Aquí buscamos al usuario en la BD
+                //Se cambio la intercalación de la columna NombreUsuario de la tabla Tbl_Fema_Usuarios
+                //Debido a que no era sencible a mayusculas y minisculas, se cambio de Modern_Spanish_CI_AS a Modern_Spanish_CS_AS
+                var usuarioEncontrado = await _context.TblFemaUsuarios.FirstOrDefaultAsync(u => u.NombreUsuario == usuario);
+                
+                if(usuarioEncontrado != null)
+                {
+                    //Se comprueba que la contraseña actual sea correcta
+                    if (usuarioEncontrado.Clave != contraseñaActual)
+                    {
+                        return BadRequest("La contraseña actual es incorrecta");
+                    }
+
+                    usuarioEncontrado.Clave = nuevaContraseña;
+
+                    _context.TblFemaUsuarios.Update(usuarioEncontrado);
+                    await _context.SaveChangesAsync();
+
+                    return Ok("Contraseña actualizada exitosamente!");
+                }
+                else
+                {
+                    return NotFound("Usuario no encontrado");
+                }
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500, $"Error interno del servidor: {ex.Message}");
+            }
+
+        }
+
+
+        /*[HttpPost]
+        [Route("registrarUsuario")]
+        public async Task<IActionResult> RegistrarUsuario(RegisterUserRequest request)
+        {
+            try
+            {
+                if (request == null)
+                {
+                    return BadRequest("La solicitud es nula.");
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var user = new TblFemaUsuario
+                {
+                    IdUsuario = Convert.ToInt64(request.idUsuario),
+                    NombreUsuario = request.nombreUsuario,
+                    Correo = request.correo,
+                    Clave = request.clave,
+                    Token = request.token,
+                    id_rol = Convert.ToInt16(request.id_rol),
+                    Fecha_creacion = request.fecha_creacion,
+                    Fecha_modificacion = request.fecha_modificacion,
+                    id_estado = Convert.ToInt16(request.id_estado)
+                };
+
+                // Validación para evitar usuarios duplicados
+                var usuarioExiste = await _context.TblFemaUsuarios.FirstOrDefaultAsync(u => u.NombreUsuario == user.NombreUsuario);
+                if (usuarioExiste != null)
+                {
+                    return Conflict("El usuario ya existe.");
+                }
+
+                // Validación para evitar correos duplicados
+                var correoExiste = await _context.TblFemaUsuarios.FirstOrDefaultAsync(u => u.Correo == user.Correo);
+                if (correoExiste != null)
+                {
+                    return Conflict("El correo ya se encuentra registrado para otro usuario.");
+                }
+
+                _context.TblFemaUsuarios.Add(user);
+                await _context.SaveChangesAsync();
+
+                return Ok();
+            }
+            catch (DbUpdateException ex)
+            {
+                // Accede a la excepción interna para obtener más detalles
+                var detalleException = ex.InnerException;
+                while (detalleException?.InnerException != null)
+                {
+                    detalleException = detalleException.InnerException;
+                }
+
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Ocurrió un error al registrar el usuario: {detalleException?.Message}");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Ocurrió un error al registrar el usuario: {ex.Message}");
+            }
+        }*/
+
         /*[HttpPost("CrearUsuario")]
 
         [HttpPost("CrearUsuario")]  

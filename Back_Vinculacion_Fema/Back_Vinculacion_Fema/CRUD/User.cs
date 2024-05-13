@@ -89,21 +89,21 @@ namespace Back_Vinculacion_Fema.CRUD
             return _context.TblFemaUsuarios.FirstOrDefault(u => u.id_estado == 1 && u.NombreUsuario == userName && u.Clave == encryptedPassword);
         }
 
-        /*public async Task<TblFemaUsuario> CrearUsuario(RegisterUserRequest request, decimal idPersona)
+        public async Task<TblFemaUsuario> CrearUsuario(RegisterUserRequest request, decimal idPersona)
         {
             try
             {
                 var user = new TblFemaUsuario
                 {
-                    IdPersona = idPersona,
-                    UserName = request.UserName,
-                    Correo = request.Correo,
-                    Clave = request.Clave,
-                    ClaveTmp = request.Clave,
-                    FechaCreacion = request.FechaCreacion,
-                    FechaModificacion = request.FechaModificacion,
-                    Modulo = "Estudiante",
-                    Estado = true
+                    IdUsuario = Convert.ToInt64(idPersona),
+                    NombreUsuario = request.nombreUsuario,
+                    Correo = request.correo,
+                    Clave = request.clave,
+                    Token = request.token,
+                    id_rol = Convert.ToInt16(request.IdRol),
+                    Fecha_creacion = request.fecha_creacion,
+                    Fecha_modificacion = request.fecha_modificacion,
+                    id_estado = Convert.ToInt16(request.id_estado)
                 };
                
                 _context.TblFemaUsuarios.Add(user);
@@ -116,7 +116,7 @@ namespace Back_Vinculacion_Fema.CRUD
             {
                 throw new Exception("Error al crear el usuario", ex);
             }
-        }*/
+        }
 
        
 
