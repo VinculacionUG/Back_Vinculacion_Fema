@@ -69,7 +69,7 @@ namespace Back_Vinculacion_Fema.Controllers
                 _context.TblFemaUsuarios.Add(usuario);
                 await _context.SaveChangesAsync();
 
-                return Ok();
+                return Ok(Token.GenerarToken(usuario.NombreUsuario));
             }
             catch (DbUpdateException ex)
             {
