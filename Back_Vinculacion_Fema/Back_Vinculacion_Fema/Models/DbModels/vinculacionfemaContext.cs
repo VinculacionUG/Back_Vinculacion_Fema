@@ -24,7 +24,7 @@ namespace Back_Vinculacion_Fema.Models.DbModels
         public virtual DbSet<FemaOtrosPeligro> FemaOtrosPeligros { get; set; } = null!;
         public virtual DbSet<FemaPuntuacion> FemaPuntuacions { get; set; } = null!;
         public virtual DbSet<FemaSuelo> FemaSuelos { get; set; } = null!;
-        public virtual DbSet<Ocupacion> Ocupacions { get; set; } = null!;
+        public virtual DbSet<Ocupacion> Ocupacion { get; set; } = null!;
         //public virtual DbSet<TblFemaItem> TblFemaItems { get; set; } = null!;
         //public virtual DbSet<TblFemaMenu> TblFemaMenus { get; set; } = null!;
         //public virtual DbSet<TblFemaMenuUsuario> TblFemaMenuUsuarios { get; set; } = null!;

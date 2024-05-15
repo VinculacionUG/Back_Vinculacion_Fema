@@ -15,14 +15,26 @@ namespace Back_Vinculacion_Fema.Service
         }
 
         //Lógica para obtener datos desde la base
-        public async Task<IEnumerable<FemaDosVM>> ConsultarTipoSuelo()
+        public async Task<IEnumerable<TipoSuelo>> ConsultarTipoSuelo()
         {
             return await _contexto.TipoSuelos
-                .Select(t => new FemaDosVM
+                .Select(t => new TipoSuelo
                 {
-                    id_tipo_suelo = t.CodTipoSuelo,
-                    descripcion = t.Descripcion,
-                    estado = t.Estado
+                    CodTipoSuelo = t.CodTipoSuelo,
+                    Descripcion = t.Descripcion,
+                    Estado = t.Estado
+                })
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Ocupacion>> ConsultarOcupacion()
+        {
+            return await _contexto.Ocupacion
+                .Select(t => new Ocupacion
+                {
+                    CodOcupacion = t.CodOcupacion,
+                    Descripcion = t.Descripcion,
+                    Estado= t.Estado
                 })
                 .ToListAsync();
         }

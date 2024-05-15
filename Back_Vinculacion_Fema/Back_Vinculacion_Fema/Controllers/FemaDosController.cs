@@ -2,6 +2,7 @@
 using Back_Vinculacion_Fema.Viewmodel;
 using Back_Vinculacion_Fema.Service;
 using Back_Vinculacion_Fema.Interface;
+using Back_Vinculacion_Fema.Models.DbModels;
 
 namespace Back_Vinculacion_Fema.Controllers
 {
@@ -18,9 +19,17 @@ namespace Back_Vinculacion_Fema.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<FemaDosVM>> ListarTipoSuelo()
+        [Route("listarTipoSuelo")]
+        public async Task<IEnumerable<TipoSuelo>> ListarTipoSuelo()
         {
             return await _FemaDosService.ConsultarTipoSuelo();
+        }
+
+        [HttpGet]
+        [Route("listarOcupacion")]
+        public async Task<IEnumerable<Ocupacion>> ListarOcupacion()
+        {
+            return await _FemaDosService.ConsultarOcupacion();
         }
 
     }
