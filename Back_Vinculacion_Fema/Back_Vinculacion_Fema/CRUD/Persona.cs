@@ -16,7 +16,7 @@ namespace Back_Vinculacion_Fema.CRUD
 
 
 
-        public TblFemaPersona? ObtenerPersona(string identificacion)
+      public TblFemaPersona? ObtenerPersona(string identificacion)
         {
             return _context.TblFemaPersonas.FirstOrDefault(u => u.Identificacion == identificacion);
         }
@@ -64,5 +64,6 @@ namespace Back_Vinculacion_Fema.CRUD
             await _context.SaveChangesAsync();
             return true;
         }
+
     }
 }
