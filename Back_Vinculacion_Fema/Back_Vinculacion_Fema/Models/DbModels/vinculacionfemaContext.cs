@@ -639,15 +639,10 @@ namespace Back_Vinculacion_Fema.Models.DbModels
 
                 entity.ToTable("Tbl_Fema_Personas");
 
-                entity.Property(e => e.IdPersona)
-                    .HasColumnType("numeric(10, 0)")
+                entity.Property(e => e.IdPersona)   
                     .ValueGeneratedOnAdd();
 
-                entity.Property(e => e.Apellido1)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Apellido2)
+                entity.Property(e => e.Apellido)
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
@@ -655,29 +650,17 @@ namespace Back_Vinculacion_Fema.Models.DbModels
                     .HasMaxLength(10)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Correo)
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
-
                 entity.Property(e => e.Direccion)
                     .HasMaxLength(200)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Estado).HasDefaultValueSql("((1))");
-
                 entity.Property(e => e.FechaNacimiento).HasColumnType("datetime");
-
-                entity.Property(e => e.IdTipo).HasColumnType("numeric(10, 0)");
 
                 entity.Property(e => e.Identificacion)
                     .HasMaxLength(13)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Nombre1)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Nombre2)
+                entity.Property(e => e.Nombre)
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
@@ -688,6 +671,15 @@ namespace Back_Vinculacion_Fema.Models.DbModels
                 entity.Property(e => e.TipoIdentificacion)
                     .HasMaxLength(20)
                     .IsUnicode(false);
+
+                entity.Property(e => e.IdUsuario)
+                .HasColumnName("IdUsuario")
+                .HasColumnType("long");  // Cambiado a int
+
+                entity.HasOne(d => d.Usuario)
+                .WithOne(p => p.Persona)
+                .HasForeignKey<TblFemaPersona>(d => d.IdUsuario)
+                .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
             modelBuilder.Entity<TblFemaRoles>(entity =>
@@ -760,6 +752,8 @@ namespace Back_Vinculacion_Fema.Models.DbModels
                     .HasConstraintName("FK__Tbl_Fema___IdMen__60A75C0F");
             });*/
 
+            // Configuración adicional del modelo
+
             modelBuilder.Entity<TblFemaUsuario>(entity =>
             {
                 entity.HasKey(e => e.IdUsuario)
@@ -767,8 +761,9 @@ namespace Back_Vinculacion_Fema.Models.DbModels
 
                 entity.ToTable("Tbl_Fema_Usuarios");
 
-                entity.Property(e => e.IdUsuario)
+                 entity.Property(e => e.IdUsuario)
                     .HasColumnName("IdUsuario")
+                    .HasColumnType("long")
                     .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.NombreUsuario)
@@ -796,18 +791,6 @@ namespace Back_Vinculacion_Fema.Models.DbModels
 
                 entity.Property(e => e.id_estado)
                     .HasColumnName("id_estado");
-
-                //entity.Property(e => e.IdPersona).HasColumnType("numeric(10, 0)");
-
-                /*entity.Property(e => e.Modulo)
-                    .HasMaxLength(100)
-                    .IsUnicode(false);*/
-
-                /*entity.HasOne(d => d.IdPersonaNavigation)
-                    .WithMany(p => p.TblFemaUsuarios)
-                    .HasForeignKey(d => d.IdPersona)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Usuario_Persona");*/
             });
 
             modelBuilder.Entity<TipoEdificacion>(entity =>

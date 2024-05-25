@@ -2,9 +2,12 @@
 using Back_Vinculacion_Fema.Models.DbModels;
 using Back_Vinculacion_Fema.Models.RequestModels;
 using Back_Vinculacion_Fema.Models.Utilidades;
+using Back_Vinculacion_Fema.Viewmodel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
+using System.Text;
 
 namespace Back_Vinculacion_Fema.Controllers
 {
@@ -38,11 +41,13 @@ namespace Back_Vinculacion_Fema.Controllers
 
         [HttpPost]
         [Route("registrarUsuario")]
-        public async Task<IActionResult> RegistrarUsuario(TblFemaUsuario usuario)
+        public async Task<IActionResult> RegistrarUsuario(RegistroUsuarioVM usuarioPersona)
         {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
             try
             {
-                if (usuario == null)
+                if (usuarioPersona == null)
                 {
                     return BadRequest("El objeto de usuario es nulo.");
                 }
@@ -53,26 +58,63 @@ namespace Back_Vinculacion_Fema.Controllers
                 }
 
                 // Validación para evitar usuarios duplicados
-                var usuarioExiste = await _context.TblFemaUsuarios.FirstOrDefaultAsync(u => u.NombreUsuario == usuario.NombreUsuario);
+                var usuarioExiste = await _context.TblFemaUsuarios.FirstOrDefaultAsync(u => u.NombreUsuario == usuarioPersona.NombreUsuario);
                 if (usuarioExiste != null)
                 {
-                    return Conflict("El usuario ya existe.");
+                    return Conflict("El nombre de usuario ya existe.");
                 }
 
                 // Validación para evitar correos duplicados
-                var correoExiste = await _context.TblFemaUsuarios.FirstOrDefaultAsync(u => u.Correo == usuario.Correo);
+                var correoExiste = await _context.TblFemaUsuarios.FirstOrDefaultAsync(u => u.Correo == usuarioPersona.Correo);
                 if (correoExiste != null)
                 {
                     return Conflict("El correo ya se encuentra registrado para otro usuario.");
                 }
 
+                var personaExiste = await _context.TblFemaPersonas.FirstOrDefaultAsync(p => p.Identificacion == usuarioPersona.Identificacion);
+                if (personaExiste != null)
+                {
+                    return Conflict("Ya existe una persona registrada con este numero de identificacion");
+                }
+
+                var usuario = new TblFemaUsuario
+                {
+                    NombreUsuario = usuarioPersona.NombreUsuario,
+                    Correo = usuarioPersona.Correo,
+                    Clave = usuarioPersona.Clave,
+                    Token = usuarioPersona.Token,
+                    id_rol = usuarioPersona.id_rol,
+                    id_estado = usuarioPersona.id_rol
+                };
+
                 _context.TblFemaUsuarios.Add(usuario);
                 await _context.SaveChangesAsync();
+                
+                var persona = new TblFemaPersona
+                {
+                    Identificacion = usuarioPersona.Identificacion,
+                    IdUsuario = usuario.IdUsuario,
+                    TipoIdentificacion = usuarioPersona.TipoIdentificacion,
+                    Nombre = usuarioPersona.Nombre,
+                    Apellido = usuarioPersona.Apellido,
+                    FechaNacimiento = usuarioPersona.FechaNacimiento,
+                    Direccion = usuarioPersona.Direccion,
+                    Sexo = usuarioPersona.Sexo, 
+                    Contacto = usuarioPersona.Contacto, 
+                    Estado = usuarioPersona.Estado                  
+                    };
+
+                _context.TblFemaPersonas.Add(persona);
+                await _context.SaveChangesAsync();
+
+                await transaction.CommitAsync();
 
                 return Ok(Token.GenerarToken(usuario.NombreUsuario));
             }
             catch (DbUpdateException ex)
             {
+                await transaction.RollbackAsync();
+
                 // Accede a la excepción interna para obtener más detalles
                 var detalleException = ex.InnerException;
                 while (detalleException?.InnerException != null)
@@ -80,10 +122,19 @@ namespace Back_Vinculacion_Fema.Controllers
                     detalleException = detalleException.InnerException;
                 }
 
+                var mensajeError = new StringBuilder();
+
+                if (detalleException is InvalidCastException)
+                {
+                    mensajeError.AppendLine("Detalles adicionales de la conversión fallida: ");
+                    mensajeError.AppendLine(detalleException.StackTrace);
+                }
+
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Ocurrió un error al registrar el usuario: {detalleException?.Message}");
             }
             catch (Exception ex)
             {
+                await transaction.RollbackAsync();
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Ocurrió un error al registrar el usuario: {ex.Message}");
             }
         }

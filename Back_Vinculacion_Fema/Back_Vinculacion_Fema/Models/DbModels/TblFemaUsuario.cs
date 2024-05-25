@@ -30,14 +30,15 @@ namespace Back_Vinculacion_Fema.Models.DbModels
         public string Token { get; set; } = null!;
 
         [Required(ErrorMessage = "El campo id_rol es obligatorio.")]
-        public short id_rol { get; set; }
+        public int id_rol { get; set; }
 
         public DateTime? Fecha_creacion { get; set; }
 
         public DateTime? Fecha_modificacion { get; set; }
 
         [Required(ErrorMessage = "El campo id_estado es obligatorio.")]
-        public short id_estado { get; set; }
+        public int id_estado { get; set; }
+        public TblFemaPersona Persona { get; set; } = null!;
 
         //public virtual TblFemaPersona IdPersonaNavigation { get; set; } = null!;
         //public virtual ICollection<TblFemaRolesUsuario> TblFemaRolesUsuarios { get; set; }
