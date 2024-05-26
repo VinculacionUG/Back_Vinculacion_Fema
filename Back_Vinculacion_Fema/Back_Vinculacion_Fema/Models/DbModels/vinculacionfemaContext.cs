@@ -40,6 +40,8 @@ namespace Back_Vinculacion_Fema.Models.DbModels
         public virtual DbSet<TipoPuntuacion> TipoPuntuacions { get; set; } = null!;
         public virtual DbSet<TipoSuelo> TipoSuelos { get; set; } = null!;
 
+        public virtual DbSet<TblFemaEstado> Estado { get; set; } = null!;
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -691,6 +693,28 @@ namespace Back_Vinculacion_Fema.Models.DbModels
 
                 entity.Property(e => e.id_rol)
                     .HasColumnName("id_rol")
+                    .ValueGeneratedOnAdd();
+
+                entity.Property(e => e.descripcion)
+                    .HasMaxLength(100)
+                    .IsUnicode(false)
+                    .HasColumnName("descripcion");
+
+                entity.Property(e => e.fecha_creacion)
+                    .HasColumnType("datetime")
+                    .HasColumnName("fecha_creacion");
+
+            });
+
+            modelBuilder.Entity<TblFemaEstado>(entity =>
+            {
+                entity.HasKey(e => e.id_estado)
+                    .HasName("id_estado");
+
+                entity.ToTable("Estado");
+
+                entity.Property(e => e.id_estado)
+                    .HasColumnName("id_estado")
                     .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.descripcion)

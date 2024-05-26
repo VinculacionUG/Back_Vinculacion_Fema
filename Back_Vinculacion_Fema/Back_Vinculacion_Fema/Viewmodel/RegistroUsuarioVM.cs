@@ -13,7 +13,7 @@ namespace Back_Vinculacion_Fema.Viewmodel
         public string? Direccion { get; set; }
         public string? Sexo { get; set; }
         public string? Contacto { get; set; }
-        public bool? Estado { get; set; }
+        //public bool? Estado { get; set; }
         public long IdUsuario { get; set; }
 
         //Tabla usuario

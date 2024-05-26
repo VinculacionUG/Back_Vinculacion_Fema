@@ -39,6 +39,22 @@ namespace Back_Vinculacion_Fema.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("listarEstados")]
+        public IActionResult CargarEstados()
+        {
+            try
+            {
+                var estadoService = new User(_context);
+                var estados = estadoService.ListarEstados();
+                return Ok(estados);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error interno del servidor: {ex.Message}");
+            }
+        }
+
         [HttpPost]
         [Route("registrarUsuario")]
         public async Task<IActionResult> RegistrarUsuario(RegistroUsuarioVM usuarioPersona)
@@ -101,7 +117,7 @@ namespace Back_Vinculacion_Fema.Controllers
                     Direccion = usuarioPersona.Direccion,
                     Sexo = usuarioPersona.Sexo, 
                     Contacto = usuarioPersona.Contacto, 
-                    Estado = usuarioPersona.Estado                  
+                    //Estado = usuarioPersona.Estado                  
                     };
 
                 _context.TblFemaPersonas.Add(persona);

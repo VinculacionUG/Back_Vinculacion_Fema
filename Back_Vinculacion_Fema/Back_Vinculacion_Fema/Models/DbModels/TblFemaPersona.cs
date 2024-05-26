@@ -19,7 +19,7 @@ namespace Back_Vinculacion_Fema.Models.DbModels
         public string? Direccion { get; set; }
         public string? Sexo { get; set; }
         public string? Contacto { get; set; }
-        public bool? Estado { get; set; }
+        //public bool? Estado { get; set; }
         public long IdUsuario { get; set; }
         public TblFemaUsuario Usuario { get; set; } = null!;
 

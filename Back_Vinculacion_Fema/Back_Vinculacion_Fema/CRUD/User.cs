@@ -23,11 +23,17 @@ namespace Back_Vinculacion_Fema.CRUD
             return roles;
         }
 
-        /*
-        public async Task<bool> ObtenerUsuario(string userName)
+        public List<TblFemaEstado> ListarEstados()
         {
-            return await _context.TblFemaUsuarios.AnyAsync(u => u.UserName == userName);
-        }*/
+            // Consultar los roles en la base de datos utilizando Entity Framework Core
+            var estados = _context.Estado.ToList();
+
+            // Si prefieres utilizar una consulta LINQ explícita, puedes hacerlo así:
+            // var roles = _contexto.Roles.Select(r => new Rol { id_rol = r.id_rol, descripcion = r.descripcion }).ToList();
+            return estados;
+        }
+
+        
 
 
         public async Task<String> ObtenerUsuarioConCorreo(string correo)
@@ -58,21 +64,6 @@ namespace Back_Vinculacion_Fema.CRUD
             return true;
         }
 
-        /*public async Task<decimal> ObtenerIdPersonaConElUsuario(string userName)
-        {
-            var usuario = await _context.TblFemaUsuarios
-                .FirstOrDefaultAsync(u => u.UserName == userName);
-
-            if (usuario != null)
-            {
-                return usuario.IdPersona;
-            }
-            else
-            {
-                return (0);
-            }
-        }*/
-
         public async Task<bool> EliminarUsuario(string userName)
         {
             //Previa verificación de la existencia del usuario se procede a eliminarlo de la BD
@@ -88,6 +79,27 @@ namespace Back_Vinculacion_Fema.CRUD
         {
             return _context.TblFemaUsuarios.FirstOrDefault(u => u.id_estado == 1 && u.NombreUsuario == userName && u.Clave == encryptedPassword);
         }
+
+
+        /*public async Task<bool> ObtenerUsuario(string userName)       
+        {
+            return await _context.TblFemaUsuarios.AnyAsync(u => u.UserName == userName);
+        }*/
+
+        /*public async Task<decimal> ObtenerIdPersonaConElUsuario(string userName)
+        {
+            var usuario = await _context.TblFemaUsuarios
+                .FirstOrDefaultAsync(u => u.UserName == userName);
+
+            if (usuario != null)
+            {
+                return usuario.IdPersona;
+            }
+            else
+            {
+                return (0);
+            }
+        }*/
 
         /*public async Task<TblFemaUsuario> CrearUsuario(RegisterUserRequest request, decimal idPersona)
         {
@@ -117,9 +129,6 @@ namespace Back_Vinculacion_Fema.CRUD
                 throw new Exception("Error al crear el usuario", ex);
             }
         }*/
-
-       
-
 
     }
 }
