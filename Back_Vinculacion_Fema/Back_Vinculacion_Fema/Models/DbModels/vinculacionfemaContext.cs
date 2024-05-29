@@ -104,7 +104,7 @@ namespace Back_Vinculacion_Fema.Models.DbModels
                 entity.ToTable("FEMA");
 
                 entity.Property(e => e.CodFema)
-                    .ValueGeneratedNever()
+                    .ValueGeneratedOnAdd()
                     .HasColumnName("cod_fema");
 
                 entity.Property(e => e.CodUsuarioAct).HasColumnName("cod_usuario_act");

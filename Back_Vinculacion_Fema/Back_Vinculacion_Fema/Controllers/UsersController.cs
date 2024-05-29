@@ -1,9 +1,11 @@
 ﻿using Back_Vinculacion_Fema.CRUD;
 using Back_Vinculacion_Fema.Models.DbModels;
+using Back_Vinculacion_Fema.Models.DTOs;
 using Back_Vinculacion_Fema.Models.RequestModels;
 using Back_Vinculacion_Fema.Models.Utilidades;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace Back_Vinculacion_Fema.Controllers
@@ -12,6 +14,7 @@ namespace Back_Vinculacion_Fema.Controllers
     [Route("[controller]")]
     public class UsersController : ControllerBase
     {
+
         private readonly vinculacionfemaContext _context;
 
         public UsersController(vinculacionfemaContext context)
@@ -125,6 +128,67 @@ namespace Back_Vinculacion_Fema.Controllers
                 return StatusCode(500, $"Error interno del servidor: {ex.Message}");
             }
 
+        }
+
+        [HttpPost]
+        [Route("FormularioFEMA")]
+        public async Task<IActionResult> FormularioFEMA([FromBody] FemaDto femaDto)
+        {
+            if (femaDto == null)
+            {
+                return BadRequest("El objeto FemaDto es nulo.");
+            }
+
+            // Verificar que todos los campos necesarios estén presentes y no sean null
+            if (string.IsNullOrEmpty(femaDto.Direccion) || string.IsNullOrEmpty(femaDto.CodigoPostal) /* ... otros campos ... */)
+            {
+                return BadRequest("Todos los campos son requeridos.");
+            }
+
+            try
+            {
+                var fema = new Fema
+                {
+                    Direccion = femaDto.Direccion,
+                    CodigoPostal = femaDto.CodigoPostal,
+                    OtrosIdentificadores = femaDto.OtrosIdentificadores,
+                    NomEdificacion = femaDto.NomEdificacion,
+                    UsoEdificacion = femaDto.UsoEdificacion,
+                    Latitud = femaDto.Latitud,
+                    Longitud = femaDto.Longitud,
+                    NomEncuestador = femaDto.NomEncuestador,
+                    FechaEncuesta = femaDto.FechaEncuesta,
+                    HoraEncuesta = femaDto.HoraEncuesta,
+                    RutaImagenEdif = femaDto.RutaImagenEdif,
+                    RutaImagenCroquis = femaDto.RutaImagenCroquis,
+                    Comentarios = femaDto.Comentarios,
+                    RequiereNivel2 = femaDto.RequiereNivel2,
+                    CodUsuarioIng = femaDto.CodUsuarioIng,
+                    FecIngreso = femaDto.FecIngreso,
+                    CodUsuarioAct = femaDto.CodUsuarioAct,
+                    FecActualiza = femaDto.FecActualiza
+                };
+
+                _context.Femas.Add(fema);
+                await _context.SaveChangesAsync();
+
+                return Ok(new { Id = fema.CodFema });
+            }
+            catch (DbUpdateException dbEx)
+            {
+                if (dbEx.InnerException is SqlException sqlEx && sqlEx.Number == 2627)
+                {
+                    // Violación de la restricción de clave primaria
+                    return StatusCode(500, "Error: No se puede insertar una clave duplicada. El valor de 'CodFema' ya existe.");
+                }
+                // Otros errores relacionados con la actualización de la base de datos
+                return StatusCode(500, "Error al guardar en la base de datos: " + dbEx.InnerException?.Message);
+            }
+            catch (Exception ex)
+            {
+                // Otros tipos de errores no capturados específicamente
+                return StatusCode(500, "Error interno del servidor: " + ex.Message);
+            }
         }
 
 
@@ -263,8 +327,8 @@ namespace Back_Vinculacion_Fema.Controllers
             }
             catch (Exception ex)
             {
-                await transaction.RollbackAsync();
-                return StatusCode(500, "Error interno del servidor " + ex.Message);
+                
+                return StatusCode(500, "Internal Server Error: " + ex.Message);
             }
         }
 

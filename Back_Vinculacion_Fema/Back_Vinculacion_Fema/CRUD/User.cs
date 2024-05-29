@@ -46,7 +46,11 @@ namespace Back_Vinculacion_Fema.CRUD
         public async Task<bool> ActualizarClave(string userName, string claveNueva)
         {
             var usuario = await _context.TblFemaUsuarios.FirstOrDefaultAsync(u => u.NombreUsuario == userName);
-                usuario.Clave = claveNueva;
+            if(usuario == null)
+            {
+                throw new KeyNotFoundException("El usuario no fue encontrado.");
+            }    
+            usuario.Clave = claveNueva;
 
                 //Solicitar que se agregue campo a la tabla de la BD
                 //Agregar al contexto
@@ -78,9 +82,17 @@ namespace Back_Vinculacion_Fema.CRUD
             //Previa verificación de la existencia del usuario se procede a eliminarlo de la BD
             var usuario = await _context.TblFemaUsuarios
                 .FirstOrDefaultAsync(u => u.NombreUsuario == userName);
-            _context.TblFemaUsuarios.Remove(usuario);
-            await _context.SaveChangesAsync();
-            return true;
+            if(usuario != null)
+            {
+                _context.TblFemaUsuarios.Remove(usuario);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            else
+            {
+                throw new InvalidOperationException("No se pudo encontrar el usuario para eliminar.");
+            }
+            
         }
 
 
