@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Back_Vinculacion_Fema.Models.DbModels
+ namespace Back_Vinculacion_Fema.Models.DbModels
 {
     public class TblFemaEstado
     {

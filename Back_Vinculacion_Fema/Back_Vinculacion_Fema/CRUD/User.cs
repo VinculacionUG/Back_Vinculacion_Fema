@@ -33,8 +33,23 @@ namespace Back_Vinculacion_Fema.CRUD
             return estados;
         }
 
-        
+        public TblFemaUsuario? GetUsuarioLogin(string userName, string encryptedPassword)
+        {
+            //short estadoActivo = 1;
 
+            //return _context.TblFemaUsuarios.FirstOrDefault(u => u.id_estado == estadoActivo && u.NombreUsuario == userName && u.Clave == encryptedPassword);
+
+            short estadoActivo = 1;  // Asegúrate de usar short aquí
+            var usuario = _context.TblFemaUsuarios.FirstOrDefault(u => u.id_estado == estadoActivo && u.NombreUsuario == userName && u.Clave == encryptedPassword);
+
+            if (usuario != null)
+            {
+                // Añadir logs para inspeccionar id_estado
+                Console.WriteLine($"GetUsuarioLogin - id_estado: {usuario.id_estado} (Tipo: {usuario.id_estado.GetType()})");
+            }
+
+            return usuario;
+        }
 
         public async Task<String> ObtenerUsuarioConCorreo(string correo)
         {
@@ -74,11 +89,6 @@ namespace Back_Vinculacion_Fema.CRUD
             return true;
         }
 
-
-        public TblFemaUsuario? GetUsuarioLogin(string userName, string encryptedPassword)
-        {
-            return _context.TblFemaUsuarios.FirstOrDefault(u => u.id_estado == 1 && u.NombreUsuario == userName && u.Clave == encryptedPassword);
-        }
 
 
         /*public async Task<bool> ObtenerUsuario(string userName)       

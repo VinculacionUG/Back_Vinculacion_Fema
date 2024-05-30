@@ -98,9 +98,8 @@ namespace Back_Vinculacion_Fema.Controllers
                     NombreUsuario = usuarioPersona.NombreUsuario,
                     Correo = usuarioPersona.Correo,
                     Clave = usuarioPersona.Clave,
-                    Token = usuarioPersona.Token,
                     id_rol = usuarioPersona.id_rol,
-                    id_estado = usuarioPersona.id_rol
+                    id_estado = usuarioPersona.id_estado
                 };
 
                 _context.TblFemaUsuarios.Add(usuario);
@@ -116,8 +115,7 @@ namespace Back_Vinculacion_Fema.Controllers
                     FechaNacimiento = usuarioPersona.FechaNacimiento,
                     Direccion = usuarioPersona.Direccion,
                     Sexo = usuarioPersona.Sexo, 
-                    Contacto = usuarioPersona.Contacto, 
-                    //Estado = usuarioPersona.Estado                  
+                    Contacto = usuarioPersona.Contacto               
                     };
 
                 _context.TblFemaPersonas.Add(persona);
@@ -125,7 +123,7 @@ namespace Back_Vinculacion_Fema.Controllers
 
                 await transaction.CommitAsync();
 
-                return Ok(Token.GenerarToken(usuario.NombreUsuario));
+                return Ok(Token.GenerarToken(usuario.NombreUsuario, persona.Nombre, persona.Apellido, usuario.id_rol, usuario.id_estado));
             }
             catch (DbUpdateException ex)
             {
@@ -155,39 +153,6 @@ namespace Back_Vinculacion_Fema.Controllers
             }
         }
 
-        /*[HttpPost("CrearUsuario")]
-
-        [HttpPost("CrearUsuario")]  
-
-        public async Task<ActionResult> RegisterUser(RegisterUserRequest request)
-        {
-            using var transaction = await _context.Database.BeginTransactionAsync();
-
-            try
-            {
-                User usuarioLogic = new User(_context);
-
-                if (await usuarioLogic.ObtenerUsuario(request.UserName))
-                {
-                    return Conflict("El usuario ya existe.");
-                }
-
-                Persona personaLogic = new Persona(_context);
-                await personaLogic.CrearPersona(request);
-                decimal personaId = personaLogic.ObtenerPersonaId(request.Identificacion);
-
-                TblFemaUsuario user = await usuarioLogic.CrearUsuario(request, personaId);
-
-                await transaction.CommitAsync();
-
-                return Ok(Token.GenerarToken(user.UserName));
-            }
-            catch (Exception ex)
-            {
-                await transaction.RollbackAsync();
-                return StatusCode(500, "Error interno del servidor "+ ex);
-            }
-        }*/
 
         [HttpPut("Recuperacion/{_Correo}")]                     
         public async Task<ActionResult> Recovery(String _Correo, String motivo)
@@ -229,6 +194,40 @@ namespace Back_Vinculacion_Fema.Controllers
                 return StatusCode(500, "Error interno del servidor " + ex.Message);
             }
         }
+
+        /*[HttpPost("CrearUsuario")]
+
+        [HttpPost("CrearUsuario")]  
+
+        public async Task<ActionResult> RegisterUser(RegisterUserRequest request)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                User usuarioLogic = new User(_context);
+
+                if (await usuarioLogic.ObtenerUsuario(request.UserName))
+                {
+                    return Conflict("El usuario ya existe.");
+                }
+
+                Persona personaLogic = new Persona(_context);
+                await personaLogic.CrearPersona(request);
+                decimal personaId = personaLogic.ObtenerPersonaId(request.Identificacion);
+
+                TblFemaUsuario user = await usuarioLogic.CrearUsuario(request, personaId);
+
+                await transaction.CommitAsync();
+
+                return Ok(Token.GenerarToken(user.UserName));
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                return StatusCode(500, "Error interno del servidor "+ ex);
+            }
+        }*/
 
         /*[HttpDelete("EliminarUsuario/{UserName}")]
         public async Task<ActionResult> DeleteUser(String UserName)
