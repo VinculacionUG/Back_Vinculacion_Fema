@@ -1,7 +1,9 @@
 ﻿using Back_Vinculacion_Fema.CRUD;
+using Back_Vinculacion_Fema.Interface;
 using Back_Vinculacion_Fema.Models.DbModels;
 using Back_Vinculacion_Fema.Models.RequestModels;
 using Back_Vinculacion_Fema.Models.Utilidades;
+using Back_Vinculacion_Fema.Service;
 using Back_Vinculacion_Fema.Viewmodel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -16,10 +18,12 @@ namespace Back_Vinculacion_Fema.Controllers
     public class UsersController : ControllerBase
     {
         private readonly vinculacionfemaContext _context;
+        private readonly IListarUsuarios _usuarioServicio;
 
-        public UsersController(vinculacionfemaContext context)
+        public UsersController(vinculacionfemaContext context, IListarUsuarios usuarioServicio)
         {
             _context = context;
+            _usuarioServicio = usuarioServicio;
         }
 
 
@@ -98,6 +102,7 @@ namespace Back_Vinculacion_Fema.Controllers
                     NombreUsuario = usuarioPersona.NombreUsuario,
                     Correo = usuarioPersona.Correo,
                     Clave = usuarioPersona.Clave,
+                    Fecha_creacion = DateTime.Now,
                     id_rol = usuarioPersona.id_rol,
                     id_estado = usuarioPersona.id_estado
                 };
@@ -153,6 +158,20 @@ namespace Back_Vinculacion_Fema.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("listarUsuarios")]
+        public async Task<IActionResult> ListarUsuarios()
+        {
+            try
+            {
+                var users = await _usuarioServicio.ConsultarUsuarios();
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Ocurrió un error al obtener los usuarios: {ex.Message}");
+            }
+        }
 
         [HttpPut("Recuperacion/{_Correo}")]                     
         public async Task<ActionResult> Recovery(String _Correo, String motivo)
