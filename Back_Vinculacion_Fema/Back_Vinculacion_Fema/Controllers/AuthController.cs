@@ -18,20 +18,57 @@ namespace Back_Vinculacion_Fema.Controllers
         }
 
         [HttpPost("login")]
-        public IActionResult Authenticate(UserLoginRequest credentials)
+        public IActionResult Authenticate([FromBody] UserLoginRequest credentials)
         {
-            var encryptedPassword = credentials.Password; //Debe consumir el metodo de cifrado
 
+            var encryptedPassword = credentials.Password; //Debe consumir el metodo de cifrado
 
             User usuarioLogic = new User(_contexto);
             var usuario = usuarioLogic.GetUsuarioLogin(credentials.Nombre, encryptedPassword);
 
             if (usuario == null)
             {
-                return Unauthorized();
+                return Unauthorized(new { message = "Usuario o contraseña incorrectos." });
+            }
+            
+            // Obtener datos adicionales del usuario, como el rol y los datos personales.
+            var userInfo = _contexto.TblFemaUsuarios
+                .Where(u => u.NombreUsuario == usuario.NombreUsuario)
+                .Join(_contexto.TblFemaPersonas,
+                      u => u.IdUsuario,
+                      p => p.IdUsuario,
+                      (u, p) => new
+                      {
+                          UserName = u.NombreUsuario,
+                          id_rol = u.id_rol,
+                          id_estado = u.id_estado,
+                          Nombre = p.Nombre,
+                          Apellido = p.Apellido
+                      })
+                .FirstOrDefault();
+
+            if (userInfo == null)
+            {
+                return Unauthorized(new { message = "No se pudo recuperar datos del usuario." });
             }
 
-            return Ok(Token.GenerarToken(usuario.NombreUsuario));
+            var token = Token.GenerarToken(userInfo.UserName, userInfo.Nombre, userInfo.Apellido, userInfo.id_rol, userInfo.id_estado);
+
+            return Ok(new
+            {
+                message = "Login exitoso.",
+                token,
+                userInfo = new
+                {
+                    userInfo.UserName,
+                    userInfo.id_rol,
+                    userInfo.id_estado,
+                    userInfo.Nombre,
+                    userInfo.Apellido
+                }
+            });
+
+            //return Ok(new { token });
         }   
     }
 }
