@@ -12,17 +12,30 @@ namespace Back_Vinculacion_Fema.CRUD
         {
             _context = context;
         }
+
+        public List<TblFemaRoles> ListarRoles()
+        {
+            // Consultar los roles en la base de datos utilizando Entity Framework Core
+            var roles = _context.Tbl_Fema_Roles.ToList();
+
+            // Si prefieres utilizar una consulta LINQ explícita, puedes hacerlo así:
+            // var roles = _contexto.Roles.Select(r => new Rol { id_rol = r.id_rol, descripcion = r.descripcion }).ToList();
+            return roles;
+        }
+
+        /*
         public async Task<bool> ObtenerUsuario(string userName)
         {
             return await _context.TblFemaUsuarios.AnyAsync(u => u.UserName == userName);
-        }
+        }*/
+
 
         public async Task<String> ObtenerUsuarioConCorreo(string correo)
         {
             var usuario =  await _context.TblFemaUsuarios.FirstOrDefaultAsync(u => u.Correo == correo);
             if (usuario != null)
             {
-                return usuario.UserName;
+                return usuario.NombreUsuario;
             }
             else
             {
@@ -32,15 +45,20 @@ namespace Back_Vinculacion_Fema.CRUD
 
         public async Task<bool> ActualizarClave(string userName, string claveNueva)
         {
-            var usuario = await _context.TblFemaUsuarios.FirstOrDefaultAsync(u => u.UserName == userName);
+            var usuario = await _context.TblFemaUsuarios.FirstOrDefaultAsync(u => u.NombreUsuario == userName);
                 usuario.Clave = claveNueva;
-                usuario.ClaveTmp = claveNueva;
+
+                //Solicitar que se agregue campo a la tabla de la BD
+                //Agregar al contexto
+                //Agregar al modelo ya que es necesario para recuperación de contraseña
+
+                //usuario.ClaveTmp = claveNueva;
             _context.TblFemaUsuarios.Update(usuario);
             await _context.SaveChangesAsync();
             return true;
         }
 
-        public async Task<decimal> ObtenerIdPersonaConElUsuario(string userName)
+        /*public async Task<decimal> ObtenerIdPersonaConElUsuario(string userName)
         {
             var usuario = await _context.TblFemaUsuarios
                 .FirstOrDefaultAsync(u => u.UserName == userName);
@@ -53,12 +71,13 @@ namespace Back_Vinculacion_Fema.CRUD
             {
                 return (0);
             }
-        }
+        }*/
 
         public async Task<bool> EliminarUsuario(string userName)
-        {//Previa verificación de la existencia del usuario se procede a eliminarlo de la BD
+        {
+            //Previa verificación de la existencia del usuario se procede a eliminarlo de la BD
             var usuario = await _context.TblFemaUsuarios
-                .FirstOrDefaultAsync(u => u.UserName == userName);
+                .FirstOrDefaultAsync(u => u.NombreUsuario == userName);
             _context.TblFemaUsuarios.Remove(usuario);
             await _context.SaveChangesAsync();
             return true;
@@ -67,10 +86,10 @@ namespace Back_Vinculacion_Fema.CRUD
 
         public TblFemaUsuario? GetUsuarioLogin(string userName, string encryptedPassword)
         {
-            return _context.TblFemaUsuarios.FirstOrDefault(u => u.Estado == true && u.UserName == userName && u.Clave == encryptedPassword);
+            return _context.TblFemaUsuarios.FirstOrDefault(u => u.id_estado == 1 && u.NombreUsuario == userName && u.Clave == encryptedPassword);
         }
 
-        public async Task<TblFemaUsuario> CrearUsuario(RegisterUserRequest request, decimal idPersona)
+        /*public async Task<TblFemaUsuario> CrearUsuario(RegisterUserRequest request, decimal idPersona)
         {
             try
             {
@@ -97,7 +116,9 @@ namespace Back_Vinculacion_Fema.CRUD
             {
                 throw new Exception("Error al crear el usuario", ex);
             }
-        }
+        }*/
+
+       
 
 
     }

@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\DbModels\" />
+    <Folder Include="Service\" />
   </ItemGroup>
 
 </Project>

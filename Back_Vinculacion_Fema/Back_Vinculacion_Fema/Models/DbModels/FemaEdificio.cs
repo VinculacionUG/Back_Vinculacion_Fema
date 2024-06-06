@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Back_Vinculacion_Fema.Models.DbModels
 {
     public partial class FemaEdificio
     {
+        [Key]
         public int CodSecuencia { get; set; }
         public int? CodFema { get; set; }
         public int? NroPisosSup { get; set; }
