@@ -18,14 +18,15 @@ namespace Back_Vinculacion_Fema.Controllers
     public class UsersController : ControllerBase
     {
         private readonly vinculacionfemaContext _context;
-        private readonly IListarUsuarios _usuarioServicio;
+        private readonly IListarUsuariosSuper _usuarioServicio;
+        private readonly IDetalleUsuarioSuper _detailSuper;
 
-        public UsersController(vinculacionfemaContext context, IListarUsuarios usuarioServicio)
+        public UsersController(vinculacionfemaContext context, IListarUsuariosSuper usuarioServicio, IDetalleUsuarioSuper detailSuper)
         {
             _context = context;
             _usuarioServicio = usuarioServicio;
+            _detailSuper = detailSuper;
         }
-
 
         [HttpGet]
         [Route("listarRoles")]
@@ -117,7 +118,7 @@ namespace Back_Vinculacion_Fema.Controllers
                     TipoIdentificacion = usuarioPersona.TipoIdentificacion,
                     Nombre = usuarioPersona.Nombre,
                     Apellido = usuarioPersona.Apellido,
-                    FechaNacimiento = usuarioPersona.FechaNacimiento,
+                    FechaNacimiento = (DateTime)usuarioPersona.FechaNacimiento,
                     Direccion = usuarioPersona.Direccion,
                     Sexo = usuarioPersona.Sexo, 
                     Contacto = usuarioPersona.Contacto               
@@ -159,17 +160,36 @@ namespace Back_Vinculacion_Fema.Controllers
         }
 
         [HttpGet]
-        [Route("listarUsuarios")]
-        public async Task<IActionResult> ListarUsuarios()
+        [Route("listarUsuariosSupervisor")]
+        public async Task<IActionResult> ListarUsuariosSupervisor()
         {
             try
             {
-                var users = await _usuarioServicio.ConsultarUsuarios();
+                var users = await _usuarioServicio.ConsultarUsuariosSupervisor();
                 return Ok(users);
             }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Ocurrió un error al obtener los usuarios: {ex.Message}");
+            }
+        }
+
+        [HttpGet]
+        [Route("consultarDetallesSuper/{idUsuario}")]
+        public async Task<IActionResult> ConsultarDetallesSuper(int idUsuario)
+        {
+            try
+            {
+                var userDetails = await _detailSuper.DetallesUsuariosSupervisor (idUsuario);
+                if (userDetails == null)
+                {
+                    return NotFound($"No se encontró un usuario con el ID {idUsuario}");
+                }
+                return Ok(userDetails);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Ocurrió un error al obtener los detalles del usuario: {ex.Message}");
             }
         }
 
