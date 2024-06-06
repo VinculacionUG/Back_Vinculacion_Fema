@@ -12,7 +12,7 @@ namespace Back_Vinculacion_Fema.Models.DbModels
         }*/
 
         [Key]
-        public int CodTipoSuelo { get; set; }
+        public short CodTipoSuelo { get; set; }
         public string ? Descripcion { get; set; }
         public string ? Estado { get; set; }
 

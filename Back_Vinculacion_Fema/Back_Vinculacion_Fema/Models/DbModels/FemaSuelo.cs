@@ -11,7 +11,7 @@ namespace Back_Vinculacion_Fema.Models.DbModels
         //Clave foránea de la tabla FEMA
         public int ? CodFema { get; set; }
         //Clave foránea de la tabla TIPO_SUELO
-        public int ? CodTipoSuelo { get; set; }
+        public short ? CodTipoSuelo { get; set; }
         public string ? AsumirTipo { get; set; }
         public string ? RiesgoGeologico { get; set; }
         public string ? Adyacencia { get; set; }

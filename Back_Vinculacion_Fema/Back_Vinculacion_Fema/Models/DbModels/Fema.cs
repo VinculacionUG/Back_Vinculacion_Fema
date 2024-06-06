@@ -24,7 +24,7 @@ namespace Back_Vinculacion_Fema.Models.DbModels
         public string? CodigoPostal { get; set; }
         public string? OtrosIdentificadores { get; set; }
         public string? NomEdificacion { get; set; }
-        public string? UsoEdificacion { get; set; }
+        public short? UsoEdificacion { get; set; }
         public string? Latitud { get; set; }
         public string? Longitud { get; set; }
         public string? NomEncuestador { get; set; }
@@ -38,6 +38,8 @@ namespace Back_Vinculacion_Fema.Models.DbModels
         public DateTime? FecIngreso { get; set; }
         public int? CodUsuarioAct { get; set; }
         public DateTime? FecActualiza { get; set; }
+
+        public bool Estado {  get; set; }
 
         public virtual ICollection<FemaEdificio> FemaEdificios { get; set; }
         public virtual ICollection<FemaEvalEstructuradum> FemaEvalEstructurada { get; set; }
