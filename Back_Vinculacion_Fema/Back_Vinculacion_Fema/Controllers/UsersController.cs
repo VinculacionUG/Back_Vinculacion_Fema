@@ -20,12 +20,15 @@ namespace Back_Vinculacion_Fema.Controllers
         private readonly vinculacionfemaContext _context;
         private readonly IListarUsuariosSuper _usuarioServicio;
         private readonly IDetalleUsuarioSuper _detailSuper;
+        private readonly IListarUsuariosInsp _inspectorServicio;
 
-        public UsersController(vinculacionfemaContext context, IListarUsuariosSuper usuarioServicio, IDetalleUsuarioSuper detailSuper)
+        public UsersController(vinculacionfemaContext context, IListarUsuariosSuper usuarioServicio, 
+                               IDetalleUsuarioSuper detailSuper, IListarUsuariosInsp inspectorServicio)
         {
             _context = context;
             _usuarioServicio = usuarioServicio;
             _detailSuper = detailSuper;
+            _inspectorServicio = inspectorServicio;
         }
 
         [HttpGet]
@@ -190,6 +193,21 @@ namespace Back_Vinculacion_Fema.Controllers
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Ocurrió un error al obtener los detalles del usuario: {ex.Message}");
+            }
+        }
+
+        [HttpGet]
+        [Route("listarUsuariosInspector")]
+        public async Task<IActionResult> ListarUsuariosInspector()
+        {
+            try
+            {
+                var users = await _inspectorServicio.ConsultarUsuariosInspector();
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Ocurrió un error al obtener los usuarios: {ex.Message}");
             }
         }
 

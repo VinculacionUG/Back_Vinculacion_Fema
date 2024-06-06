@@ -27,6 +27,7 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectio
 builder.Services.AddScoped<IFemaDos, FemaDos>(); 
 builder.Services.AddScoped<IListarUsuariosSuper, UserSuperService>();
 builder.Services.AddScoped<IDetalleUsuarioSuper, DetalleSuperService>();
+builder.Services.AddScoped<IListarUsuariosInsp, UserInspService>();
 
 builder.Services.AddControllers();
 
