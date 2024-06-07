@@ -4,14 +4,14 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Back_Vinculacion_Fema.Models.DbModels
 {
-    public partial class TblFemaRoles
+    public partial class Tbl_Fema_Roles
     {
 
-        /*public TblFemaRoles()
+        /*public Tbl_Fema_Roles()
         {
             TblFemaMenuUsuarios = new HashSet<TblFemaMenuUsuario>();
             TblFemaOpcionesRoles = new HashSet<TblFemaOpcionesRole>();
-            TblFemaRolesUsuarios = new HashSet<TblFemaRolesUsuario>();
+            Tbl_Fema_RolesUsuarios = new HashSet<Tbl_Fema_RolesUsuario>();
         }*/
 
         [Key]
@@ -24,7 +24,7 @@ namespace Back_Vinculacion_Fema.Models.DbModels
         /*
         public virtual ICollection<TblFemaMenuUsuario> TblFemaMenuUsuarios { get; set; }
         public virtual ICollection<TblFemaOpcionesRole> TblFemaOpcionesRoles { get; set; }
-        public virtual ICollection<TblFemaRolesUsuario> TblFemaRolesUsuarios { get; set; }
+        public virtual ICollection<Tbl_Fema_RolesUsuario> Tbl_Fema_RolesUsuarios { get; set; }
         */
     }
 }

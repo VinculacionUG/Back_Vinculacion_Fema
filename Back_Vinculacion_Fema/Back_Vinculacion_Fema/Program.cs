@@ -24,7 +24,9 @@ builder.Services.AddDbContext<vinculacionfemaContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionTest")));
 #endregion
 
-builder.Services.AddScoped<IFemaDos, FemaDos>(); 
+builder.Services.AddScoped<IFemaDos, FemaDos>()
+    .AddScoped<IFema, FemaService>()
+    ; 
 builder.Services.AddScoped<IListarUsuariosSuper, UserSuperService>();
 builder.Services.AddScoped<IDetalleUsuarioSuper, DetalleSuperService>();
 builder.Services.AddScoped<IListarUsuariosInsp, UserInspService>();

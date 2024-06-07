@@ -85,20 +85,20 @@ namespace Back_Vinculacion_Fema.Controllers
                 }
 
                 // Validación para evitar usuarios duplicados
-                var usuarioExiste = await _context.TblFemaUsuarios.FirstOrDefaultAsync(u => u.NombreUsuario == usuarioPersona.NombreUsuario);
+                var usuarioExiste = await _context.Tbl_Fema_Usuarios.FirstOrDefaultAsync(u => u.NombreUsuario == usuarioPersona.NombreUsuario);
                 if (usuarioExiste != null)
                 {
                     return Conflict("El nombre de usuario ya existe.");
                 }
 
                 // Validación para evitar correos duplicados
-                var correoExiste = await _context.TblFemaUsuarios.FirstOrDefaultAsync(u => u.Correo == usuarioPersona.Correo);
+                var correoExiste = await _context.Tbl_Fema_Usuarios.FirstOrDefaultAsync(u => u.Correo == usuarioPersona.Correo);
                 if (correoExiste != null)
                 {
                     return Conflict("El correo ya se encuentra registrado para otro usuario.");
                 }
 
-                var personaExiste = await _context.TblFemaPersonas.FirstOrDefaultAsync(p => p.Identificacion == usuarioPersona.Identificacion);
+                var personaExiste = await _context.Tbl_Fema_Personas.FirstOrDefaultAsync(p => p.Identificacion == usuarioPersona.Identificacion);
                 if (personaExiste != null)
                 {
                     return Conflict("Ya existe una persona registrada con este numero de identificacion");
@@ -112,9 +112,10 @@ namespace Back_Vinculacion_Fema.Controllers
                     Fecha_creacion = DateTime.Now,
                     id_rol = usuarioPersona.id_rol,
                     id_estado = usuarioPersona.id_estado
+                    
                 };
 
-                _context.TblFemaUsuarios.Add(usuario);
+                _context.Tbl_Fema_Usuarios.Add(usuario);
                 await _context.SaveChangesAsync();
                 
                 var persona = new TblFemaPersona
@@ -127,15 +128,16 @@ namespace Back_Vinculacion_Fema.Controllers
                     FechaNacimiento = (DateTime)usuarioPersona.FechaNacimiento,
                     Direccion = usuarioPersona.Direccion,
                     Sexo = usuarioPersona.Sexo, 
-                    Contacto = usuarioPersona.Contacto               
+                    Contacto = usuarioPersona.Contacto,
+                    Correo = usuarioPersona.Correo
                     };
 
-                _context.TblFemaPersonas.Add(persona);
+                _context.Tbl_Fema_Personas.Add(persona);
                 await _context.SaveChangesAsync();
 
                 await transaction.CommitAsync();
 
-                return Ok(Token.GenerarToken(usuario.NombreUsuario, persona.Nombre, persona.Apellido, usuario.id_rol, usuario.id_estado));
+                return Ok(Token.GenerarToken(usuario.NombreUsuario, persona.Nombre, persona.Apellido, (short)usuario.id_rol, usuario.id_estado));
             }
             catch (DbUpdateException ex)
             {

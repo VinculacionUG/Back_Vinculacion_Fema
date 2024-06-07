@@ -3,14 +3,14 @@ using System.Collections.Generic;
 
 namespace Back_Vinculacion_Fema.Models.DbModels
 {
-    public partial class Ocupacion
+    public partial class TipoOcupacion
     {
-        public Ocupacion()
+        public TipoOcupacion()
         {
             FemaOcupacions = new HashSet<FemaOcupacion>();
         }
 
-        public short CodOcupacion { get; set; }
+        public short CodTipoOcupacion { get; set; }
         public string descripcion { get; set; } = null!;
         public bool Estado { get; set; }
 

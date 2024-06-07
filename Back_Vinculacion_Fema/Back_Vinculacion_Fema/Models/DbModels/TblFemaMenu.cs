@@ -12,7 +12,7 @@ namespace Back_Vinculacion_Fema.Models.DbModels
 
         public int IdMenu { get; set; }
         public int? IdModulo { get; set; }
-        public string? Descripcion { get; set; }
+        public string? descripcion { get; set; }
         public string? Accion { get; set; }
         public string? Icono { get; set; }
 

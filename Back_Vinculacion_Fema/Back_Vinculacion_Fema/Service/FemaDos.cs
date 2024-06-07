@@ -17,11 +17,11 @@ namespace Back_Vinculacion_Fema.Service
         //Lógica para obtener datos desde la base
         public async Task<IEnumerable<TipoSuelo>> ConsultarTipoSuelo()
         {
-            return await _contexto.TipoSuelos
+            return await _contexto.Tipo_Suelos
                 .Select(t => new TipoSuelo
                 {
                     CodTipoSuelo = t.CodTipoSuelo,
-                    Descripcion = t.Descripcion,
+                    descripcion = t.descripcion,
                     Estado = t.Estado
                 })
                 .ToListAsync();
@@ -29,11 +29,11 @@ namespace Back_Vinculacion_Fema.Service
 
         public async Task<IEnumerable<Ocupacion>> ConsultarOcupacion()
         {
-            return await _contexto.Ocupacion
+            return await _contexto.Ocupacions
                 .Select(t => new Ocupacion
                 {
                     CodOcupacion = t.CodOcupacion,
-                    Descripcion = t.Descripcion,
+                    descripcion = t.descripcion,
                     Estado= t.Estado
                 })
                 .ToListAsync();

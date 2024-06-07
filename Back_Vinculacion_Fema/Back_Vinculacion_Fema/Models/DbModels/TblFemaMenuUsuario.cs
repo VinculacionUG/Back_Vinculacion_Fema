@@ -8,10 +8,10 @@ namespace Back_Vinculacion_Fema.Models.DbModels
         public int IdMu { get; set; }
         public decimal IdUsuario { get; set; }
         public int? IdModulo { get; set; }
-        public decimal IdRol { get; set; }
+        public decimal id_rol { get; set; }
         public bool Estado { get; set; }
 
         public virtual TblFemaModulo? IdModuloNavigation { get; set; }
-        public virtual TblFemaRoles IdRolNavigation { get; set; } = null!;
+        public virtual Tbl_Fema_Roles id_rolNavigation { get; set; } = null!;
     }
 }

@@ -32,9 +32,9 @@ namespace Back_Vinculacion_Fema.Controllers
             }
             
             // Obtener datos adicionales del usuario, como el rol y los datos personales.
-            var userInfo = _contexto.TblFemaUsuarios
+            var userInfo = _contexto.Tbl_Fema_Usuarios
                 .Where(u => u.NombreUsuario == usuario.NombreUsuario)
-                .Join(_contexto.TblFemaPersonas,
+                .Join(_contexto.Tbl_Fema_Personas,
                       u => u.IdUsuario,
                       p => p.IdUsuario,
                       (u, p) => new
@@ -52,7 +52,7 @@ namespace Back_Vinculacion_Fema.Controllers
                 return Unauthorized(new { message = "No se pudo recuperar datos del usuario." });
             }
 
-            var token = Token.GenerarToken(userInfo.UserName, userInfo.Nombre, userInfo.Apellido, userInfo.id_rol, userInfo.id_estado);
+            var token = Token.GenerarToken(userInfo.UserName, userInfo.Nombre, userInfo.Apellido, (short)userInfo.id_rol, userInfo.id_estado);
 
             return Ok(new
             {

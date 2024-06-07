@@ -15,10 +15,10 @@ namespace Back_Vinculacion_Fema.Service
         }
         public async Task<DetalleSupervisorVM> DetallesUsuariosSupervisor(int idUsuario)
         {
-            var query = from us in _contexto.TblFemaUsuarios
+            var query = from us in _contexto.Tbl_Fema_Usuarios
                         join r in _contexto.Tbl_Fema_Roles on us.id_rol equals r.id_rol
-                        join e in _contexto.Estado on us.id_estado equals e.id_estado
-                        join pr in _contexto.TblFemaPersonas on us.IdUsuario equals pr.IdUsuario
+                        join e in _contexto.Estados on us.id_estado equals e.id_estado
+                        join pr in _contexto.Tbl_Fema_Personas on us.IdUsuario equals pr.IdUsuario
                         where us.IdUsuario == idUsuario //Usuario recibido del front
                         select new DetalleSupervisorVM
                         {

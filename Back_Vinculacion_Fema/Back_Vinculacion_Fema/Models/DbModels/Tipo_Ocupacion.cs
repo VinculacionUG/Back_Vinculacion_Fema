@@ -14,7 +14,7 @@ public class TipoOcupacion
     }
     [Key]
     public short CodTipoOcupacion { get; set; } // Clave primaria
-    public string? Descripcion { get; set; }
+    public string? descripcion { get; set; }
     public bool Estado { get; set; }
 
     // Propiedad de navegación
