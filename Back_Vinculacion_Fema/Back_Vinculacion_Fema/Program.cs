@@ -1,6 +1,8 @@
 
+using Back_Vinculacion_Fema.Interface;
 using Back_Vinculacion_Fema.Models.DbModels;
 using Back_Vinculacion_Fema.Models.Utilidades;
+using Back_Vinculacion_Fema.Service;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -27,6 +29,11 @@ builder.Services.AddDbContext<vinculacionfemaContext>(options =>
 //options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionTest")));
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 #endregion
+
+builder.Services.AddScoped<IFemaDos, FemaDos>(); 
+builder.Services.AddScoped<IListarUsuarios, UsuariosService>();
+
+builder.Services.AddControllers();
 
 #region JWT services
 builder.Services.AddAuthorization();

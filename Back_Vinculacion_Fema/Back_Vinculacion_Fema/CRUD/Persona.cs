@@ -16,7 +16,7 @@ namespace Back_Vinculacion_Fema.CRUD
 
 
 
-        public TblFemaPersona? ObtenerPersona(string identificacion)
+      public TblFemaPersona? ObtenerPersona(string identificacion)
         {
             return _context.TblFemaPersonas.FirstOrDefault(u => u.Identificacion == identificacion);
         }
@@ -26,7 +26,7 @@ namespace Back_Vinculacion_Fema.CRUD
             return ObtenerPersona(identificacion).IdPersona;
         }
 
-        public async Task CrearPersona(RegisterUserRequest request)
+        /*public async Task CrearPersona(RegisterUserRequest request)
         {
             try
             {
@@ -55,7 +55,7 @@ namespace Back_Vinculacion_Fema.CRUD
             {
                 throw new Exception("Error al crear la persona", ex);
             }
-        }
+        }*/
 
         public async Task<bool> EliminarPersona(decimal idPersona)
         {
@@ -64,5 +64,6 @@ namespace Back_Vinculacion_Fema.CRUD
             await _context.SaveChangesAsync();
             return true;
         }
+
     }
 }
