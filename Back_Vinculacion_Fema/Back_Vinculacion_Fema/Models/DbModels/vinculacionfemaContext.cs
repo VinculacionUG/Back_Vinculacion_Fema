@@ -24,7 +24,7 @@ namespace Back_Vinculacion_Fema.Models.DbModels
         public virtual DbSet<FemaOtrosPeligro> FemaOtrosPeligros { get; set; } = null!;
         public virtual DbSet<FemaPuntuacion> FemaPuntuacions { get; set; } = null!;
         public virtual DbSet<FemaSuelo> FemaSuelos { get; set; } = null!;
-        public virtual DbSet<Ocupacion> Ocupacions { get; set; } = null!;
+        public virtual DbSet<Ocupacion> Ocupacion { get; set; } = null!;
         //public virtual DbSet<TblFemaItem> TblFemaItems { get; set; } = null!;
         //public virtual DbSet<TblFemaMenu> TblFemaMenus { get; set; } = null!;
         //public virtual DbSet<TblFemaMenuUsuario> TblFemaMenuUsuarios { get; set; } = null!;
@@ -822,259 +822,62 @@ namespace Back_Vinculacion_Fema.Models.DbModels
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_OpcionesRoles_Roles");
             });*/
-
-            modelBuilder.Entity<TblFemaPersona>(entity =>
-            {
-                entity.HasKey(e => e.IdPersona)
-                    .HasName("PK_Personas");
-
-                entity.ToTable("Tbl_Fema_Personas");
-
-                entity.Property(e => e.IdPersona)
-                    .HasColumnType("numeric(10, 0)")
-                    .ValueGeneratedOnAdd();
-
-                entity.Property(e => e.Apellido1)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Apellido2)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Contacto)
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Correo)
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Direccion)
-                    .HasMaxLength(200)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Estado).HasDefaultValueSql("((1))");
-
-                entity.Property(e => e.FechaNacimiento).HasColumnType("datetime");
-
-                entity.Property(e => e.IdTipo).HasColumnType("numeric(10, 0)");
-
-                entity.Property(e => e.Identificacion)
-                    .HasMaxLength(13)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Nombre1)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Nombre2)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Sexo)
-                    .HasMaxLength(2)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.TipoIdentificacion)
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-            });
-
-            modelBuilder.Entity<TblFemaRoles>(entity =>
-            {
-                entity.HasKey(e => e.id_rol)
-                    .HasName("id_rol");
-
-                entity.ToTable("Tbl_Fema_Roles");
-
-                entity.Property(e => e.id_rol)
-                    .HasColumnName("id_rol")
-                    .ValueGeneratedOnAdd();
-
-                entity.Property(e => e.descripcion)
-                    .HasMaxLength(100)
-                    .IsUnicode(false)
-                    .HasColumnName("descripcion");
-
-                entity.Property(e => e.fecha_creacion)
-                    .HasColumnType("datetime")
-                    .HasColumnName("fecha_creacion");
-
-            });
-
-
-            /*modelBuilder.Entity<TblFemaRolesUsuario>(entity =>
-           {
-               entity.HasKey(e => new { e.IdRol, e.IdUsuario })
-                   .HasName("PK_Roles_Usuarios");
-
-               entity.ToTable("Tbl_Fema_RolesUsuarios");
-
-               entity.Property(e => e.IdRol).HasColumnType("numeric(10, 0)");
-
-               entity.Property(e => e.IdUsuario).HasColumnType("numeric(10, 0)");
-
-               entity.Property(e => e.FechaValides).HasColumnType("datetime");
-
-               entity.HasOne(d => d.IdRolNavigation)
-                   .WithMany(p => p.TblFemaRolesUsuarios)
-                   .HasForeignKey(d => d.IdRol)
-                   .OnDelete(DeleteBehavior.ClientSetNull)
-                   .HasConstraintName("FK_Roles_Usuarios_Roles");
-
-               entity.HasOne(d => d.IdUsuarioNavigation)
-                   .WithMany(p => p.TblFemaRolesUsuarios)
-                   .HasForeignKey(d => d.IdUsuario)
-                   .OnDelete(DeleteBehavior.ClientSetNull)
-                   .HasConstraintName("FK_Roles_Usuarios");
-           });*/
-
-            /*modelBuilder.Entity<TblFemaSubMenu>(entity =>
-            {
-                entity.HasKey(e => e.SubMenuId)
-                    .HasName("PK__Tbl_Fema__EA065C1985CBFB4E");
-
-                entity.ToTable("Tbl_Fema_SubMenu");
-
-                entity.Property(e => e.SubMenuId)
-                    .ValueGeneratedNever()
-                    .HasColumnName("SubMenuID");
-
-                entity.Property(e => e.Descripcion).HasMaxLength(100);
-
-                entity.Property(e => e.Icono).HasMaxLength(100);
-
-                entity.HasOne(d => d.IdMenuNavigation)
-                    .WithMany(p => p.TblFemaSubMenus)
-                    .HasForeignKey(d => d.IdMenu)
-                    .HasConstraintName("FK__Tbl_Fema___IdMen__60A75C0F");
-            });*/
-
-            modelBuilder.Entity<TblFemaUsuario>(entity =>
-            {
-                entity.HasKey(e => e.IdUsuario)
-                    .HasName("IdUsuario");
-
-                entity.ToTable("Tbl_Fema_Usuarios");
-
-                entity.Property(e => e.IdUsuario)
-                    .HasColumnName("IdUsuario")
-                    .ValueGeneratedOnAdd();
-
-                entity.Property(e => e.NombreUsuario)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Correo)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Clave).HasMaxLength(500);
-
-                entity.Property(e => e.Token).HasMaxLength(500);
-
-                entity.Property(e => e.id_rol)
-                    .HasColumnName("id_rol");
-
-                entity.Property(e => e.Fecha_creacion)
-                    .HasColumnType("datetime")
-                    .HasColumnName("Fecha_creacion");
-
-                entity.Property(e => e.Fecha_modificacion)
-                    .HasColumnType("datetime")
-                    .HasColumnName("Fecha_modificacion");
-
-                entity.Property(e => e.id_estado)
-                    .HasColumnName("id_estado");
-
-                //entity.Property(e => e.IdPersona).HasColumnType("numeric(10, 0)");
-
-                /*entity.Property(e => e.Modulo)
-                    .HasMaxLength(100)
-                    .IsUnicode(false);*/
-
-                /*entity.HasOne(d => d.IdPersonaNavigation)
-                    .WithMany(p => p.TblFemaUsuarios)
-                    .HasForeignKey(d => d.IdPersona)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Usuario_Persona");*/
-            });
-
-            modelBuilder.Entity<TipoEdificacion>(entity =>
-            {
-                entity.HasKey(e => e.CodTipoEdificacion);
-
-                entity.ToTable("TIPO_EDIFICACION");
-
-                entity.Property(e => e.CodTipoEdificacion)
-                    .ValueGeneratedNever()
-                    .HasColumnName("cod_tipo_edificacion");
-
-                entity.Property(e => e.Descripcion)
-                    .HasMaxLength(100)
-                    .IsUnicode(false)
-                    .HasColumnName("descripcion");
-
-                entity.Property(e => e.Estado)
-                    .HasMaxLength(2)
-                    .IsUnicode(false)
-                    .HasColumnName("estado")
-                    .IsFixedLength();
-            });
-
-            modelBuilder.Entity<TipoPuntuacion>(entity =>
-            {
-                entity.HasKey(e => e.CodTipoPuntuacion);
-
-                entity.ToTable("TIPO_PUNTUACION");
-
-                entity.Property(e => e.CodTipoPuntuacion)
-                    .ValueGeneratedNever()
-                    .HasColumnName("cod_tipo_puntuacion");
-
-                entity.Property(e => e.Descripcion)
-                    .HasMaxLength(4)
-                    .IsUnicode(false)
-                    .HasColumnName("descripcion");
-
-                entity.Property(e => e.Estado)
-                    .HasMaxLength(2)
-                    .IsUnicode(false)
-                    .HasColumnName("estado")
-                    .IsFixedLength();
-            });
-
-            modelBuilder.Entity<TipoSuelo>(entity =>
-            {
-                entity.HasKey(e => e.CodTipoSuelo);
-
-                entity.ToTable("TIPO_SUELO");
-
-                entity.Property(e => e.CodTipoSuelo) 
-                    .ValueGeneratedNever()
-                    .HasColumnName("cod_tipo_suelo");
-
-                entity.Property(e => e.Descripcion)
-                    .HasMaxLength(100)
-                    .IsUnicode(false)
-                    .HasColumnName("descripcion");
-
-                entity.Property(e => e.Estado)
-                    .HasMaxLength(2)
-                    .IsUnicode(false)
-                    .HasColumnName("estado")
-                    .IsFixedLength();
-            });
-
-            OnModelCreatingPartial(modelBuilder);
         }
+
+        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+
+        /*modelBuilder.Entity<TblFemaRolesUsuario>(entity =>
+       {
+           entity.HasKey(e => new { e.IdRol, e.IdUsuario })
+               .HasName("PK_Roles_Usuarios");
+
+           entity.ToTable("Tbl_Fema_RolesUsuarios");
+
+           entity.Property(e => e.IdRol).HasColumnType("numeric(10, 0)");
+
+           entity.Property(e => e.IdUsuario).HasColumnType("numeric(10, 0)");
+
+           entity.Property(e => e.FechaValides).HasColumnType("datetime");
+
+           entity.HasOne(d => d.IdRolNavigation)
+               .WithMany(p => p.TblFemaRolesUsuarios)
+               .HasForeignKey(d => d.IdRol)
+               .OnDelete(DeleteBehavior.ClientSetNull)
+               .HasConstraintName("FK_Roles_Usuarios_Roles");
+
+           entity.HasOne(d => d.IdUsuarioNavigation)
+               .WithMany(p => p.TblFemaRolesUsuarios)
+               .HasForeignKey(d => d.IdUsuario)
+               .OnDelete(DeleteBehavior.ClientSetNull)
+               .HasConstraintName("FK_Roles_Usuarios");
+       });*/
+
+        /*modelBuilder.Entity<TblFemaSubMenu>(entity =>
+        {
+            entity.HasKey(e => e.SubMenuId)
+                .HasName("PK__Tbl_Fema__EA065C1985CBFB4E");
+
+            entity.ToTable("Tbl_Fema_SubMenu");
+
+            entity.Property(e => e.SubMenuId)
+                .ValueGeneratedNever()
+                .HasColumnName("SubMenuID");
+
+            entity.Property(e => e.Descripcion).HasMaxLength(100);
+
+            entity.Property(e => e.Icono).HasMaxLength(100);
+
+            entity.HasOne(d => d.IdMenuNavigation)
+                .WithMany(p => p.TblFemaSubMenus)
+                .HasForeignKey(d => d.IdMenu)
+                .HasConstraintName("FK__Tbl_Fema___IdMen__60A75C0F");
+        });*/
 
         /*internal async Task SaveChangesAsync()
         {
             throw new NotImplementedException();
         }*/
 
-        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+
     }
 }
