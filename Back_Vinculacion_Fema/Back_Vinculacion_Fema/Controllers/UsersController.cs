@@ -1,14 +1,12 @@
 ﻿using Back_Vinculacion_Fema.CRUD;
 using Back_Vinculacion_Fema.Interface;
 using Back_Vinculacion_Fema.Models.DbModels;
-using Back_Vinculacion_Fema.Models.DTOs;
 using Back_Vinculacion_Fema.Models.RequestModels;
 using Back_Vinculacion_Fema.Models.Utilidades;
 using Back_Vinculacion_Fema.Service;
 using Back_Vinculacion_Fema.Viewmodel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 using System.Text;
@@ -19,7 +17,6 @@ namespace Back_Vinculacion_Fema.Controllers
     [Route("[controller]")]
     public class UsersController : ControllerBase
     {
-
         private readonly vinculacionfemaContext _context;
         private readonly IListarUsuarios _usuarioServicio;
 
@@ -459,172 +456,6 @@ namespace Back_Vinculacion_Fema.Controllers
             }
         }*/
 
-
-        [HttpPost]
-        [Route("ActualizarContraseña")]
-        public async Task<IActionResult> ActualizarContraseña(string usuario, string contraseñaActual, string nuevaContraseña)
-        {
-            try
-            {
-                //Aquí buscamos al usuario en la BD
-                //Se cambio la intercalación de la columna NombreUsuario de la tabla Tbl_Fema_Usuarios
-                //Debido a que no era sencible a mayusculas y minisculas, se cambio de Modern_Spanish_CI_AS a Modern_Spanish_CS_AS
-                var usuarioEncontrado = await _context.TblFemaUsuarios.FirstOrDefaultAsync(u => u.NombreUsuario == usuario);
-                
-                if(usuarioEncontrado != null)
-                {
-                    //Se comprueba que la contraseña actual sea correcta
-                    if (usuarioEncontrado.Clave != contraseñaActual)
-                    {
-                        return BadRequest("La contraseña actual es incorrecta");
-                    }
-
-                    usuarioEncontrado.Clave = nuevaContraseña;
-
-                    _context.TblFemaUsuarios.Update(usuarioEncontrado);
-                    await _context.SaveChangesAsync();
-
-                    return Ok("Contraseña actualizada exitosamente!");
-                }
-                else
-                {
-                    return NotFound("Usuario no encontrado");
-                }
-            }
-            catch(Exception ex)
-            {
-                return StatusCode(500, $"Error interno del servidor: {ex.Message}");
-            }
-
-        }
-
-        [HttpPost]
-        [Route("FormularioFEMA")]
-        public async Task<IActionResult> FormularioFEMA([FromBody] FemaDto femaDto)
-        {
-            if (femaDto == null)
-            {
-                return BadRequest("El objeto FemaDto es nulo.");
-            }
-
-            // Verificar que todos los campos necesarios estén presentes y no sean null
-            if (string.IsNullOrEmpty(femaDto.Direccion) || string.IsNullOrEmpty(femaDto.CodigoPostal) /* ... otros campos ... */)
-            {
-                return BadRequest("Todos los campos son requeridos.");
-            }
-
-            try
-            {
-                var fema = new Fema
-                {
-                    Direccion = femaDto.Direccion,
-                    CodigoPostal = femaDto.CodigoPostal,
-                    OtrosIdentificadores = femaDto.OtrosIdentificadores,
-                    NomEdificacion = femaDto.NomEdificacion,
-                    UsoEdificacion = femaDto.UsoEdificacion,
-                    Latitud = femaDto.Latitud,
-                    Longitud = femaDto.Longitud,
-                    NomEncuestador = femaDto.NomEncuestador,
-                    FechaEncuesta = femaDto.FechaEncuesta,
-                    HoraEncuesta = femaDto.HoraEncuesta,
-                    RutaImagenEdif = femaDto.RutaImagenEdif,
-                    RutaImagenCroquis = femaDto.RutaImagenCroquis,
-                    Comentarios = femaDto.Comentarios,
-                    RequiereNivel2 = femaDto.RequiereNivel2,
-                    CodUsuarioIng = femaDto.CodUsuarioIng,
-                    FecIngreso = femaDto.FecIngreso,
-                    CodUsuarioAct = femaDto.CodUsuarioAct,
-                    FecActualiza = femaDto.FecActualiza
-                };
-
-                _context.Femas.Add(fema);
-                await _context.SaveChangesAsync();
-
-                return Ok(new { Id = fema.CodFema });
-            }
-            catch (DbUpdateException dbEx)
-            {
-                if (dbEx.InnerException is SqlException sqlEx && sqlEx.Number == 2627)
-                {
-                    // Violación de la restricción de clave primaria
-                    return StatusCode(500, "Error: No se puede insertar una clave duplicada. El valor de 'CodFema' ya existe.");
-                }
-                // Otros errores relacionados con la actualización de la base de datos
-                return StatusCode(500, "Error al guardar en la base de datos: " + dbEx.InnerException?.Message);
-            }
-            catch (Exception ex)
-            {
-                // Otros tipos de errores no capturados específicamente
-                return StatusCode(500, "Error interno del servidor: " + ex.Message);
-            }
-        }
-
-
-        /*[HttpPost]
-        [Route("registrarUsuario")]
-        public async Task<IActionResult> RegistrarUsuario(RegisterUserRequest request)
-        {
-            try
-            {
-                if (request == null)
-                {
-                    return BadRequest("La solicitud es nula.");
-                }
-
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
-
-                var user = new TblFemaUsuario
-                {
-                    IdUsuario = Convert.ToInt64(request.idUsuario),
-                    NombreUsuario = request.nombreUsuario,
-                    Correo = request.correo,
-                    Clave = request.clave,
-                    Token = request.token,
-                    id_rol = Convert.ToInt16(request.id_rol),
-                    Fecha_creacion = request.fecha_creacion,
-                    Fecha_modificacion = request.fecha_modificacion,
-                    id_estado = Convert.ToInt16(request.id_estado)
-                };
-
-                // Validación para evitar usuarios duplicados
-                var usuarioExiste = await _context.TblFemaUsuarios.FirstOrDefaultAsync(u => u.NombreUsuario == user.NombreUsuario);
-                if (usuarioExiste != null)
-                {
-                    return Conflict("El usuario ya existe.");
-                }
-
-                // Validación para evitar correos duplicados
-                var correoExiste = await _context.TblFemaUsuarios.FirstOrDefaultAsync(u => u.Correo == user.Correo);
-                if (correoExiste != null)
-                {
-                    return Conflict("El correo ya se encuentra registrado para otro usuario.");
-                }
-
-                _context.TblFemaUsuarios.Add(user);
-                await _context.SaveChangesAsync();
-
-                return Ok();
-            }
-            catch (DbUpdateException ex)
-            {
-                // Accede a la excepción interna para obtener más detalles
-                var detalleException = ex.InnerException;
-                while (detalleException?.InnerException != null)
-                {
-                    detalleException = detalleException.InnerException;
-                }
-
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Ocurrió un error al registrar el usuario: {detalleException?.Message}");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Ocurrió un error al registrar el usuario: {ex.Message}");
-            }
-        }*/
-
         /*[HttpPost("CrearUsuario")]
 
         [HttpPost("CrearUsuario")]  
@@ -642,7 +473,7 @@ namespace Back_Vinculacion_Fema.Controllers
             }
         }
 
-        [HttpPut("Recuperacion/{_Correo}")]
+        [HttpPut("Recuperacion/{_Correo}")]                     
         public async Task<ActionResult> Recovery(String _Correo, String motivo)
         {
             //motivo hace referencia a si se está recuperando la contraseña o el usuario
@@ -655,7 +486,7 @@ namespace Back_Vinculacion_Fema.Controllers
 
                 // Verificar si el correo está asociado a un usuario
                 String Usuario = await usuarioLogic.ObtenerUsuarioConCorreo(_Correo);
-
+                
                 if (Usuario.Length > 0)
                 {
                     if (motivo == "USUARIO")
@@ -678,8 +509,8 @@ namespace Back_Vinculacion_Fema.Controllers
             }
             catch (Exception ex)
             {
-                
-                return StatusCode(500, "Internal Server Error: " + ex.Message);
+                await transaction.RollbackAsync();
+                return StatusCode(500, "Error interno del servidor " + ex.Message);
             }
         }
 

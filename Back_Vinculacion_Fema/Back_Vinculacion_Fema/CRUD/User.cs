@@ -23,18 +23,10 @@ namespace Back_Vinculacion_Fema.CRUD
             return roles;
         }
 
-
-        
-        public async Task<bool> ObtenerUsuario(string userName)
-        {
-            return await _context.TblFemaUsuarios.AnyAsync(u => u.NombreUsuario == userName);//
-        }
-
         public List<TblFemaEstado> ListarEstados()
         {
             // Consultar los roles en la base de datos utilizando Entity Framework Core
             var estados = _context.Estado.ToList();
-
 
             // Si prefieres utilizar una consulta LINQ explícita, puedes hacerlo así:
             // var roles = _contexto.Roles.Select(r => new Rol { id_rol = r.id_rol, descripcion = r.descripcion }).ToList();
@@ -75,11 +67,7 @@ namespace Back_Vinculacion_Fema.CRUD
         public async Task<bool> ActualizarClave(string userName, string claveNueva)
         {
             var usuario = await _context.TblFemaUsuarios.FirstOrDefaultAsync(u => u.NombreUsuario == userName);
-            if(usuario == null)
-            {
-                throw new KeyNotFoundException("El usuario no fue encontrado.");
-            }    
-            usuario.Clave = claveNueva;
+                usuario.Clave = claveNueva;
 
                 //Solicitar que se agregue campo a la tabla de la BD
                 //Agregar al contexto
@@ -123,49 +111,21 @@ namespace Back_Vinculacion_Fema.CRUD
             }
         }*/
 
-
-        public async Task<bool> EliminarUsuario(string userName)
-        {
-            //Previa verificación de la existencia del usuario se procede a eliminarlo de la BD
-            var usuario = await _context.TblFemaUsuarios
-                .FirstOrDefaultAsync(u => u.NombreUsuario == userName);
-            if(usuario != null)
-            {
-                _context.TblFemaUsuarios.Remove(usuario);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            else
-            {
-                throw new InvalidOperationException("No se pudo encontrar el usuario para eliminar.");
-            }
-            
-        }
-
-
-        public TblFemaUsuario? GetUsuarioLogin(string userName, string encryptedPassword)
-        {
-            return _context.TblFemaUsuarios.FirstOrDefault(u => u.id_estado == 1 && u.NombreUsuario == userName && u.Clave == encryptedPassword);
-        }
-
-        public async Task<TblFemaUsuario> CrearUsuario(RegisterUserRequest request, decimal idPersona)
-
         /*public async Task<TblFemaUsuario> CrearUsuario(RegisterUserRequest request, decimal idPersona)
-
         {
             try
             {
                 var user = new TblFemaUsuario
                 {
-                    IdUsuario = Convert.ToInt64(idPersona),
-                    NombreUsuario = request.nombreUsuario,
-                    Correo = request.correo,
-                    Clave = request.clave,
-                    Token = request.token,
-                    id_rol = Convert.ToInt16(request.IdRol),
-                    Fecha_creacion = request.fecha_creacion,
-                    Fecha_modificacion = request.fecha_modificacion,
-                    id_estado = Convert.ToInt16(request.id_estado)
+                    IdPersona = idPersona,
+                    UserName = request.UserName,
+                    Correo = request.Correo,
+                    Clave = request.Clave,
+                    ClaveTmp = request.Clave,
+                    FechaCreacion = request.FechaCreacion,
+                    FechaModificacion = request.FechaModificacion,
+                    Modulo = "Estudiante",
+                    Estado = true
                 };
                
                 _context.TblFemaUsuarios.Add(user);
@@ -178,7 +138,7 @@ namespace Back_Vinculacion_Fema.CRUD
             {
                 throw new Exception("Error al crear el usuario", ex);
             }
-        }
+        }*/
 
     }
 }
