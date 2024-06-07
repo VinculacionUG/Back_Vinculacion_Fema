@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Back_Vinculacion_Fema.Models.DbModels
 {
@@ -17,6 +18,7 @@ namespace Back_Vinculacion_Fema.Models.DbModels
             FemaSuelos = new HashSet<FemaSuelo>();
         }
 
+        [Key]
         public int CodFema { get; set; }
         public string? Direccion { get; set; }
         public string? CodigoPostal { get; set; }

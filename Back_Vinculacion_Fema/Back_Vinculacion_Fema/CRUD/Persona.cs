@@ -2,6 +2,7 @@
 using Back_Vinculacion_Fema.Models.RequestModels;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace Back_Vinculacion_Fema.CRUD
 {
     public class Persona
@@ -13,6 +14,8 @@ namespace Back_Vinculacion_Fema.CRUD
             _context = context;
         }
 
+
+
         public TblFemaPersona? ObtenerPersona(string identificacion)
         {
             return _context.TblFemaPersonas.FirstOrDefault(u => u.Identificacion == identificacion);
@@ -23,7 +26,7 @@ namespace Back_Vinculacion_Fema.CRUD
             return ObtenerPersona(identificacion).IdPersona;
         }
 
-        public async Task CrearPersona(RegisterUserRequest request)
+        /*public async Task CrearPersona(RegisterUserRequest request)
         {
             try
             {
@@ -39,6 +42,7 @@ namespace Back_Vinculacion_Fema.CRUD
                     FechaNacimiento = request.FechaNacimiento,
                     Direccion = request.Direccion,
                     Sexo = request.Sexo,
+                    Id_rol = request.IdRol,
                     Contacto = request.Contacto,
                     Correo = request.Correo,
                     Estado = true
@@ -51,12 +55,11 @@ namespace Back_Vinculacion_Fema.CRUD
             {
                 throw new Exception("Error al crear la persona", ex);
             }
-        }
+        }*/
 
         public async Task<bool> EliminarPersona(decimal idPersona)
         {
-            var usuario = await _context.TblFemaPersonas
-                .FirstOrDefaultAsync(u => u.IdPersona == idPersona);
+            var usuario = await _context.TblFemaPersonas.FirstOrDefaultAsync(u => u.IdPersona == idPersona);
             _context.TblFemaPersonas.Remove(usuario);
             await _context.SaveChangesAsync();
             return true;

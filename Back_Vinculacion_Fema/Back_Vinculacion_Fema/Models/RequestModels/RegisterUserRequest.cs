@@ -4,6 +4,7 @@
     {
         #region Persona
         public decimal IdTipo { get; set; }
+        public int IdRol { get; set; }
         public string TipoIdentificacion { get; set; } = null!;
         public string Identificacion { get; set; } = null!;
         public string? Nombre1 { get; set; }
@@ -24,6 +25,12 @@
         public string? Clave { get; set; }
         public DateTime? FechaCreacion { get; set; }
         public DateTime? FechaModificacion { get; set; }
+        #endregion
+
+        #region Rol
+        
+        public string? Rol { get; set; }
+      
         #endregion
     }
 }
