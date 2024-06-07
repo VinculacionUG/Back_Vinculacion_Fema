@@ -30,14 +30,16 @@ namespace Back_Vinculacion_Fema.Models.DbModels
         public string? NomEncuestador { get; set; }
         public DateTime? FechaEncuesta { get; set; }
         public TimeSpan? HoraEncuesta { get; set; }
-        public string? RutaImagenEdif { get; set; }
-        public string? RutaImagenCroquis { get; set; }
+        //public string? RutaImagenEdif { get; set; }
+        //public string? RutaImagenCroquis { get; set; }
         public string? Comentarios { get; set; }
-        public string? RequiereNivel2 { get; set; }
+        //public string? RequiereNivel2 { get; set; }
         public int? CodUsuarioIng { get; set; }
         public DateTime? FecIngreso { get; set; }
         public int? CodUsuarioAct { get; set; }
         public DateTime? FecActualiza { get; set; }
+
+        
 
         public bool Estado {  get; set; }
 

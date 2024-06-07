@@ -1,8 +1,8 @@
 ﻿using Back_Vinculacion_Fema.CRUD;
 using Back_Vinculacion_Fema.Models.DbModels;
-using Back_Vinculacion_Fema.Models.DTOs;
 using Back_Vinculacion_Fema.Models.RequestModels;
 using Back_Vinculacion_Fema.Models.Utilidades;
+using Back_Vinculacion_Fema.Viewmodel.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
@@ -130,20 +130,67 @@ namespace Back_Vinculacion_Fema.Controllers
 
         }
 
-        [HttpGet]
+        /*[HttpGet]
         [Route("Ocupacion")]
         public async Task<IActionResult> GetOcupaciones()
         {
             var ocupaciones = await _context.Ocupaciones.ToListAsync();
             return Ok(ocupaciones);
-        }
+        }*/
+
 
         [HttpGet]
+        [Route("Ocupacion")]
+        public async Task<IActionResult> GetOcupaciones()
+        {
+            var ocupaciones = await _context.Ocupaciones
+                .Select(t => new
+                {
+                    t.CodOcupacion,
+                    t.Descripcion,
+                    t.Estado
+                })
+                .ToListAsync();
+            return Ok(ocupaciones);
+        }
+
+
+        /*[HttpGet]
         [Route("TipoOcupacion")]
         public async Task<IActionResult> GetTipoOcupaciones()
         {
             var tipoOcupaciones = await _context.TipoOcupaciones.ToListAsync();
             return Ok(tipoOcupaciones);
+        }*/
+
+        [HttpGet]
+        [Route("TipoOcupacio")]
+        public async Task<IActionResult> GetTipoOcupaciones()
+        {
+            var tipoOcupaciones = await _context.TipoOcupaciones
+                .Select(t => new
+                {
+                    t.CodTipoOcupacion,
+                    t.Descripcion,
+                    t.Estado
+                })
+                .ToListAsync();
+            return Ok(tipoOcupaciones);
+        }
+
+        [HttpGet]
+        [Route("TipoSuelo")]
+        public async Task<IActionResult> GetTipoSuelo()
+        {
+            var tipoSuelo = await _context.TipoSuelos
+                .Select(t => new
+                {
+                    t.CodTipoSuelo,
+                    t.Descripcion,
+                    t.Estado
+                })
+                .ToListAsync();
+            return Ok(tipoSuelo);
         }
 
         [HttpPost]
@@ -174,15 +221,16 @@ namespace Back_Vinculacion_Fema.Controllers
                     NomEncuestador = femaDto.NomEncuestador,
                     FechaEncuesta = femaDto.FechaEncuesta,
                     HoraEncuesta = femaDto.HoraEncuesta,
-                    RutaImagenEdif = femaDto.RutaImagenEdif,
-                    RutaImagenCroquis = femaDto.RutaImagenCroquis,
+                    //RutaImagenEdif = femaDto.RutaImagenEdif,
+                    //RutaImagenCroquis = femaDto.RutaImagenCroquis,
                     Comentarios = femaDto.Comentarios,
-                    RequiereNivel2 = femaDto.RequiereNivel2,
+                    //RequiereNivel2 = femaDto.RequiereNivel2,
                     CodUsuarioIng = femaDto.CodUsuarioIng,
                     FecIngreso = femaDto.FecIngreso,
                     CodUsuarioAct = femaDto.CodUsuarioAct,
                     FecActualiza = femaDto.FecActualiza,
-                    Estado = femaDto.Estado
+                    Estado = femaDto.Estado,
+                    
                 };
 
                 _context.Femas.Add(fema);
@@ -203,16 +251,33 @@ namespace Back_Vinculacion_Fema.Controllers
                 {
                     CodFema = fema.CodFema,
                     CodTipoSuelo = femaDto.CodTipoSuelo,
-                    AsumirTipo = "Tu", 
-                    RiesgoGeologico = "Tu", 
-                    Adyacencia = "HOLA", 
-                    Irregularidades = "Tu valor aquí", 
-                    PeligroCaidaExt = "Tu valor aquí" 
+                    AsumirTipo = femaDto.AsumirTipo,
+                    RiesgoGeologico = femaDto.RiesgoGeologico,
+                    Adyacencia = femaDto.Adyacencia,
+                    Irregularidades = femaDto.Irregularidades,
+                    PeligroCaidaExt = femaDto.PeligroCaidaExt
                 };
-            
+
 
                 _context.FemaSuelos.Add(femaSuelo);
                 await _context.SaveChangesAsync();
+
+
+                /*var archivo = new Archivo
+                {
+                    Cod_Fema = fema.CodFema,
+                    //IdArchivo = femaDto.IdArchivo,
+                    Path = femaDto.Path,
+                    Data = femaDto.Data,
+                    MimeType = femaDto.MimeType,
+                    IdTipoArchivo = femaDto.IdTipoArchivo
+                };
+
+                _context.Archivos.Add(archivo);
+                await _context.SaveChangesAsync();*/
+
+
+
 
                 return Ok(new { Id = fema.CodFema });
             }

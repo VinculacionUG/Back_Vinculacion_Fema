@@ -10,9 +10,9 @@ namespace Back_Vinculacion_Fema.Models.DbModels
             FemaPuntuacions = new HashSet<FemaPuntuacion>();
         }
 
-        public int CodTipoPuntuacion { get; set; }
+        public short CodTipoPuntuacion { get; set; }
         public string? Descripcion { get; set; }
-        public string? Estado { get; set; }
+        public bool? Estado { get; set; }
 
         public virtual ICollection<FemaPuntuacion> FemaPuntuacions { get; set; }
     }

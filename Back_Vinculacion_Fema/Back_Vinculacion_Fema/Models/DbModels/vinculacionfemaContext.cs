@@ -44,6 +44,11 @@ namespace Back_Vinculacion_Fema.Models.DbModels
 
         public virtual DbSet<TipoOcupacion> TipoOcupaciones { get; set; }
 
+        public virtual DbSet<Archivo> Archivos { get; set; }
+
+
+
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -58,6 +63,78 @@ namespace Back_Vinculacion_Fema.Models.DbModels
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+            modelBuilder.Entity<FemaPuntuacion>(entity =>
+            {
+                entity.HasKey(e => e.CodPuntuacionSec);
+
+                entity.ToTable("FEMA_PUNTUACION");
+
+                entity.Property(e => e.CodPuntuacionSec)
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("cod_puntuacion_sec");
+
+                entity.Property(e => e.CodFema)
+                    .HasColumnName("cod_fema");
+
+                entity.Property(e => e.CodPuntuacionMatriz)
+                    .HasColumnName("cod_puntuacion_matriz");
+
+                entity.Property(e => e.ResultadoFinal)
+                    .HasColumnName("resultado_final");
+
+                entity.Property(e => e.EsEst)
+                    .HasColumnName("es_est");
+
+                entity.Property(e => e.Estado)
+                    .HasColumnName("estado");
+
+                entity.Property(e => e.EsDnk)
+                    .HasColumnName("es_dnk");
+
+                entity.HasOne(d => d.CodFemaNavigation)
+                    .WithMany(p => p.FemaPuntuacions)
+                    .HasForeignKey(d => d.CodFema)
+                    .HasConstraintName("FK_FEMA_PUNTUACION_FEMA");
+
+                entity.HasOne(d => d.CodPuntuacionMatrizNavigation)
+                    .WithMany(p => p.FemaPuntuacions)
+                    .HasForeignKey(d => d.CodPuntuacionMatriz)
+                    .HasConstraintName("FK_FEMA_PUNTUACION_PUNTUACION_MATRIZ");
+            });
+
+            modelBuilder.Entity<Archivo>(entity =>
+            {
+                entity.HasKey(e => e.IdArchivo);
+
+                entity.ToTable("Archivo");
+
+                entity.Property(e => e.IdArchivo)
+                      .ValueGeneratedOnAdd()
+                      .HasColumnName("IdArchivo");
+
+                entity.Property(e => e.Path)
+                      .ValueGeneratedNever()
+                      .HasColumnName("Path");
+
+                entity.Property(e => e.Data)
+                      .ValueGeneratedNever()
+                      .HasColumnName("Data");
+
+                entity.Property(e => e.MimeType)
+                      .ValueGeneratedNever()
+                      .HasColumnName("MimeType");
+
+                entity.Property(e => e.IdTipoArchivo)
+                      .ValueGeneratedNever()
+                      .HasColumnName("IdTipoArchivo");
+
+                entity.Property(e => e.Cod_Fema)
+                      .ValueGeneratedNever()
+                      .HasColumnName("cod_fema");
+
+            });
+
             modelBuilder.Entity<EvaluacionExterior>(entity =>
             {
                 entity.HasKey(e => e.CodEvalExterior);
@@ -169,7 +246,7 @@ namespace Back_Vinculacion_Fema.Models.DbModels
                     .IsUnicode(false)
                     .HasColumnName("otros_identificaciones");
 
-                entity.Property(e => e.RequiereNivel2)
+                /*entity.Property(e => e.RequiereNivel2)
                     .HasMaxLength(2)
                     .IsUnicode(false)
                     .HasColumnName("requiere_nivel2")
@@ -183,12 +260,15 @@ namespace Back_Vinculacion_Fema.Models.DbModels
                 entity.Property(e => e.RutaImagenEdif)
                     .HasMaxLength(150)
                     .IsUnicode(false)
-                    .HasColumnName("ruta_imagen_edif");
+                    .HasColumnName("ruta_imagen_edif");*/
 
                 entity.Property(e => e.UsoEdificacion)
                     .HasMaxLength(60)
                     .IsUnicode(false)
                     .HasColumnName("cod_tipo_uso_edificacion");
+
+
+                
             });
 
             modelBuilder.Entity<FemaEdificio>(entity =>
@@ -386,11 +466,53 @@ namespace Back_Vinculacion_Fema.Models.DbModels
 
             modelBuilder.Entity<FemaPuntuacion>(entity =>
             {
-                entity.HasKey(e => e.CodSecuencia);
+                entity.HasKey(e => e.CodPuntuacionSec);
 
                 entity.ToTable("FEMA_PUNTUACION");
 
-                entity.Property(e => e.CodSecuencia)
+                entity.Property(e => e.CodPuntuacionSec)
+                    .ValueGeneratedNever()
+                    .HasColumnName("cod_secuencia_sec");
+
+                entity.Property(e => e.CodFema).HasColumnName("cod_fema");
+
+                entity.Property(e => e.CodTipoEdificacion).HasColumnName("cod_tipo_edificacion");
+
+                entity.Property(e => e.CodTipoPuntuacion).HasColumnName("cod_tipo_puntuacion");
+
+                entity.Property(e => e.ResultadoFinal)
+                    .HasColumnType("decimal(16, 2)")
+                    .HasColumnName("resultado_final");
+
+                entity.Property(e => e.EsEst).HasColumnName("es_est");
+
+                entity.Property(e => e.Estado).HasColumnName("estado");
+
+                entity.Property(e => e.EsDnk).HasColumnName("es_dnk");
+
+                entity.HasOne(d => d.CodFemaNavigation)
+                    .WithMany(p => p.FemaPuntuacions)
+                    .HasForeignKey(d => d.CodFema)
+                    .HasConstraintName("FK_FEMA_PUNTUACION_FEMA");
+
+                entity.HasOne(d => d.CodTipoEdificacionNavigation)
+                    .WithMany(p => p.FemaPuntuacions)
+                    .HasForeignKey(d => d.CodTipoEdificacion)
+                    .HasConstraintName("FK_FEMA_PUNTUACION_TIPO_EDIFICACION");
+
+                entity.HasOne(d => d.CodTipoPuntuacionNavigation)
+                    .WithMany(p => p.FemaPuntuacions)
+                    .HasForeignKey(d => d.CodTipoPuntuacion)
+                    .HasConstraintName("FK_FEMA_PUNTUACION_TIPO_PUNTUACION");
+            });
+
+            /*modelBuilder.Entity<FemaPuntuacion>(entity =>
+            {
+                entity.HasKey(e => e.CodPuntuacionSec);
+
+                entity.ToTable("FEMA_PUNTUACION");
+
+                entity.Property(e => e.CodPuntuacionSec)
                     .ValueGeneratedNever()
                     .HasColumnName("cod_secuencia");
 
@@ -418,7 +540,7 @@ namespace Back_Vinculacion_Fema.Models.DbModels
                     .WithMany(p => p.FemaPuntuacions)
                     .HasForeignKey(d => d.CodTipoPuntuacion)
                     .HasConstraintName("FK_FEMA_PUNTUACION_TIPO_PUNTUACION");
-            });
+            });*/
 
             /*modelBuilder.Entity<FemaSuelo>(entity =>
             {

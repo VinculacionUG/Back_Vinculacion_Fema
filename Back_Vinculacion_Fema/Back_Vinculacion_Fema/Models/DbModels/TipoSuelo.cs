@@ -14,7 +14,7 @@ namespace Back_Vinculacion_Fema.Models.DbModels
         [Key]
         public short CodTipoSuelo { get; set; }
         public string ? Descripcion { get; set; }
-        public string ? Estado { get; set; }
+        public bool ? Estado { get; set; }
 
         public virtual ICollection<FemaSuelo> FemaSuelos { get; set; }
     }

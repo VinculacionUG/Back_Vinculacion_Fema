@@ -1,4 +1,4 @@
-﻿namespace Back_Vinculacion_Fema.Models.DTOs
+﻿namespace Back_Vinculacion_Fema.Viewmodel.DTOs
 {
     public class OcupacionDto
     {
