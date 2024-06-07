@@ -1,17 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace Back_Vinculacion_Fema.Models.DbModels
 {
-    public class Archivo
+    public partial class Archivo
     {
-        [Key]
         public long IdArchivo { get; set; }
-        public int Cod_Fema { get; set; }
-        public string Path { get; set; }
-        public string Data { get; set; }
-        public string MimeType { get; set; }
+        public string Path { get; set; } = null!;
+        public string Data { get; set; } = null!;
+        public string? MimeType { get; set; }
         public short IdTipoArchivo { get; set; }
+        public short id_estado { get; set; }
+        public int? cod_fema { get; set; }
+
+        public virtual Fema? cod_femaNavigation { get; set; }
+        public virtual TipoArchivo IdTipoArchivoNavigation { get; set; } = null!;
     }
 }

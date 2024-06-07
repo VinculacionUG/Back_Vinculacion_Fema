@@ -16,9 +16,9 @@ namespace Back_Vinculacion_Fema.CRUD
 
 
 
-      public TblFemaPersona? ObtenerPersona(string identificacion)
+        public TblFemaPersona? ObtenerPersona(string identificacion)
         {
-            return _context.TblFemaPersonas.FirstOrDefault(u => u.Identificacion == identificacion);
+            return _context.Tbl_Fema_Personas.FirstOrDefault(u => u.Identificacion == identificacion);
         }
 
         public decimal ObtenerPersonaId(string identificacion)
@@ -42,13 +42,13 @@ namespace Back_Vinculacion_Fema.CRUD
                     FechaNacimiento = request.FechaNacimiento,
                     Direccion = request.Direccion,
                     Sexo = request.Sexo,
-                    Id_rol = request.IdRol,
+                    id_rol = request.id_rol,
                     Contacto = request.Contacto,
                     Correo = request.Correo,
                     Estado = true
                 };
 
-                _context.TblFemaPersonas.Add(personaCreate);
+                _context.Tbl_Fema_Personas.Add(personaCreate);
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -59,11 +59,10 @@ namespace Back_Vinculacion_Fema.CRUD
 
         public async Task<bool> EliminarPersona(decimal idPersona)
         {
-            var usuario = await _context.TblFemaPersonas.FirstOrDefaultAsync(u => u.IdPersona == idPersona);
-            _context.TblFemaPersonas.Remove(usuario);
+            var usuario = await _context.Tbl_Fema_Personas.FirstOrDefaultAsync(u => u.IdPersona == idPersona);
+            _context.Tbl_Fema_Personas.Remove(usuario);
             await _context.SaveChangesAsync();
             return true;
         }
-
     }
 }

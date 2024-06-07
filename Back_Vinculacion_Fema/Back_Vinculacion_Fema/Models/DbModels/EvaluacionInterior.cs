@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace Back_Vinculacion_Fema.Models.DbModels
 {
@@ -10,11 +9,10 @@ namespace Back_Vinculacion_Fema.Models.DbModels
         {
             FemaEvaluacions = new HashSet<FemaEvaluacion>();
         }
-        
-        [Key]
+
         public int CodEvalInterior { get; set; }
-        public string? Descripcion { get; set; }
-        public string? Estado { get; set; }
+        public string descripcion { get; set; } = null!;
+        public bool Estado { get; set; }
 
         public virtual ICollection<FemaEvaluacion> FemaEvaluacions { get; set; }
     }

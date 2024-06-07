@@ -2,9 +2,9 @@
 {
     public class OcupacionDto
     {
-        public short CodOcupacion { get; set; }
-        public short CodTipoOcupacion { get; set; }
-        public int CodOcupacionSecuencia { get; set; }
+        public short cod_ocupacion { get; set; }
+        public short cod_tipo_ocupacion { get; set; }
+        public int cod_ocupacion_secuencia { get; set; }
         public bool Estado { get; set; }
     }
 }

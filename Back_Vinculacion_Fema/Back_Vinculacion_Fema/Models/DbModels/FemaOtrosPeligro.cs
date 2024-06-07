@@ -5,13 +5,13 @@ namespace Back_Vinculacion_Fema.Models.DbModels
 {
     public partial class FemaOtrosPeligro
     {
-        public int CodSecuencia { get; set; }
-        public int? CodFema { get; set; }
-        public int? Chk1 { get; set; }
-        public int? Chk2 { get; set; }
-        public int? Chk3 { get; set; }
-        public int? Chk4 { get; set; }
+        public short CodOtrosPeligorsSec { get; set; }
+        public short CodExtensionRevision { get; set; }
+        public bool Chk1 { get; set; }
+        public bool Chk2 { get; set; }
+        public bool Chk3 { get; set; }
+        public bool Chk4 { get; set; }
 
-        public virtual Fema? CodFemaNavigation { get; set; }
+        public virtual FemaExtensionRevision CodExtensionRevisionNavigation { get; set; } = null!;
     }
 }

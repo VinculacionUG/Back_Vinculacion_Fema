@@ -1,0 +1,40 @@
+﻿using Back_Vinculacion_Fema.Models.DbModels;
+using Back_Vinculacion_Fema.Viewmodel;
+using Microsoft.EntityFrameworkCore;
+using Back_Vinculacion_Fema.Interface;
+
+
+namespace Back_Vinculacion_Fema.Service
+{
+    public class DetalleSuperService : IDetalleUsuarioSuper
+    {
+        private readonly vinculacionfemaContext _contexto;
+        public DetalleSuperService(vinculacionfemaContext contexto)
+        {
+            _contexto = contexto;
+        }
+        public async Task<DetalleSupervisorVM> DetallesUsuariosSupervisor(int idUsuario)
+        {
+            var query = from us in _contexto.Tbl_Fema_Usuarios
+                        join r in _contexto.Tbl_Fema_Roles on us.id_rol equals r.id_rol
+                        join e in _contexto.Estados on us.id_estado equals e.id_estado
+                        join pr in _contexto.Tbl_Fema_Personas on us.IdUsuario equals pr.IdUsuario
+                        where us.IdUsuario == idUsuario //Usuario recibido del front
+                        select new DetalleSupervisorVM
+                        {
+                            TipoIdentifiacion = pr.TipoIdentificacion,
+                            Identificacion = pr.Identificacion,
+                            Nombre = pr.Nombre,
+                            Apellido = pr.Apellido,
+                            Direccion = pr.Direccion, 
+                            Correo = us.Correo, 
+                            Contacto = pr.Contacto, 
+                            Sexo = pr.Sexo,
+                            Fecha_nacimiento = (DateTime)pr.FechaNacimiento,
+                            pwd = us.Clave
+
+                        };
+            return await query.FirstOrDefaultAsync();
+        }
+    }
+}
