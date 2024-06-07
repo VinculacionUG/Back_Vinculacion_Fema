@@ -116,7 +116,7 @@ namespace Back_Vinculacion_Fema.Controllers
 
                 _context.TblFemaUsuarios.Add(usuario);
                 await _context.SaveChangesAsync();
-
+                
                 var persona = new TblFemaPersona
                 {
                     Identificacion = usuarioPersona.Identificacion,
@@ -126,9 +126,9 @@ namespace Back_Vinculacion_Fema.Controllers
                     Apellido = usuarioPersona.Apellido,
                     FechaNacimiento = (DateTime)usuarioPersona.FechaNacimiento,
                     Direccion = usuarioPersona.Direccion,
-                    Sexo = usuarioPersona.Sexo,
-                    Contacto = usuarioPersona.Contacto
-                };
+                    Sexo = usuarioPersona.Sexo, 
+                    Contacto = usuarioPersona.Contacto               
+                    };
 
                 _context.TblFemaPersonas.Add(persona);
                 await _context.SaveChangesAsync();
@@ -186,7 +186,7 @@ namespace Back_Vinculacion_Fema.Controllers
         {
             try
             {
-                var userDetails = await _detailSuper.DetallesUsuariosSupervisor(idUsuario);
+                var userDetails = await _detailSuper.DetallesUsuariosSupervisor (idUsuario);
                 if (userDetails == null)
                 {
                     return NotFound($"No se encontró un usuario con el ID {idUsuario}");
@@ -233,7 +233,7 @@ namespace Back_Vinculacion_Fema.Controllers
             }
         }
 
-        [HttpPut("Recuperacion/{_Correo}")]
+        [HttpPut("Recuperacion/{_Correo}")]                     
         public async Task<ActionResult> Recovery(String _Correo, String motivo)
         {
             //motivo hace referencia a si se está recuperando la contraseña o el usuario
@@ -246,7 +246,7 @@ namespace Back_Vinculacion_Fema.Controllers
 
                 // Verificar si el correo está asociado a un usuario
                 String Usuario = await usuarioLogic.ObtenerUsuarioConCorreo(_Correo);
-
+                
                 if (Usuario.Length > 0)
                 {
                     if (motivo == "USUARIO")

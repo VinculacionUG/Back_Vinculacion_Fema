@@ -10,11 +10,11 @@ namespace Back_Vinculacion_Fema.Models.DbModels
         public string Identificacion { get; set; } = null!;
         public string Nombre { get; set; } = null!;
         public string Apellido { get; set; } = null!;
-        public DateTime ? FechaNacimiento { get; set; }
-        public string ? Direccion { get; set; }
-        public string ? Sexo { get; set; }
-        public string ? Contacto { get; set; }
-        
+        public DateTime FechaNacimiento { get; set; }
+        public string Direccion { get; set; } = null!;
+        public string Sexo { get; set; } = null!;
+        public string Contacto { get; set; } = null!;
+
         //public bool? Estado { get; set; }
         public long IdUsuario { get; set; }
         public TblFemaUsuario Usuario { get; set; } = null!;
