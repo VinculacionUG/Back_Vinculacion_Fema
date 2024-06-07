@@ -11,7 +11,7 @@ namespace Back_Vinculacion_Fema.Models.DbModels
         }
 
         public short CodExtensionRevision { get; set; }
-        public int CodFema { get; set; }
+        public int cod_fema { get; set; }
         public short CodEvalExterior { get; set; }
         public short CodEvalInterior { get; set; }
         public bool RevisionPlanos { get; set; }
@@ -22,7 +22,7 @@ namespace Back_Vinculacion_Fema.Models.DbModels
         public string ContactoRegistrado { get; set; } = null!;
         public bool Estado { get; set; }
 
-        public virtual Fema CodFemaNavigation { get; set; } = null!;
+        public virtual Fema cod_femaNavigation { get; set; } = null!;
         public virtual ICollection<FemaOtrosPeligro> FemaOtrosPeligros { get; set; }
     }
 }

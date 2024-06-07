@@ -20,11 +20,11 @@ namespace Back_Vinculacion_Fema.Service
             {
                 FemaOcupacion femaO = new FemaOcupacion
                 {
-                    CodOcupacionSecuencia = ocu.CodOcupacionSecuencia,
-                    CodFema = ocu.CodFema,
-                    CodOcupacion = ocu.CodOcupacion,
-                    CodTipoOcupacion = ocu.CodTipoOcupacion,
-                    Estado = ocu.Estado
+                    cod_ocupacion_secuencia = ocu.cod_ocupacion_secuencia,
+                    cod_fema = ocu.cod_fema,
+                    cod_ocupacion = ocu.cod_ocupacion,
+                    cod_tipo_ocupacion = ocu.cod_tipo_ocupacion,
+                    estado = ocu.estado
                 };
                 listOc.Add(femaO);
             }
@@ -39,7 +39,7 @@ namespace Back_Vinculacion_Fema.Service
             {
                 TipoOcupacion femato = new TipoOcupacion
                 {
-                    CodTipoOcupacion = ocu.CodTipoOcupacion,
+                    cod_tipo_ocupacion = ocu.cod_tipo_ocupacion,
                     descripcion = ocu.descripcion,
                     Estado = ocu.Estado
                 };
@@ -64,5 +64,7 @@ namespace Back_Vinculacion_Fema.Service
             }
             return listTs;
         }
+
+
     }
 }

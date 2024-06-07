@@ -13,7 +13,7 @@ public class TipoOcupacion
         FemaOcupacions = new HashSet<FemaOcupacion>();
     }
     [Key]
-    public short CodTipoOcupacion { get; set; } // Clave primaria
+    public short cod_tipo_ocupacion { get; set; } // Clave primaria
     public string? descripcion { get; set; }
     public bool Estado { get; set; }
 

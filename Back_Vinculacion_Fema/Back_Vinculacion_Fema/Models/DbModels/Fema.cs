@@ -18,7 +18,7 @@ namespace Back_Vinculacion_Fema.Models.DbModels
             FemaSuelos = new HashSet<FemaSuelo>();
         }
 
-        public int CodFema { get; set; }
+        public int cod_fema { get; set; }
         public string Direccion { get; set; } = null!;
         public string CodigoPostal { get; set; } = null!;
         public string OtrosIdentificaciones { get; set; } = null!;

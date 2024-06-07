@@ -32,7 +32,7 @@ namespace Back_Vinculacion_Fema.Service
             return await _contexto.Ocupacions
                 .Select(t => new Ocupacion
                 {
-                    CodOcupacion = t.CodOcupacion,
+                    cod_ocupacion = t.cod_ocupacion,
                     descripcion = t.descripcion,
                     Estado= t.Estado
                 })
