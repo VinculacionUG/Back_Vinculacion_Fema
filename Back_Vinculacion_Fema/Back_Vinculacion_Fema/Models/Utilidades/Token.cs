@@ -8,14 +8,18 @@ namespace Back_Vinculacion_Fema.Models.Utilidades
     public static class Token
     {
         public static string key = "1uCpfkVEM7F7PMJ1ZQ5S1duRbf8osyTNQxIkt1T5KI=";
-        public static string GenerarToken(string nameUser)
+        public static string GenerarToken(string nameUser, string nombre, string apellido, short id_rol, short estado)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var TokenDes = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                new Claim(ClaimTypes.Name, nameUser),
+                    new Claim(ClaimTypes.Name, nameUser),
+                    new Claim("id_rol", id_rol.ToString()), 
+                    new Claim("nombre", nombre), 
+                    new Claim("apellido", apellido),
+                    new Claim("estado", estado.ToString())
                 }),
                 Expires = ObtenerTiempoExpiración(),
                 SigningCredentials = ObtenerCredencialesFirma()

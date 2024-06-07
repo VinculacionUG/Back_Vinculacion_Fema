@@ -18,6 +18,8 @@ namespace Back_Vinculacion_Fema.Models.DbModels
         public short id_rol { get; set; }
         public string descripcion { get; set; } = null!;
         public DateTime fecha_creacion { get; set; }
+
+        //public ICollection<TblFemaUsuario> Usuarios { get; set; } = null!;
       
         /*
         public virtual ICollection<TblFemaMenuUsuario> TblFemaMenuUsuarios { get; set; }
