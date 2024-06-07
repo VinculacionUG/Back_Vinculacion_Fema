@@ -8,6 +8,12 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Configurar logging
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddDebug();
+builder.Logging.AddEventSourceLogger();
+
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -21,7 +27,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<vinculacionfemaContext>(options =>
 //options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionTestRobles")));
 //options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionTest")));
-options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionTest")));
+options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 #endregion
 
 builder.Services.AddScoped<IFemaDos, FemaDos>(); 
