@@ -28,6 +28,7 @@ builder.Services.AddScoped<IFemaDos, FemaDos>();
 builder.Services.AddScoped<IListarUsuariosSuper, UserSuperService>();
 builder.Services.AddScoped<IDetalleUsuarioSuper, DetalleSuperService>();
 builder.Services.AddScoped<IListarUsuariosInsp, UserInspService>();
+builder.Services.AddScoped<IDetalleUsuarioInsp, DetalleInspService>();
 
 builder.Services.AddControllers();
 

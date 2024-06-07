@@ -21,14 +21,17 @@ namespace Back_Vinculacion_Fema.Controllers
         private readonly IListarUsuariosSuper _usuarioServicio;
         private readonly IDetalleUsuarioSuper _detailSuper;
         private readonly IListarUsuariosInsp _inspectorServicio;
+        private readonly IDetalleUsuarioInsp _detailInsp;
 
-        public UsersController(vinculacionfemaContext context, IListarUsuariosSuper usuarioServicio, 
-                               IDetalleUsuarioSuper detailSuper, IListarUsuariosInsp inspectorServicio)
+        public UsersController(vinculacionfemaContext context, IListarUsuariosSuper usuarioServicio,
+                               IDetalleUsuarioSuper detailSuper, IListarUsuariosInsp inspectorServicio,
+                               IDetalleUsuarioInsp detailInsp)
         {
             _context = context;
             _usuarioServicio = usuarioServicio;
             _detailSuper = detailSuper;
             _inspectorServicio = inspectorServicio;
+            _detailInsp = detailInsp;
         }
 
         [HttpGet]
@@ -208,6 +211,25 @@ namespace Back_Vinculacion_Fema.Controllers
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Ocurrió un error al obtener los usuarios: {ex.Message}");
+            }
+        }
+
+        [HttpGet]
+        [Route("consultarDetallesInsp/{idUsuario}")]
+        public async Task<IActionResult> ConsultarDetallesInsp(int idUsuario)
+        {
+            try
+            {
+                var userDetails = await _detailInsp.DetallesUsuariosInspector(idUsuario);
+                if (userDetails == null)
+                {
+                    return NotFound($"No se encontró un usuario con el ID {idUsuario}");
+                }
+                return Ok(userDetails);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Ocurrió un error al obtener los detalles del usuario: {ex.Message}");
             }
         }
 
