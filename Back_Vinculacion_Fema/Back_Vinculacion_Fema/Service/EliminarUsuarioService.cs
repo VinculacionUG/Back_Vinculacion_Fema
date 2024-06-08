@@ -12,12 +12,12 @@ namespace Back_Vinculacion_Fema.Service
             _contexto = contexto;
         }
 
-        public async Task<ResponseEliminarUser> EliminarUsuarioAsync(long idUsuario, short idEstado)
+        public async Task<ResponseCrudUser> EliminarUsuarioAsync(long idUsuario, short idEstado)
         {
             var usuario = await _contexto.TblFemaUsuarios.FindAsync(idUsuario);
             if (usuario == null)
             {
-                return new ResponseEliminarUser
+                return new ResponseCrudUser
                 {
                     Success = false,
                     ErrorMessage = "Usuario no encontrado"
@@ -29,11 +29,11 @@ namespace Back_Vinculacion_Fema.Service
             try
             {
                 await _contexto.SaveChangesAsync();
-                return new ResponseEliminarUser { Success = true };
+                return new ResponseCrudUser { Success = true };
             }
             catch (Exception ex)
             {
-                return new ResponseEliminarUser()
+                return new ResponseCrudUser()
                 {
                     Success = false,
                     ErrorMessage = "Algo salió mal" + ex.Message,

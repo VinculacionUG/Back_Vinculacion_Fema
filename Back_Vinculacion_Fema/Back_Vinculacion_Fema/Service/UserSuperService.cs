@@ -22,6 +22,7 @@ namespace Back_Vinculacion_Fema.Service
                         select new ListaUsuariosVM
                         {
                             IdUsuario = us.IdUsuario,
+                            IdPersona = pr.IdPersona, 
                             Identificacion = pr.Identificacion,
                             Nombre = pr.Nombre,
                             Apellido = pr.Apellido,

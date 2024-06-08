@@ -29,6 +29,7 @@ builder.Services.AddScoped<IListarUsuariosSuper, UserSuperService>();
 builder.Services.AddScoped<IListarUsuariosInsp, UserInspService>();
 builder.Services.AddScoped<IDetalleUsuarios, DetalleUsuariosService>();
 builder.Services.AddScoped<IEliminarUsuario, EliminarUsuarioService>();
+builder.Services.AddScoped<IActualizarDatosUsuario, ActualizarUsuarioService>();
 
 builder.Services.AddControllers();
 
