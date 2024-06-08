@@ -28,9 +28,9 @@ namespace Back_Vinculacion_Fema.Controllers
 
             if (usuario == null)
             {
-                return Unauthorized(new { message = "Usuario o contraseña incorrectos." });
+                return Unauthorized(new { message = "Usuario o contraseña incorrectos. Contactate con el administrador" });
             }
-            
+
             // Obtener datos adicionales del usuario, como el rol y los datos personales.
             var userInfo = _contexto.TblFemaUsuarios
                 .Where(u => u.NombreUsuario == usuario.NombreUsuario)

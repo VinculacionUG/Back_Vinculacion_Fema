@@ -12,15 +12,16 @@ namespace Back_Vinculacion_Fema.Service
         {
             _contexto = contexto;
         }
-        public async Task<List<UserSupervisorVM>> ConsultarUsuariosSupervisor()
+        public async Task<List<ListaUsuariosVM>> ConsultarUsuariosSupervisor()
         {
             var query = from us in _contexto.TblFemaUsuarios
                         join r in _contexto.Tbl_Fema_Roles on us.id_rol equals r.id_rol
                         join e in _contexto.Estado on us.id_estado equals e.id_estado
                         join pr in _contexto.TblFemaPersonas on us.IdUsuario equals pr.IdUsuario
                         where r.id_rol == 2 //Estado id = 2 Supervisor
-                        select new UserSupervisorVM
+                        select new ListaUsuariosVM
                         {
+                            IdUsuario = us.IdUsuario,
                             Identificacion = pr.Identificacion,
                             Nombre = pr.Nombre,
                             Apellido = pr.Apellido,
