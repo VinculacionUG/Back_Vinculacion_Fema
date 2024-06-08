@@ -39,6 +39,7 @@ namespace Back_Vinculacion_Fema.Controllers
                       p => p.IdUsuario,
                       (u, p) => new
                       {
+                          IdUsuario = u.IdUsuario,
                           UserName = u.NombreUsuario,
                           id_rol = u.id_rol,
                           id_estado = u.id_estado,

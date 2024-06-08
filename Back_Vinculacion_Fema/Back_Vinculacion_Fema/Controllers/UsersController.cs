@@ -21,18 +21,19 @@ namespace Back_Vinculacion_Fema.Controllers
         private readonly IListarUsuariosSuper _usuarioServicio;
         private readonly IDetalleUsuarios _detailUser;
         private readonly IListarUsuariosInsp _inspectorServicio;
-
         private readonly IEliminarUsuario _eliminarUsuario;
+        private readonly IActualizarDatosUsuario _actualizarUsuario;
 
         public UsersController(vinculacionfemaContext context, IListarUsuariosSuper usuarioServicio,
                                IDetalleUsuarios detailUser, IListarUsuariosInsp inspectorServicio,
-                               IEliminarUsuario  eliminarUsuario)
+                               IEliminarUsuario  eliminarUsuario, IActualizarDatosUsuario actualizarUsuario)
         {
             _context = context;
             _usuarioServicio = usuarioServicio;
             _detailUser = detailUser;
             _inspectorServicio = inspectorServicio;
             _eliminarUsuario = eliminarUsuario;
+            _actualizarUsuario = actualizarUsuario;
         }
 
         [HttpGet]
@@ -233,6 +234,25 @@ namespace Back_Vinculacion_Fema.Controllers
             return Ok("Estado del usuario actualizado exitosamente.");
         }
 
+        [HttpPut]
+        [Route("ActualizarUsuario")]
+        public async Task<IActionResult> ActualizarUsuario([FromBody] DetalleUsuariosVM usuarioDetalle)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _actualizarUsuario.ActualizarUsuarioAsync(usuarioDetalle);
+            if (!result.Success)
+            {
+                return StatusCode(500, "Error al actualizar los detalles del usuario.");
+            }
+
+            return Ok("Detalles del usuario actualizados exitosamente.");
+        }
+
+
         [HttpPut("Recuperacion/{_Correo}")]                     
         public async Task<ActionResult> Recovery(String _Correo, String motivo)
         {
@@ -274,7 +294,7 @@ namespace Back_Vinculacion_Fema.Controllers
             }
         }
 
-
+        
         /*[HttpPost("CrearUsuario")]
 
         [HttpPost("CrearUsuario")]  
