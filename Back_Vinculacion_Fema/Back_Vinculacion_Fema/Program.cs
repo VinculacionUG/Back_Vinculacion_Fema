@@ -25,7 +25,10 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectio
 #endregion
 
 builder.Services.AddScoped<IFemaDos, FemaDos>(); 
-builder.Services.AddScoped<IListarUsuarios, UsuariosService>();
+builder.Services.AddScoped<IListarUsuariosSuper, UserSuperService>();
+builder.Services.AddScoped<IDetalleUsuarioSuper, DetalleSuperService>();
+builder.Services.AddScoped<IListarUsuariosInsp, UserInspService>();
+builder.Services.AddScoped<IDetalleUsuarioInsp, DetalleInspService>();
 
 builder.Services.AddControllers();
 
