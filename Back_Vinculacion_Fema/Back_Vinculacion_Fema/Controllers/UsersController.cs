@@ -19,19 +19,21 @@ namespace Back_Vinculacion_Fema.Controllers
     {
         private readonly vinculacionfemaContext _context;
         private readonly IListarUsuariosSuper _usuarioServicio;
-        private readonly IDetalleUsuarioSuper _detailSuper;
+        private readonly IDetalleUsuarios _detailUser;
         private readonly IListarUsuariosInsp _inspectorServicio;
-        private readonly IDetalleUsuarioInsp _detailInsp;
+        private readonly IEliminarUsuario _eliminarUsuario;
+        private readonly IActualizarDatosUsuario _actualizarUsuario;
 
         public UsersController(vinculacionfemaContext context, IListarUsuariosSuper usuarioServicio,
-                               IDetalleUsuarioSuper detailSuper, IListarUsuariosInsp inspectorServicio,
-                               IDetalleUsuarioInsp detailInsp)
+                               IDetalleUsuarios detailUser, IListarUsuariosInsp inspectorServicio,
+                               IEliminarUsuario  eliminarUsuario, IActualizarDatosUsuario actualizarUsuario)
         {
             _context = context;
             _usuarioServicio = usuarioServicio;
-            _detailSuper = detailSuper;
+            _detailUser = detailUser;
             _inspectorServicio = inspectorServicio;
-            _detailInsp = detailInsp;
+            _eliminarUsuario = eliminarUsuario;
+            _actualizarUsuario = actualizarUsuario;
         }
 
         [HttpGet]
@@ -181,25 +183,6 @@ namespace Back_Vinculacion_Fema.Controllers
         }
 
         [HttpGet]
-        [Route("consultarDetallesSuper/{idUsuario}")]
-        public async Task<IActionResult> ConsultarDetallesSuper(int idUsuario)
-        {
-            try
-            {
-                var userDetails = await _detailSuper.DetallesUsuariosSupervisor (idUsuario);
-                if (userDetails == null)
-                {
-                    return NotFound($"No se encontró un usuario con el ID {idUsuario}");
-                }
-                return Ok(userDetails);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Ocurrió un error al obtener los detalles del usuario: {ex.Message}");
-            }
-        }
-
-        [HttpGet]
         [Route("listarUsuariosInspector")]
         public async Task<IActionResult> ListarUsuariosInspector()
         {
@@ -215,12 +198,12 @@ namespace Back_Vinculacion_Fema.Controllers
         }
 
         [HttpGet]
-        [Route("consultarDetallesInsp/{idUsuario}")]
-        public async Task<IActionResult> ConsultarDetallesInsp(int idUsuario)
+        [Route("consultarDetallesSuper/{idUsuario}")]
+        public async Task<IActionResult> ConsultarDetallesUsuarios(int idUsuario)
         {
             try
             {
-                var userDetails = await _detailInsp.DetallesUsuariosInspector(idUsuario);
+                var userDetails = await _detailUser.CargarDetallesUsuarios(idUsuario);
                 if (userDetails == null)
                 {
                     return NotFound($"No se encontró un usuario con el ID {idUsuario}");
@@ -232,6 +215,43 @@ namespace Back_Vinculacion_Fema.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Ocurrió un error al obtener los detalles del usuario: {ex.Message}");
             }
         }
+
+        [HttpPut]
+        [Route("eliminarUsuario")]
+        public async Task<IActionResult> EliminarUsuarios([FromBody] EliminarUsuarioVM model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _eliminarUsuario.EliminarUsuarioAsync(model.IdUsuario, model.id_estado);
+            if (!result.Success)
+            {
+                return StatusCode(500, result.ErrorMessage); // Devuelve el mensaje de error
+            }
+
+            return Ok("Estado del usuario actualizado exitosamente.");
+        }
+
+        [HttpPut]
+        [Route("ActualizarUsuario")]
+        public async Task<IActionResult> ActualizarUsuario([FromBody] DetalleUsuariosVM usuarioDetalle)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _actualizarUsuario.ActualizarUsuarioAsync(usuarioDetalle);
+            if (!result.Success)
+            {
+                return StatusCode(500, "Error al actualizar los detalles del usuario.");
+            }
+
+            return Ok("Detalles del usuario actualizados exitosamente.");
+        }
+
 
         [HttpPut("Recuperacion/{_Correo}")]                     
         public async Task<ActionResult> Recovery(String _Correo, String motivo)
@@ -274,6 +294,7 @@ namespace Back_Vinculacion_Fema.Controllers
             }
         }
 
+        
         /*[HttpPost("CrearUsuario")]
 
         [HttpPost("CrearUsuario")]  
