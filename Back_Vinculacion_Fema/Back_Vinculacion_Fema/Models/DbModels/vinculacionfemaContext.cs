@@ -1,4 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Back_Vinculacion_Fema.Models.DbModels
 {
@@ -13,44 +16,35 @@ namespace Back_Vinculacion_Fema.Models.DbModels
         {
         }
 
+        public virtual DbSet<AccionPreguntum> AccionPregunta { get; set; } = null!;
+        public virtual DbSet<AccionRequeridum> AccionRequerida { get; set; } = null!;
+        public virtual DbSet<Archivo> Archivos { get; set; } = null!;
+        public virtual DbSet<Estado> Estados { get; set; } = null!;
         public virtual DbSet<EvaluacionExterior> EvaluacionExteriors { get; set; } = null!;
         public virtual DbSet<EvaluacionInterior> EvaluacionInteriors { get; set; } = null!;
+        public virtual DbSet<ExtensionEvaluacionExterior> ExtensionEvaluacionExteriors { get; set; } = null!;
+        public virtual DbSet<ExtensionOtrosPeligro> ExtensionOtrosPeligros { get; set; } = null!;
         public virtual DbSet<Fema> Femas { get; set; } = null!;
         public virtual DbSet<FemaEdificio> FemaEdificios { get; set; } = null!;
         public virtual DbSet<FemaEvalEstructuradum> FemaEvalEstructurada { get; set; } = null!;
         public virtual DbSet<FemaEvalNoEstructuradum> FemaEvalNoEstructurada { get; set; } = null!;
         public virtual DbSet<FemaEvaluacion> FemaEvaluacions { get; set; } = null!;
+        public virtual DbSet<FemaExtensionRevision> FemaExtensionRevisions { get; set; } = null!;
         public virtual DbSet<FemaOcupacion> FemaOcupacions { get; set; } = null!;
         public virtual DbSet<FemaOtrosPeligro> FemaOtrosPeligros { get; set; } = null!;
         public virtual DbSet<FemaPuntuacion> FemaPuntuacions { get; set; } = null!;
         public virtual DbSet<FemaSuelo> FemaSuelos { get; set; } = null!;
-        public virtual DbSet<Ocupacion> Ocupaciones { get; set; } = null!;
-
-        //public virtual DbSet<TblFemaItem> TblFemaItems { get; set; } = null!;
-        //public virtual DbSet<TblFemaMenu> TblFemaMenus { get; set; } = null!;
-        //public virtual DbSet<TblFemaMenuUsuario> TblFemaMenuUsuarios { get; set; } = null!;
-        //public virtual DbSet<TblFemaModulo> TblFemaModulos { get; set; } = null!;
-        //public virtual DbSet<TblFemaOpcione> TblFemaOpciones { get; set; } = null!;
-        //public virtual DbSet<TblFemaOpcionesRole> TblFemaOpcionesRoles { get; set; } = null!;
+        public virtual DbSet<Ocupacion> Ocupacions { get; set; } = null!;
+        public virtual DbSet<PuntuacionMatriz> PuntuacionMatrizs { get; set; } = null!;
+        public virtual DbSet<SubtipoEdificacion> SubtipoEdificacions { get; set; } = null!;
         public virtual DbSet<TblFemaPersona> TblFemaPersonas { get; set; } = null!;
-        public virtual DbSet<TblFemaRoles> Tbl_Fema_Roles { get; set; } = null!;
-        //public virtual DbSet<TblFemaRolesUsuario> TblFemaRolesUsuarios { get; set; } = null!;
-        //public virtual DbSet<TblFemaSubMenu> TblFemaSubMenus { get; set; } = null!;
+        public virtual DbSet<TblFemaRole> TblFemaRoles { get; set; } = null!;
         public virtual DbSet<TblFemaUsuario> TblFemaUsuarios { get; set; } = null!;
+        public virtual DbSet<TipoArchivo> TipoArchivos { get; set; } = null!;
         public virtual DbSet<TipoEdificacion> TipoEdificacions { get; set; } = null!;
-        //public virtual DbSet<TipoPuntuacion> TipoPuntuacions { get; set; } = null!;
+        public virtual DbSet<TipoOcupacion> TipoOcupacions { get; set; } = null!;
+        public virtual DbSet<TipoPuntuacion> TipoPuntuacions { get; set; } = null!;
         public virtual DbSet<TipoSuelo> TipoSuelos { get; set; } = null!;
-
-        public virtual DbSet<TipoOcupacion> TipoOcupaciones { get; set; } = null!;
-
-        public virtual DbSet<Archivo> Archivos { get; set; } = null!;
-
-        public virtual DbSet<TipoEdificacion> TipoEdificaciones { get; set; } = null!;
-
-        public virtual DbSet<SubtipoEdificacion>SubTipoEdificacion { get; set; } = null!;
-
-        public virtual DbSet<TipoPuntuacion> TipoPuntuaciones { get; set; } = null!;
-
         public virtual DbSet<TipoUso> TipoUsos { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -62,18 +56,57 @@ namespace Back_Vinculacion_Fema.Models.DbModels
             }
         }
 
-        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
-            modelBuilder.Entity<TipoUso>(entity =>
+            modelBuilder.Entity<AccionPreguntum>(entity =>
             {
-                entity.HasKey(t => t.Cod_Tipo_Uso_Edificacion);
+                entity.HasKey(e => e.CodAccionPregunta);
 
-                entity.ToTable("TIPO_USO");
-                 
+                entity.ToTable("ACCION_PREGUNTA");
+
+                entity.Property(e => e.CodAccionPregunta)
+                    .ValueGeneratedNever()
+                    .HasColumnName("cod_accion_pregunta");
+
+                entity.Property(e => e.Estado).HasColumnName("estado");
+
+                entity.Property(e => e.Pregunta)
+                    .HasMaxLength(100)
+                    .IsUnicode(false)
+                    .HasColumnName("pregunta");
+
+                entity.Property(e => e.Respuesta)
+                    .HasMaxLength(100)
+                    .IsUnicode(false)
+                    .HasColumnName("respuesta");
             });
 
+            modelBuilder.Entity<AccionRequeridum>(entity =>
+            {
+                entity.HasKey(e => e.CodAccionRequerida);
+
+                entity.ToTable("ACCION_REQUERIDA");
+
+                entity.Property(e => e.CodAccionRequerida).HasColumnName("cod_accion_requerida");
+
+                entity.Property(e => e.CodAccionPregunta).HasColumnName("cod_accion_pregunta");
+
+                entity.Property(e => e.CodExtensionRevision).HasColumnName("cod_extension_revision");
+
+                entity.Property(e => e.Estado).HasColumnName("estado");
+
+                entity.HasOne(d => d.CodAccionPreguntaNavigation)
+                    .WithMany(p => p.AccionRequerida)
+                    .HasForeignKey(d => d.CodAccionPregunta)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ACCION_REQUERIDA_ACCION_PREGUNTA");
+
+                entity.HasOne(d => d.CodExtensionRevisionNavigation)
+                    .WithMany(p => p.AccionRequerida)
+                    .HasForeignKey(d => d.CodExtensionRevision)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ACCION_REQUERIDA_FEMA_EXTENSION_REVISION");
+            });
 
             modelBuilder.Entity<Archivo>(entity =>
             {
@@ -81,83 +114,47 @@ namespace Back_Vinculacion_Fema.Models.DbModels
 
                 entity.ToTable("Archivo");
 
-                entity.Property(e => e.IdArchivo)
-                    .ValueGeneratedOnAdd()
-                    .HasColumnName("IdArchivo");
+                entity.Property(e => e.CodFema).HasColumnName("cod_fema");
 
-                entity.Property(e => e.Path)
-                    .HasColumnName("Path");
-
-                entity.Property(e => e.Data)
-                    .HasColumnName("Data");
+                entity.Property(e => e.Data).IsUnicode(false);
 
                 entity.Property(e => e.MimeType)
-                    .HasColumnName("MimeType");
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
 
-                entity.Property(e => e.IdTipoArchivo)
-                    .HasColumnName("IdTipoArchivo");
+                entity.Property(e => e.Path).HasMaxLength(250);
 
-                entity.Property(e => e.Cod_Fema)
-                    .HasColumnName("cod_fema");
-
-                entity.HasOne(d => d.Fema)
+                entity.HasOne(d => d.CodFemaNavigation)
                     .WithMany(p => p.Archivos)
-                    .HasForeignKey(d => d.Cod_Fema)
-                    .HasConstraintName("FK_ARCHIVO_FEMA");
+                    .HasForeignKey(d => d.CodFema)
+                    .HasConstraintName("FK_Archivo_FEMA");
 
-                entity.HasOne(d => d.TipoArchivo)
+                entity.HasOne(d => d.IdTipoArchivoNavigation)
                     .WithMany(p => p.Archivos)
                     .HasForeignKey(d => d.IdTipoArchivo)
-                    .HasConstraintName("FK_ARCHIVO_TIPO_ARCHIVO");
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Archivo_Tipo_Archivo");
             });
 
-
-            modelBuilder.Entity<SubtipoEdificacion>(entity =>
+            modelBuilder.Entity<Estado>(entity =>
             {
-                entity.HasKey(e => e.cod_subtipo_edificacion);
+                entity.HasKey(e => e.IdEstado);
 
-                entity.ToTable("SUBTIPO_EDIFICACION");
+                entity.ToTable("Estado");
 
-                entity.Property(e => e.cod_subtipo_edificacion)
-                    .HasColumnName("cod_subtipo_edificacion");
-
-                entity.Property(e => e.cod_tipo_edificacion)
-                    .HasColumnName("cod_tipo_edificacion");
-
-                entity.Property(e => e.descripcion)
-                    .HasColumnName("descripcion");
-
-                entity.Property(e => e.estado)
-                    .HasColumnName("estado");
-
-                entity.HasOne(d => d.TipoEdificacion)
-                    .WithMany(p => p.SubtipoEdificaciones)
-                    .HasForeignKey(d => d.cod_tipo_edificacion)
-                    .HasConstraintName("FK_SUBTIPO_EDIFICACION_TIPO_EDIFICACION");
-            });
-
-            modelBuilder.Entity<TipoPuntuacion>(entity =>
-            {
-                entity.HasKey(e => e.CodTipoPuntuacion);
-
-                entity.ToTable("TIPO_PUNTUACION");
-
-                entity.Property(e => e.CodTipoPuntuacion)
-                    .HasColumnName("cod_tipo_puntuacion");
+                entity.Property(e => e.IdEstado)
+                    .ValueGeneratedNever()
+                    .HasColumnName("id_estado");
 
                 entity.Property(e => e.Descripcion)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
                     .HasColumnName("descripcion");
 
-                entity.Property(e => e.Estado)
-                    .HasColumnName("estado");
-
-
-                entity.HasMany(d => d.PuntuacionMatrices)
-                     .WithOne(p => p.TipoPuntuacion)
-                    .HasForeignKey(d => d.cod_tipo_puntuacion)
-                    .HasConstraintName("FK_PUNTUACION_MATRIZ_TIPO_PUNTUACION");
+                entity.Property(e => e.FechaCreacion)
+                    .HasColumnType("datetime")
+                    .HasColumnName("fecha_creacion");
             });
-
 
             modelBuilder.Entity<EvaluacionExterior>(entity =>
             {
@@ -165,20 +162,14 @@ namespace Back_Vinculacion_Fema.Models.DbModels
 
                 entity.ToTable("EVALUACION_EXTERIOR");
 
-                entity.Property(e => e.CodEvalExterior)
-                    .ValueGeneratedNever()
-                    .HasColumnName("cod_eval_exterior");
+                entity.Property(e => e.CodEvalExterior).HasColumnName("cod_eval_exterior");
 
                 entity.Property(e => e.Descripcion)
-                    .HasMaxLength(100)
+                    .HasMaxLength(30)
                     .IsUnicode(false)
                     .HasColumnName("descripcion");
 
-                entity.Property(e => e.Estado)
-                    .HasMaxLength(2)
-                    .IsUnicode(false)
-                    .HasColumnName("estado")
-                    .IsFixedLength();
+                entity.Property(e => e.Estado).HasColumnName("estado");
             });
 
             modelBuilder.Entity<EvaluacionInterior>(entity =>
@@ -187,20 +178,68 @@ namespace Back_Vinculacion_Fema.Models.DbModels
 
                 entity.ToTable("EVALUACION_INTERIOR");
 
-                entity.Property(e => e.CodEvalInterior)
-                    .ValueGeneratedNever()
-                    .HasColumnName("cod_eval_interior");
+                entity.Property(e => e.CodEvalInterior).HasColumnName("cod_eval_interior");
 
                 entity.Property(e => e.Descripcion)
-                    .HasMaxLength(100)
+                    .HasMaxLength(30)
                     .IsUnicode(false)
                     .HasColumnName("descripcion");
 
-                entity.Property(e => e.Estado)
-                    .HasMaxLength(2)
-                    .IsUnicode(false)
-                    .HasColumnName("estado")
-                    .IsFixedLength();
+                entity.Property(e => e.Estado).HasColumnName("estado");
+            });
+
+            modelBuilder.Entity<ExtensionEvaluacionExterior>(entity =>
+            {
+                entity.HasKey(e => e.CodExtensionEvaluacionExterior);
+
+                entity.ToTable("EXTENSION_EVALUACION_EXTERIOR");
+
+                entity.Property(e => e.CodExtensionEvaluacionExterior).HasColumnName("cod_extension_evaluacion_exterior");
+
+                entity.Property(e => e.CodEvalExterior).HasColumnName("cod_eval_exterior");
+
+                entity.Property(e => e.CodExtensionRevision).HasColumnName("cod_extension_revision");
+
+                entity.Property(e => e.Estado).HasColumnName("estado");
+
+                entity.HasOne(d => d.CodEvalExteriorNavigation)
+                    .WithMany(p => p.ExtensionEvaluacionExteriors)
+                    .HasForeignKey(d => d.CodEvalExterior)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_EXTENSION_EVALUACION_EXTERIOR_EVALUACION_EXTERIOR");
+
+                entity.HasOne(d => d.CodExtensionRevisionNavigation)
+                    .WithMany(p => p.ExtensionEvaluacionExteriors)
+                    .HasForeignKey(d => d.CodExtensionRevision)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_EXTENSION_EVALUACION_EXTERIOR_FEMA_EXTENSION_REVISION");
+            });
+
+            modelBuilder.Entity<ExtensionOtrosPeligro>(entity =>
+            {
+                entity.HasKey(e => e.CodExtensionOtrosPeligros);
+
+                entity.ToTable("EXTENSION_OTROS_PELIGROS");
+
+                entity.Property(e => e.CodExtensionOtrosPeligros).HasColumnName("cod_extension_otros_peligros");
+
+                entity.Property(e => e.CodExtensionRevision).HasColumnName("cod_extension_revision");
+
+                entity.Property(e => e.CodOtrosPeligorsSec).HasColumnName("cod_otros_peligors_sec");
+
+                entity.Property(e => e.Estado).HasColumnName("estado");
+
+                entity.HasOne(d => d.CodExtensionRevisionNavigation)
+                    .WithMany(p => p.ExtensionOtrosPeligros)
+                    .HasForeignKey(d => d.CodExtensionRevision)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_EXTENSION_OTROS_PELIGROS_FEMA_EXTENSION_REVISION");
+
+                entity.HasOne(d => d.CodOtrosPeligorsSecNavigation)
+                    .WithMany(p => p.ExtensionOtrosPeligros)
+                    .HasForeignKey(d => d.CodOtrosPeligorsSec)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_EXTENSION_OTROS_PELIGROS_FEMA_OTROS_PELIGROS1");
             });
 
             modelBuilder.Entity<Fema>(entity =>
@@ -209,27 +248,26 @@ namespace Back_Vinculacion_Fema.Models.DbModels
 
                 entity.ToTable("FEMA");
 
-                entity.Property(e => e.CodFema)
-                    .ValueGeneratedOnAdd()
-                    .HasColumnName("cod_fema");
+                entity.Property(e => e.CodFema).HasColumnName("cod_fema");
 
-                entity.Property(e => e.CodUsuarioAct).HasColumnName("usuario_act");
-
-                entity.Property(e => e.CodUsuarioIng).HasColumnName("usuario_ing");
+                entity.Property(e => e.CodTipoUsoEdificacion).HasColumnName("CodTipoUsoEdificacion");
 
                 entity.Property(e => e.CodigoPostal)
-                    .HasMaxLength(10)
+                    .HasMaxLength(6)
                     .IsUnicode(false)
                     .HasColumnName("codigo_postal");
 
                 entity.Property(e => e.Comentarios)
-                    .HasColumnType("text")
+                    .HasMaxLength(200)
+                    .IsUnicode(false)
                     .HasColumnName("comentarios");
 
                 entity.Property(e => e.Direccion)
-                    .HasMaxLength(100)
+                    .HasMaxLength(50)
                     .IsUnicode(false)
                     .HasColumnName("direccion");
+
+                entity.Property(e => e.Estado).HasColumnName("estado");
 
                 entity.Property(e => e.FecActualiza)
                     .HasColumnType("datetime")
@@ -256,7 +294,7 @@ namespace Back_Vinculacion_Fema.Models.DbModels
                     .HasColumnName("longitud");
 
                 entity.Property(e => e.NomEdificacion)
-                    .HasMaxLength(60)
+                    .HasMaxLength(50)
                     .IsUnicode(false)
                     .HasColumnName("nom_edificacion");
 
@@ -265,37 +303,26 @@ namespace Back_Vinculacion_Fema.Models.DbModels
                     .IsUnicode(false)
                     .HasColumnName("nom_encuestador");
 
-                entity.Property(e => e.OtrosIdentificadores)
-                    .HasMaxLength(60)
+                entity.Property(e => e.OtrosIdentificaciones)
+                    .HasMaxLength(50)
                     .IsUnicode(false)
                     .HasColumnName("otros_identificaciones");
 
-                /*entity.Property(e => e.RequiereNivel2)
-                    .HasMaxLength(2)
+                entity.Property(e => e.UsuarioAct)
+                    .HasMaxLength(13)
                     .IsUnicode(false)
-                    .HasColumnName("requiere_nivel2")
-                    .IsFixedLength();
+                    .HasColumnName("usuario_act");
 
-                entity.Property(e => e.RutaImagenCroquis)
-                    .HasMaxLength(150)
+                entity.Property(e => e.UsuarioIng)
+                    .HasMaxLength(13)
                     .IsUnicode(false)
-                    .HasColumnName("ruta_imagen_croquis");
+                    .HasColumnName("usuario_ing");
 
-                entity.Property(e => e.RutaImagenEdif)
-                    .HasMaxLength(150)
-                    .IsUnicode(false)
-                    .HasColumnName("ruta_imagen_edif");*/
-
-                entity.Property(e => e.CodTipoUsoEdificacion)
-                    .HasMaxLength(60)
-                    .IsUnicode(false)
-                    .HasColumnName("cod_tipo_uso_edificacion");
-
-
-                entity.HasOne(d => d.TipoUso)
-                     .WithMany(p => p.FEMAs)
-                     .HasForeignKey(d => d.CodTipoUsoEdificacion)
-                     .HasConstraintName("FK_FEMA_TIPO_USO");
+                entity.HasOne(d => d.CodTipoUsoEdificacionNavigation)
+                    .WithMany(p => p.Femas)
+                    .HasForeignKey(d => d.CodTipoUsoEdificacion)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_FEMA_TIPO_USO");
             });
 
             modelBuilder.Entity<FemaEdificio>(entity =>
@@ -304,36 +331,38 @@ namespace Back_Vinculacion_Fema.Models.DbModels
 
                 entity.ToTable("FEMA_EDIFICIO");
 
-                entity.Property(e => e.CodEdificioSecuencia)
-                    .ValueGeneratedOnAdd()
-                    .HasColumnName("cod_edificio_secuencia");
-
-                entity.Property(e => e.CodFema).HasColumnName("cod_fema");
-
-                entity.Property(e => e.NroPisosInf).HasColumnName("nro_pisos_inf");
-
-                entity.Property(e => e.NroPisosSup).HasColumnName("nro_pisos_sup");
-
-                entity.Property(e => e.AnioConstruccion).HasColumnName("anio_construccion");
-
-                entity.Property(e => e.AreaTotalPiso).HasColumnName("area_total_piso");
-
-                entity.Property(e => e.AnioCodigo).HasColumnName("anio_codigo");
-
-                entity.Property(e => e.Ampliacion).HasColumnName("ampliacion");
+                entity.Property(e => e.CodEdificioSecuencia).HasColumnName("cod_edificio_secuencia");
 
                 entity.Property(e => e.AmplAnioConstruccion).HasColumnName("ampl_anio_construccion");
 
-                entity.Property(e => e.Estado).HasColumnName("estado");
+                entity.Property(e => e.Ampliacion)
+                    .HasMaxLength(2)
+                    .IsUnicode(false)
+                    .HasColumnName("ampliacion")
+                    .IsFixedLength();
+
+                entity.Property(e => e.AnioCodigo)
+                    .HasMaxLength(20)
+                    .HasColumnName("anio_codigo");
+
+                entity.Property(e => e.AnioConstruccion).HasColumnName("anio_construccion");
 
                 entity.Property(e => e.AreaTotalPiso)
                     .HasColumnType("decimal(16, 2)")
                     .HasColumnName("area_total_piso");
 
+                entity.Property(e => e.CodFema).HasColumnName("cod_fema");
+
+                entity.Property(e => e.Estado).HasColumnName("estado");
+
+                entity.Property(e => e.NroPisosInf).HasColumnName("nro_pisos_inf");
+
+                entity.Property(e => e.NroPisosSup).HasColumnName("nro_pisos_sup");
 
                 entity.HasOne(d => d.CodFemaNavigation)
                     .WithMany(p => p.FemaEdificios)
                     .HasForeignKey(d => d.CodFema)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_FEMA_EDIFICIO_FEMA");
             });
 
@@ -343,9 +372,7 @@ namespace Back_Vinculacion_Fema.Models.DbModels
 
                 entity.ToTable("FEMA_EVAL_ESTRUCTURADA");
 
-                entity.Property(e => e.CodSecuencia)
-                    .ValueGeneratedNever()
-                    .HasColumnName("cod_secuencia");
+                entity.Property(e => e.CodSecuencia).HasColumnName("cod_secuencia");
 
                 entity.Property(e => e.Chk1).HasColumnName("chk_1");
 
@@ -369,9 +396,7 @@ namespace Back_Vinculacion_Fema.Models.DbModels
 
                 entity.ToTable("FEMA_EVAL_NO_ESTRUCTURADA");
 
-                entity.Property(e => e.CodSecuencia)
-                    .ValueGeneratedNever()
-                    .HasColumnName("cod_secuencia");
+                entity.Property(e => e.CodSecuencia).HasColumnName("cod_secuencia");
 
                 entity.Property(e => e.Chk1).HasColumnName("chk_1");
 
@@ -395,9 +420,7 @@ namespace Back_Vinculacion_Fema.Models.DbModels
 
                 entity.ToTable("FEMA_EVALUACION");
 
-                entity.Property(e => e.CodSecuencia)
-                    .ValueGeneratedNever()
-                    .HasColumnName("cod_secuencia");
+                entity.Property(e => e.CodSecuencia).HasColumnName("cod_secuencia");
 
                 entity.Property(e => e.CodEvalExterior).HasColumnName("cod_eval_exterior");
 
@@ -426,20 +449,62 @@ namespace Back_Vinculacion_Fema.Models.DbModels
                     .IsUnicode(false)
                     .HasColumnName("persona_contacto");
 
-                entity.HasOne(d => d.CodEvalExteriorNavigation)
-                    .WithMany(p => p.FemaEvaluacions)
-                    .HasForeignKey(d => d.CodEvalExterior)
-                    .HasConstraintName("FK_FEMA_EVALUACION_EVALUACION_EXTERIOR");
-
-                entity.HasOne(d => d.CodEvalInteriorNavigation)
-                    .WithMany(p => p.FemaEvaluacions)
-                    .HasForeignKey(d => d.CodEvalInterior)
-                    .HasConstraintName("FK_FEMA_EVALUACION_EVALUACION_INTERIOR");
-
                 entity.HasOne(d => d.CodFemaNavigation)
                     .WithMany(p => p.FemaEvaluacions)
                     .HasForeignKey(d => d.CodFema)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_FEMA_EVALUACION_FEMA");
+            });
+
+            modelBuilder.Entity<FemaExtensionRevision>(entity =>
+            {
+                entity.HasKey(e => e.CodExtensionRevision);
+
+                entity.ToTable("FEMA_EXTENSION_REVISION");
+
+                entity.Property(e => e.CodExtensionRevision).HasColumnName("cod_extension_revision");
+
+                entity.Property(e => e.CodEvalInterior).HasColumnName("cod_eval_interior");
+
+                entity.Property(e => e.CodFema).HasColumnName("cod_fema");
+
+                entity.Property(e => e.ContactoRegistrado)
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .HasColumnName("contacto_registrado");
+
+                entity.Property(e => e.Estado).HasColumnName("estado");
+
+                entity.Property(e => e.FuentePeligroGeologicos)
+                    .HasMaxLength(150)
+                    .IsUnicode(false)
+                    .HasColumnName("fuente_peligro_geologicos");
+
+                entity.Property(e => e.FuenteTipoSuelo)
+                    .HasMaxLength(150)
+                    .IsUnicode(false)
+                    .HasColumnName("fuente_tipo_suelo");
+
+                entity.Property(e => e.NombreContacto)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasColumnName("nombre_contacto");
+
+                entity.Property(e => e.RevisionPlanos).HasColumnName("revision_planos");
+
+                entity.Property(e => e.TelefonoContacto).HasColumnName("telefono_contacto");
+
+                entity.HasOne(d => d.CodEvalInteriorNavigation)
+                    .WithMany(p => p.FemaExtensionRevisions)
+                    .HasForeignKey(d => d.CodEvalInterior)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_FEMA_EXTENSION_REVISION_EVALUACION_INTERIOR");
+
+                entity.HasOne(d => d.CodFemaNavigation)
+                    .WithMany(p => p.FemaExtensionRevisions)
+                    .HasForeignKey(d => d.CodFema)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_FEMA_EXTENSION_REVISION_FEMA");
             });
 
             modelBuilder.Entity<FemaOcupacion>(entity =>
@@ -448,18 +513,15 @@ namespace Back_Vinculacion_Fema.Models.DbModels
 
                 entity.ToTable("FEMA_OCUPACION");
 
-                entity.Property(e => e.CodOcupacionSecuencia)
-                    .ValueGeneratedOnAdd()
-                    .HasColumnName("cod_ocupacion_secuencia");
+                entity.Property(e => e.CodOcupacionSecuencia).HasColumnName("cod_ocupacion_secuencia");
 
                 entity.Property(e => e.CodFema).HasColumnName("cod_fema");
 
-                entity.Property(e => e.CodOcupacion).HasColumnName("cod_ocupacion")
-                .HasColumnType("smallint");
+                entity.Property(e => e.CodOcupacion).HasColumnName("cod_ocupacion");
 
                 entity.Property(e => e.CodTipoOcupacion).HasColumnName("cod_tipo_ocupacion");
 
-                //entity.Property(e => e.Unidades).HasColumnName("unidades");
+                entity.Property(e => e.Estado).HasColumnName("estado");
 
                 entity.HasOne(d => d.CodFemaNavigation)
                     .WithMany(p => p.FemaOcupacions)
@@ -470,363 +532,170 @@ namespace Back_Vinculacion_Fema.Models.DbModels
                 entity.HasOne(d => d.CodOcupacionNavigation)
                     .WithMany(p => p.FemaOcupacions)
                     .HasForeignKey(d => d.CodOcupacion)
-                    .HasConstraintName("FK_FEMA_OCUPACION_OCUPACION");
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_FEMA_OCUPACION_OCUPACION1");
+
+                entity.HasOne(d => d.CodTipoOcupacionNavigation)
+                    .WithMany(p => p.FemaOcupacions)
+                    .HasForeignKey(d => d.CodTipoOcupacion)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_FEMA_OCUPACION_TIPO_OCUPACION");
             });
 
             modelBuilder.Entity<FemaOtrosPeligro>(entity =>
             {
-                entity.HasKey(e => e.CodSecuencia);
+                entity.HasKey(e => e.CodOtrosPeligorsSec);
 
                 entity.ToTable("FEMA_OTROS_PELIGROS");
 
-                entity.Property(e => e.CodSecuencia)
-                    .ValueGeneratedNever()
-                    .HasColumnName("cod_secuencia");
+                entity.Property(e => e.CodOtrosPeligorsSec).HasColumnName("cod_otros_peligors_sec");
 
-                entity.Property(e => e.Chk1).HasColumnName("chk_1");
+                entity.Property(e => e.Pregunta)
+                    .HasMaxLength(100)
+                    .IsUnicode(false)
+                    .HasColumnName("pregunta");
 
-                entity.Property(e => e.Chk2).HasColumnName("chk_2");
-
-                entity.Property(e => e.Chk3).HasColumnName("chk_3");
-
-                entity.Property(e => e.Chk4).HasColumnName("chk_4");
-
-                entity.Property(e => e.CodFema).HasColumnName("cod_fema");
-
-                entity.HasOne(d => d.CodFemaNavigation)
-                    .WithMany(p => p.FemaOtrosPeligros)
-                    .HasForeignKey(d => d.CodFema)
-                    .HasConstraintName("FK_FEMA_OTROS_PELIGROS_FEMA");
+                entity.Property(e => e.Respuesta)
+                    .HasMaxLength(100)
+                    .IsUnicode(false)
+                    .HasColumnName("respuesta");
             });
 
             modelBuilder.Entity<FemaPuntuacion>(entity =>
             {
-                entity.HasKey(e => e.CodPuntuacionSec);
+                entity.HasKey(e => e.CodPuntuacionSec)
+                    .HasName("PK_FEMA_PUNTUACION_CABECERA");
 
                 entity.ToTable("FEMA_PUNTUACION");
 
-                entity.Property(e => e.CodPuntuacionSec)
-                    .ValueGeneratedOnAdd()
-                    .HasColumnName("cod_puntuacion_sec");
+                entity.Property(e => e.CodPuntuacionSec).HasColumnName("cod_puntuacion_sec");
 
-                entity.Property(e => e.CodFema)
-                    .HasColumnName("cod_fema");
+                entity.Property(e => e.CodFema).HasColumnName("cod_fema");
 
-                entity.Property(e => e.CodPuntuacionMatriz)
-                    .HasColumnName("cod_puntuacion_matriz");
+                entity.Property(e => e.CodPuntuacionMatriz).HasColumnName("cod_puntuacion_matriz");
+
+                entity.Property(e => e.EsDnk).HasColumnName("es_dnk");
+
+                entity.Property(e => e.EsEst).HasColumnName("es_est");
+
+                entity.Property(e => e.Estado).HasColumnName("estado");
 
                 entity.Property(e => e.ResultadoFinal)
+                    .HasColumnType("decimal(18, 2)")
                     .HasColumnName("resultado_final");
-
-                entity.Property(e => e.EsEst)
-                    .HasColumnName("es_est");
-
-                entity.Property(e => e.Estado)
-                    .HasColumnName("estado");
-
-                entity.Property(e => e.EsDnk)
-                    .HasColumnName("es_dnk");
 
                 entity.HasOne(d => d.CodFemaNavigation)
                     .WithMany(p => p.FemaPuntuacions)
                     .HasForeignKey(d => d.CodFema)
-                    .HasConstraintName("FK_FEMA_PUNTUACION_FEMA");
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_FEMA_PUNTUACION_CABECERA_FEMA_PUNTUACION_CABECERA");
 
-                entity.HasOne(d => d.PuntuacionMatriz)
-                      .WithMany(p => p.FemaPuntuaciones)
-                      .HasForeignKey(d => d.CodPuntuacionMatriz)
-                      .HasConstraintName("FK_FEMA_PUNTUACION_PUNTUACION_MATRIZ");
+                entity.HasOne(d => d.CodPuntuacionMatrizNavigation)
+                    .WithMany(p => p.FemaPuntuacions)
+                    .HasForeignKey(d => d.CodPuntuacionMatriz)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_FEMA_PUNTUACION_FEMA_PUNTUACION_MATRIZ");
             });
-
-            /*entity.HasOne(d => d.CodPuntuacionMatrizNavigation)
-                .WithMany(p => p.FemaPuntuacions)
-                .HasForeignKey(d => d.CodPuntuacionMatriz)
-                .HasConstraintName("FK_FEMA_PUNTUACION_PUNTUACION_MATRIZ");/*
-
-
-        /*modelBuilder.Entity<FemaPuntuacion>(entity =>
-        {
-            entity.HasKey(e => e.CodSecuencia);
-
-            entity.ToTable("FEMA_PUNTUACION");
-
-            entity.Property(e => e.CodSecuencia)
-                .ValueGeneratedNever()
-                .HasColumnName("cod_secuencia");
-
-            entity.Property(e => e.CodFema).HasColumnName("cod_fema");
-
-            entity.Property(e => e.CodTipoEdificacion).HasColumnName("cod_tipo_edificacion");
-
-            entity.Property(e => e.CodTipoPuntuacion).HasColumnName("cod_tipo_puntuacion");
-
-            entity.Property(e => e.Valor)
-                .HasColumnType("decimal(16, 2)")
-                .HasColumnName("valor");
-
-            entity.HasOne(d => d.CodFemaNavigation)
-                .WithMany(p => p.FemaPuntuacions)
-                .HasForeignKey(d => d.CodFema)
-                .HasConstraintName("FK_FEMA_PUNTUACION_FEMA");
-
-            entity.HasOne(d => d.CodTipoEdificacionNavigation)
-                .WithMany(p => p.FemaPuntuacions)
-                .HasForeignKey(d => d.CodTipoEdificacion)
-                .HasConstraintName("FK_FEMA_PUNTUACION_TIPO_EDIFICACION");
-
-            entity.HasOne(d => d.CodTipoPuntuacionNavigation)
-                .WithMany(p => p.FemaPuntuacions)
-                .HasForeignKey(d => d.CodTipoPuntuacion)
-                .HasConstraintName("FK_FEMA_PUNTUACION_TIPO_PUNTUACION");
-        });*/
 
             modelBuilder.Entity<FemaSuelo>(entity =>
             {
-                entity.HasKey(e => e.CodSecuencia);
+                entity.HasNoKey();
 
                 entity.ToTable("FEMA_SUELO");
+
+                entity.Property(e => e.CodFema).HasColumnName("cod_fema");
 
                 entity.Property(e => e.CodSecuencia)
                     .ValueGeneratedOnAdd()
                     .HasColumnName("cod_secuencia");
 
-                /*entity.Property(e => e.Adyacencia)
-                    .HasMaxLength(30)
-                    .IsUnicode(false)
-                    .HasColumnName("adyacencia");
+                entity.Property(e => e.CodTipoSuelo).HasColumnName("cod_tipo_suelo");
 
-                entity.Property(e => e.AsumirTipo)
-                    .HasMaxLength(2)
-                    .IsUnicode(false)
-                    .HasColumnName("asumir_tipo");*/
-
-                entity.Property(e => e.CodFema).HasColumnName("cod_fema");
-
-                entity.Property(e => e.CodTipoSuelo)
-                .HasColumnName("cod_tipo_suelo")
-                .HasColumnType("smallint");
-
-                entity.Property(e => e.Estado)
-                .HasColumnName("estado");
-
-                /*entity.Property(e => e.Irregularidades)
-                    .HasMaxLength(30)
-                    .IsUnicode(false)
-                    .HasColumnName("irregularidades");
-
-                entity.Property(e => e.PeligroCaidaExt)
-                    .HasMaxLength(30)
-                    .IsUnicode(false)
-                    .HasColumnName("peligro_caida_ext");
-
-                entity.Property(e => e.RiesgoGeologico)
-                    .HasMaxLength(2)
-                    .IsUnicode(false)
-                    .HasColumnName("riesgo_geologico")
-                    .IsFixedLength();*/
+                entity.Property(e => e.Estado).HasColumnName("estado");
 
                 entity.HasOne(d => d.CodFemaNavigation)
-                    .WithMany(p => p.FemaSuelos)
+                    .WithMany()
                     .HasForeignKey(d => d.CodFema)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_FEMA_SUELO_FEMA");
 
                 entity.HasOne(d => d.CodTipoSueloNavigation)
-                    .WithMany(p => p.FemaSuelos)
+                    .WithMany()
                     .HasForeignKey(d => d.CodTipoSuelo)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_FEMA_SUELO_TIPO_SUELO");
             });
 
             modelBuilder.Entity<Ocupacion>(entity =>
             {
-                entity.HasKey(e => e.CodOcupacion);
+                entity.HasKey(e => e.CodOcupacion)
+                    .HasName("PK_OCUPACION_1");
 
                 entity.ToTable("OCUPACION");
 
-                entity.Property(e => e.CodOcupacion)
-                    .ValueGeneratedNever()
-                    .HasColumnName("cod_ocupacion");
+                entity.Property(e => e.CodOcupacion).HasColumnName("cod_ocupacion");
 
                 entity.Property(e => e.Descripcion)
-                    .HasMaxLength(100)
+                    .HasMaxLength(30)
                     .IsUnicode(false)
                     .HasColumnName("descripcion");
 
-                entity.Property(e => e.Estado)
-                    .HasColumnName("estado");
-
-                entity.HasMany(d => d.FemaOcupacions)
-                      .WithOne(p => p.CodOcupacionNavigation)
-                      .HasForeignKey(d => d.CodOcupacion)
-                      .HasConstraintName("FK_FemaOcupacion_Ocupacion");
+                entity.Property(e => e.Estado).HasColumnName("estado");
             });
 
-            modelBuilder.Entity<TipoOcupacion>(entity =>
+            modelBuilder.Entity<PuntuacionMatriz>(entity =>
             {
-                entity.HasKey(e => e.CodTipoOcupacion);
+                entity.HasKey(e => e.CodPuntuacionMatrizSec)
+                    .HasName("PK_FEMA_PUNTUACION");
 
-                entity.ToTable("TIPO_OCUPACION");
+                entity.ToTable("PUNTUACION_MATRIZ");
 
-                entity.Property(e => e.CodTipoOcupacion)
-                .ValueGeneratedNever()
-                .HasColumnName("cod_tipo_ocupacion");
+                entity.Property(e => e.CodPuntuacionMatrizSec).HasColumnName("cod_puntuacion_matriz_sec");
+
+                entity.Property(e => e.CodSubtipoEdificacion).HasColumnName("CodSubtipoEdificacion");
+
+                entity.Property(e => e.CodTipoPuntuacion).HasColumnName("cod_tipo_puntuacion");
+
+                entity.Property(e => e.Valor)
+                    .HasColumnType("decimal(18, 2)")
+                    .HasColumnName("valor");
+
+                entity.HasOne(d => d.CodSubtipoEdificacionNavigation)
+                    .WithMany(p => p.PuntuacionMatrizs)
+                    .HasForeignKey(d => d.CodSubtipoEdificacion)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_FEMA_PUNTUACION_TIPO_EDIFICACION");
+
+                entity.HasOne(d => d.CodTipoPuntuacionNavigation)
+                    .WithMany(p => p.PuntuacionMatrizs)
+                    .HasForeignKey(d => d.CodTipoPuntuacion)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_FEMA_PUNTUACION_TIPO_PUNTUACION");
+            });
+
+            modelBuilder.Entity<SubtipoEdificacion>(entity =>
+            {
+                entity.HasKey(e => e.CodSubtipoEdificacion);
+
+                entity.ToTable("SUBTIPO_EDIFICACION");
+
+                entity.Property(e => e.CodSubtipoEdificacion).HasColumnName("CodSubtipoEdificacion");
+
+                entity.Property(e => e.CodTipoEdificacion).HasColumnName("cod_tipo_edificacion");
 
                 entity.Property(e => e.Descripcion)
-                .HasMaxLength(100)
-                .IsUnicode(false)
-                .HasColumnName("descripcion");
+                    .HasMaxLength(11)
+                    .IsUnicode(false)
+                    .HasColumnName("descripcion");
 
-                entity.Property(e => e.Estado)
-                .HasColumnName("estado");
+                entity.Property(e => e.Estado).HasColumnName("estado");
 
-                entity.HasMany(d => d.FemaOcupacions)
-                    .WithOne(p => p.CodTipoOcupacionNavigation)
-                    .HasForeignKey(d => d.CodTipoOcupacion)
-                    .HasConstraintName("FK_FemaOcupacion_TipoOcupacion");
+                entity.HasOne(d => d.CodTipoEdificacionNavigation)
+                    .WithMany(p => p.SubtipoEdificacions)
+                    .HasForeignKey(d => d.CodTipoEdificacion)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_SUBTIPO_EDIFICACION_TIPO_EDIFICACION");
             });
-
-            /*modelBuilder.Entity<TblFemaItem>(entity =>
-             {
-                 entity.HasKey(e => e.IdItem)
-                     .HasName("PK__Tbl_Fema__51E84262C101F54C");
-
-                 entity.ToTable("Tbl_Fema_Item");
-
-                 entity.Property(e => e.IdItem).ValueGeneratedNever();
-
-                 entity.Property(e => e.Icono)
-                     .HasMaxLength(100)
-                     .IsUnicode(false);
-
-                 entity.Property(e => e.SubMenuId).HasColumnName("SubMenuID");
-
-                 entity.Property(e => e.TagItem)
-                     .HasMaxLength(100)
-                     .IsUnicode(false);
-
-                 entity.HasOne(d => d.SubMenu)
-                     .WithMany(p => p.TblFemaItems)
-                     .HasForeignKey(d => d.SubMenuId)
-                     .HasConstraintName("FK__Tbl_Fema___SubMe__6383C8BA");
-             });*/
-
-            /*modelBuilder.Entity<TblFemaMenu>(entity =>
-            {
-                entity.HasKey(e => e.IdMenu)
-                    .HasName("PK__Tbl_Fema__4D7EA8E19B883AE6");
-
-                entity.ToTable("Tbl_Fema_Menu");
-
-                entity.Property(e => e.IdMenu).ValueGeneratedNever();
-
-                entity.Property(e => e.Accion).HasMaxLength(100);
-
-                entity.Property(e => e.Descripcion).HasMaxLength(100);
-
-                entity.Property(e => e.Icono).HasMaxLength(100);
-
-                entity.HasOne(d => d.IdModuloNavigation)
-                    .WithMany(p => p.TblFemaMenus)
-                    .HasForeignKey(d => d.IdModulo)
-                    .HasConstraintName("FK__Tbl_Fema___IdMod__5DCAEF64");
-            });*/
-
-            /*modelBuilder.Entity<TblFemaMenuUsuario>(entity =>
-            {
-                entity.HasKey(e => new { e.IdMu, e.IdRol })
-                    .HasName("PK__Tbl_Fema__4F1CD4BA670FD307");
-
-                entity.ToTable("Tbl_Fema_MenuUsuario");
-
-                entity.Property(e => e.IdMu)
-                    .ValueGeneratedOnAdd()
-                    .HasColumnName("idMU");
-
-                entity.Property(e => e.IdRol).HasColumnType("numeric(10, 0)");
-
-                entity.Property(e => e.IdUsuario).HasColumnType("numeric(10, 0)");
-
-                entity.HasOne(d => d.IdModuloNavigation)
-                    .WithMany(p => p.TblFemaMenuUsuarios)
-                    .HasForeignKey(d => d.IdModulo)
-                    .HasConstraintName("FK_MenuUsuario_Modulo");
-
-                entity.HasOne(d => d.IdRolNavigation)
-                    .WithMany(p => p.TblFemaMenuUsuarios)
-                    .HasForeignKey(d => d.IdRol)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_MenuUsuario_Roles");
-            });*/
-
-            /*modelBuilder.Entity<TblFemaModulo>(entity =>
-            {
-                entity.HasKey(e => e.IdModulo)
-                    .HasName("PK__Tbl_Fema__D9F15315B39BC280");
-
-                entity.ToTable("Tbl_Fema_Modulo");
-
-                entity.Property(e => e.IdModulo).ValueGeneratedNever();
-
-                entity.Property(e => e.Homologacion)
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Nombre)
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
-            });*/
-
-            /*modelBuilder.Entity<TblFemaOpcione>(entity =>
-            {
-                entity.HasKey(e => e.IdOpciones)
-                    .HasName("PK_Opciones");
-
-                entity.ToTable("Tbl_Fema_Opciones");
-
-                entity.Property(e => e.IdOpciones)
-                    .HasColumnType("numeric(10, 0)")
-                    .ValueGeneratedOnAdd()
-                    .HasColumnName("idOpciones");
-
-                entity.Property(e => e.Homologacion)
-                    .HasMaxLength(5)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Opcion)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-            });*/
-
-            /*modelBuilder.Entity<TblFemaOpcionesRole>(entity =>
-            {
-                entity.HasKey(e => new { e.IdRolOp, e.IdRol, e.IdOpciones })
-                    .HasName("PK_Opciones_Roles");
-
-                entity.ToTable("Tbl_Fema_OpcionesRoles");
-
-                entity.Property(e => e.IdRolOp)
-                    .HasColumnType("numeric(10, 0)")
-                    .ValueGeneratedOnAdd();
-
-                entity.Property(e => e.IdRol).HasColumnType("numeric(10, 0)");
-
-                entity.Property(e => e.IdOpciones)
-                    .HasColumnType("numeric(10, 0)")
-                    .HasColumnName("idOpciones");
-
-                entity.Property(e => e.FechaValides).HasColumnType("datetime");
-
-                entity.HasOne(d => d.IdOpcionesNavigation)
-                    .WithMany(p => p.TblFemaOpcionesRoles)
-                    .HasForeignKey(d => d.IdOpciones)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_OpcionesRoles_Opciones");
-
-                entity.HasOne(d => d.IdRolNavigation)
-                    .WithMany(p => p.TblFemaOpcionesRoles)
-                    .HasForeignKey(d => d.IdRol)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_OpcionesRoles_Roles");
-            });*/
 
             modelBuilder.Entity<TblFemaPersona>(entity =>
             {
@@ -835,15 +704,7 @@ namespace Back_Vinculacion_Fema.Models.DbModels
 
                 entity.ToTable("Tbl_Fema_Personas");
 
-                entity.Property(e => e.IdPersona)
-                    .HasColumnType("numeric(10, 0)")
-                    .ValueGeneratedOnAdd();
-
-                entity.Property(e => e.Apellido1)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Apellido2)
+                entity.Property(e => e.Apellido)
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
@@ -861,19 +722,13 @@ namespace Back_Vinculacion_Fema.Models.DbModels
 
                 entity.Property(e => e.Estado).HasDefaultValueSql("((1))");
 
-                entity.Property(e => e.FechaNacimiento).HasColumnType("datetime");
-
-                entity.Property(e => e.IdTipo).HasColumnType("numeric(10, 0)");
+                entity.Property(e => e.FechaNacimiento).HasColumnType("date");
 
                 entity.Property(e => e.Identificacion)
                     .HasMaxLength(13)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Nombre1)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Nombre2)
+                entity.Property(e => e.Nombre)
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
@@ -882,128 +737,92 @@ namespace Back_Vinculacion_Fema.Models.DbModels
                     .IsUnicode(false);
 
                 entity.Property(e => e.TipoIdentificacion)
-                    .HasMaxLength(20)
+                    .HasMaxLength(5)
                     .IsUnicode(false);
+
+                entity.HasOne(d => d.IdUsuarioNavigation)
+                    .WithMany(p => p.TblFemaPersonas)
+                    .HasForeignKey(d => d.IdUsuario)
+                    .HasConstraintName("FK_Tbl_Fema_Personas_Tbl_Fema_Usuarios");
             });
 
-            modelBuilder.Entity<TblFemaRoles>(entity =>
+            modelBuilder.Entity<TblFemaRole>(entity =>
             {
-                entity.HasKey(e => e.id_rol)
-                    .HasName("id_rol");
+                entity.HasKey(e => e.IdRol)
+                    .HasName("PK_Rol");
 
                 entity.ToTable("Tbl_Fema_Roles");
 
-                entity.Property(e => e.id_rol)
-                    .HasColumnName("id_rol")
-                    .ValueGeneratedOnAdd();
+                entity.Property(e => e.IdRol)
+                    .ValueGeneratedNever()
+                    .HasColumnName("id_rol");
 
-                entity.Property(e => e.descripcion)
-                    .HasMaxLength(100)
+                entity.Property(e => e.Descripcion)
+                    .HasMaxLength(50)
                     .IsUnicode(false)
                     .HasColumnName("descripcion");
 
-                entity.Property(e => e.fecha_creacion)
+                entity.Property(e => e.FechaCreacion)
                     .HasColumnType("datetime")
                     .HasColumnName("fecha_creacion");
-
             });
-
-
-            /*modelBuilder.Entity<TblFemaRolesUsuario>(entity =>
-           {
-               entity.HasKey(e => new { e.IdRol, e.IdUsuario })
-                   .HasName("PK_Roles_Usuarios");
-
-               entity.ToTable("Tbl_Fema_RolesUsuarios");
-
-               entity.Property(e => e.IdRol).HasColumnType("numeric(10, 0)");
-
-               entity.Property(e => e.IdUsuario).HasColumnType("numeric(10, 0)");
-
-               entity.Property(e => e.FechaValides).HasColumnType("datetime");
-
-               entity.HasOne(d => d.IdRolNavigation)
-                   .WithMany(p => p.TblFemaRolesUsuarios)
-                   .HasForeignKey(d => d.IdRol)
-                   .OnDelete(DeleteBehavior.ClientSetNull)
-                   .HasConstraintName("FK_Roles_Usuarios_Roles");
-
-               entity.HasOne(d => d.IdUsuarioNavigation)
-                   .WithMany(p => p.TblFemaRolesUsuarios)
-                   .HasForeignKey(d => d.IdUsuario)
-                   .OnDelete(DeleteBehavior.ClientSetNull)
-                   .HasConstraintName("FK_Roles_Usuarios");
-           });*/
-
-            /*modelBuilder.Entity<TblFemaSubMenu>(entity =>
-            {
-                entity.HasKey(e => e.SubMenuId)
-                    .HasName("PK__Tbl_Fema__EA065C1985CBFB4E");
-
-                entity.ToTable("Tbl_Fema_SubMenu");
-
-                entity.Property(e => e.SubMenuId)
-                    .ValueGeneratedNever()
-                    .HasColumnName("SubMenuID");
-
-                entity.Property(e => e.Descripcion).HasMaxLength(100);
-
-                entity.Property(e => e.Icono).HasMaxLength(100);
-
-                entity.HasOne(d => d.IdMenuNavigation)
-                    .WithMany(p => p.TblFemaSubMenus)
-                    .HasForeignKey(d => d.IdMenu)
-                    .HasConstraintName("FK__Tbl_Fema___IdMen__60A75C0F");
-            });*/
 
             modelBuilder.Entity<TblFemaUsuario>(entity =>
             {
                 entity.HasKey(e => e.IdUsuario)
-                    .HasName("IdUsuario");
+                    .HasName("PK_Usuarios");
 
                 entity.ToTable("Tbl_Fema_Usuarios");
 
-                entity.Property(e => e.IdUsuario)
-                    .HasColumnName("IdUsuario")
-                    .ValueGeneratedOnAdd();
-
-                entity.Property(e => e.NombreUsuario)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
+                entity.Property(e => e.Clave).IsUnicode(false);
 
                 entity.Property(e => e.Correo)
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Clave).HasMaxLength(500);
-
-                entity.Property(e => e.Token).HasMaxLength(500);
-
-                entity.Property(e => e.id_rol)
-                    .HasColumnName("id_rol");
-
-                entity.Property(e => e.Fecha_creacion)
+                entity.Property(e => e.FechaCreacion)
                     .HasColumnType("datetime")
                     .HasColumnName("Fecha_creacion");
 
-                entity.Property(e => e.Fecha_modificacion)
+                entity.Property(e => e.FechaModificacion)
                     .HasColumnType("datetime")
                     .HasColumnName("Fecha_modificacion");
 
-                entity.Property(e => e.id_estado)
-                    .HasColumnName("id_estado");
+                entity.Property(e => e.IdEstado)
+                    .HasColumnName("id_estado")
+                    .HasDefaultValueSql("((1))");
 
-                //entity.Property(e => e.IdPersona).HasColumnType("numeric(10, 0)");
+                entity.Property(e => e.IdRol).HasColumnName("id_rol");
 
-                /*entity.Property(e => e.Modulo)
-                    .HasMaxLength(100)
-                    .IsUnicode(false);*/
+                entity.Property(e => e.NombreUsuario)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
-                /*entity.HasOne(d => d.IdPersonaNavigation)
+                entity.Property(e => e.Token).IsUnicode(false);
+
+                entity.HasOne(d => d.IdEstadoNavigation)
                     .WithMany(p => p.TblFemaUsuarios)
-                    .HasForeignKey(d => d.IdPersona)
+                    .HasForeignKey(d => d.IdEstado)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Usuario_Persona");*/
+                    .HasConstraintName("FK_Tbl_Fema_Usuarios_Estado");
+
+                entity.HasOne(d => d.IdRolNavigation)
+                    .WithMany(p => p.TblFemaUsuarios)
+                    .HasForeignKey(d => d.IdRol)
+                    .HasConstraintName("FK_Tbl_Fema_Usuarios_Tbl_Fema_Roles");
+            });
+
+            modelBuilder.Entity<TipoArchivo>(entity =>
+            {
+                entity.HasKey(e => e.IdTipoArchivo);
+
+                entity.ToTable("Tipo_Archivo");
+
+                entity.Property(e => e.IdTipoArchivo).ValueGeneratedNever();
+
+                entity.Property(e => e.Descripcion)
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<TipoEdificacion>(entity =>
@@ -1012,20 +831,31 @@ namespace Back_Vinculacion_Fema.Models.DbModels
 
                 entity.ToTable("TIPO_EDIFICACION");
 
-                entity.Property(e => e.CodTipoEdificacion)
-                    .ValueGeneratedNever()
-                    .HasColumnName("cod_tipo_edificacion");
+                entity.Property(e => e.CodTipoEdificacion).HasColumnName("cod_tipo_edificacion");
 
                 entity.Property(e => e.Descripcion)
-                    .HasMaxLength(100)
+                    .HasMaxLength(10)
                     .IsUnicode(false)
                     .HasColumnName("descripcion");
 
-                entity.Property(e => e.Estado)
-                    .HasMaxLength(2)
+                entity.Property(e => e.Estado).HasColumnName("estado");
+            });
+
+            modelBuilder.Entity<TipoOcupacion>(entity =>
+            {
+                entity.HasKey(e => e.CodTipoOcupacion)
+                    .HasName("PK_OCUPACION");
+
+                entity.ToTable("TIPO_OCUPACION");
+
+                entity.Property(e => e.CodTipoOcupacion).HasColumnName("cod_tipo_ocupacion");
+
+                entity.Property(e => e.Descripcion)
+                    .HasMaxLength(30)
                     .IsUnicode(false)
-                    .HasColumnName("estado")
-                    .IsFixedLength();
+                    .HasColumnName("descripcion");
+
+                entity.Property(e => e.Estado).HasColumnName("estado");
             });
 
             modelBuilder.Entity<TipoPuntuacion>(entity =>
@@ -1034,20 +864,14 @@ namespace Back_Vinculacion_Fema.Models.DbModels
 
                 entity.ToTable("TIPO_PUNTUACION");
 
-                entity.Property(e => e.CodTipoPuntuacion)
-                    .ValueGeneratedNever()
-                    .HasColumnName("cod_tipo_puntuacion");
+                entity.Property(e => e.CodTipoPuntuacion).HasColumnName("cod_tipo_puntuacion");
 
                 entity.Property(e => e.Descripcion)
-                    .HasMaxLength(4)
+                    .HasMaxLength(50)
                     .IsUnicode(false)
                     .HasColumnName("descripcion");
 
-                entity.Property(e => e.Estado)
-                    .HasMaxLength(2)
-                    .IsUnicode(false)
-                    .HasColumnName("estado")
-                    .IsFixedLength();
+                entity.Property(e => e.Estado).HasColumnName("estado");
             });
 
             modelBuilder.Entity<TipoSuelo>(entity =>
@@ -1056,29 +880,41 @@ namespace Back_Vinculacion_Fema.Models.DbModels
 
                 entity.ToTable("TIPO_SUELO");
 
-                entity.Property(e => e.CodTipoSuelo) 
-                    .ValueGeneratedNever()
-                    .HasColumnName("cod_tipo_suelo");
+                entity.Property(e => e.CodTipoSuelo).HasColumnName("cod_tipo_suelo");
 
                 entity.Property(e => e.Descripcion)
-                    .HasMaxLength(100)
+                    .HasMaxLength(50)
                     .IsUnicode(false)
                     .HasColumnName("descripcion");
 
-                entity.Property(e => e.Estado)
-                    .HasMaxLength(2)
+                entity.Property(e => e.Estado).HasColumnName("estado");
+
+                entity.Property(e => e.Tipo)
+                    .HasMaxLength(1)
                     .IsUnicode(false)
-                    .HasColumnName("estado")
+                    .HasColumnName("tipo")
                     .IsFixedLength();
+            });
+
+            modelBuilder.Entity<TipoUso>(entity =>
+            {
+                entity.HasKey(e => e.CodTipoUsoEdificacion)
+                    .HasName("PK_Tipo_uso_edificacion");
+
+                entity.ToTable("TIPO_USO");
+
+                entity.Property(e => e.CodTipoUsoEdificacion).HasColumnName("CodTipoUsoEdificacion");
+
+                entity.Property(e => e.Descripcion)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasColumnName("descripcion");
+
+                entity.Property(e => e.Estado).HasColumnName("estado");
             });
 
             OnModelCreatingPartial(modelBuilder);
         }
-
-        /*internal async Task SaveChangesAsync()
-        {
-            throw new NotImplementedException();
-        }*/
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }

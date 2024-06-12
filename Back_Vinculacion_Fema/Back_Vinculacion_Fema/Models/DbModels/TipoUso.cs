@@ -1,14 +1,19 @@
-﻿using System.Globalization;
-using System.Runtime.Intrinsics.X86;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Back_Vinculacion_Fema.Models.DbModels
 {
-    public class TipoUso
+    public partial class TipoUso
     {
-        public short Cod_Tipo_Uso_Edificacion { get; set; }
-        public string Descripcion { get; set; }
+        public TipoUso()
+        {
+            Femas = new HashSet<Fema>();
+        }
+
+        public short CodTipoUsoEdificacion { get; set; }
+        public string Descripcion { get; set; } = null!;
         public bool Estado { get; set; }
 
-        public ICollection<Fema> FEMAs { get; set; }
+        public virtual ICollection<Fema> Femas { get; set; }
     }
 }

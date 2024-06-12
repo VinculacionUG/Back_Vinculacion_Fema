@@ -1,22 +1,19 @@
-﻿using Back_Vinculacion_Fema.Models.DbModels;
-using Microsoft.EntityFrameworkCore.Storage;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
-public class TipoOcupacion
+namespace Back_Vinculacion_Fema.Models.DbModels
 {
-
-    public TipoOcupacion()
+    public partial class TipoOcupacion
     {
-        // Inicializa la colección en el constructor
-        FemaOcupacions = new HashSet<FemaOcupacion>();
-    }
-    [Key]
-    public short CodTipoOcupacion { get; set; } // Clave primaria
-    public string? Descripcion { get; set; }
-    public bool Estado { get; set; }
+        public TipoOcupacion()
+        {
+            FemaOcupacions = new HashSet<FemaOcupacion>();
+        }
 
-    // Propiedad de navegación
-    public virtual ICollection<FemaOcupacion> FemaOcupacions { get; set; }
+        public short CodTipoOcupacion { get; set; }
+        public string Descripcion { get; set; } = null!;
+        public bool Estado { get; set; }
+
+        public virtual ICollection<FemaOcupacion> FemaOcupacions { get; set; }
+    }
 }

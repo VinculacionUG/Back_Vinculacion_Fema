@@ -5,27 +5,20 @@ namespace Back_Vinculacion_Fema.Models.DbModels
 {
     public partial class TblFemaPersona
     {
-        /*public TblFemaPersona()
-        {
-            TblFemaUsuarios = new HashSet<TblFemaUsuario>();
-        }*/
-
-        public decimal IdPersona { get; set; }
-        public decimal IdTipo { get; set; }
+        public long IdPersona { get; set; }
+        public long? IdUsuario { get; set; }
+        public short IdTipo { get; set; }
         public string TipoIdentificacion { get; set; } = null!;
         public string Identificacion { get; set; } = null!;
-        public string? Nombre1 { get; set; }
-        public string? Nombre2 { get; set; }
-        public string? Apellido1 { get; set; }
-        public string? Apellido2 { get; set; }
+        public string? Nombre { get; set; }
+        public string? Apellido { get; set; }
         public DateTime? FechaNacimiento { get; set; }
         public string? Direccion { get; set; }
         public string? Sexo { get; set; }
         public string? Contacto { get; set; }
         public string? Correo { get; set; }
         public bool? Estado { get; set; }
-        public int Id_rol { get; set; }
 
-        /*public virtual ICollection<TblFemaUsuario> TblFemaUsuarios { get; set; }*/
+        public virtual TblFemaUsuario? IdUsuarioNavigation { get; set; }
     }
 }

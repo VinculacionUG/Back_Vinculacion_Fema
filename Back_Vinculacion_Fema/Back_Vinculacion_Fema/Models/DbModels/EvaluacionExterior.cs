@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace Back_Vinculacion_Fema.Models.DbModels
 {
@@ -8,14 +7,13 @@ namespace Back_Vinculacion_Fema.Models.DbModels
     {
         public EvaluacionExterior()
         {
-            FemaEvaluacions = new HashSet<FemaEvaluacion>();
+            ExtensionEvaluacionExteriors = new HashSet<ExtensionEvaluacionExterior>();
         }
 
-        [Key]
-        public int CodEvalExterior { get; set; }
-        public string? Descripcion { get; set; }
-        public string? Estado { get; set; }
+        public short CodEvalExterior { get; set; }
+        public string Descripcion { get; set; } = null!;
+        public bool Estado { get; set; }
 
-        public virtual ICollection<FemaEvaluacion> FemaEvaluacions { get; set; }
+        public virtual ICollection<ExtensionEvaluacionExterior> ExtensionEvaluacionExteriors { get; set; }
     }
 }

@@ -135,7 +135,7 @@ namespace Back_Vinculacion_Fema.Controllers
         [Route("Ocupacion")]
         public async Task<IActionResult> GetOcupaciones()
         {
-            var ocupaciones = await _context.Ocupaciones.ToListAsync();
+            var ocupaciones = await _context.Ocupacions.ToListAsync();
             return Ok(ocupaciones);
         }*/
 
@@ -143,7 +143,7 @@ namespace Back_Vinculacion_Fema.Controllers
         [Route("Ocupacion")]
         public async Task<IActionResult> GetOcupaciones()
         {
-            var ocupaciones = await _context.Ocupaciones
+            var ocupaciones = await _context.Ocupacions
                 .Select(o => new
                 {
                     o.CodOcupacion,
@@ -158,7 +158,7 @@ namespace Back_Vinculacion_Fema.Controllers
         [Route("TipoOcupacion")]
         public async Task<IActionResult> GetTipoOcupaciones()
         {
-            var tipoOcupaciones = await _context.TipoOcupaciones.ToListAsync();
+            var tipoOcupaciones = await _context.TipoOcupacions.ToListAsync();
             return Ok(tipoOcupaciones);
         }*/
 
@@ -166,7 +166,7 @@ namespace Back_Vinculacion_Fema.Controllers
         [Route("TipoOcupacion")]
         public async Task<IActionResult> GetTipoOcupaciones()
         {
-            var tipoocupaciones = await _context.TipoOcupaciones
+            var tipoocupaciones = await _context.TipoOcupacions
                 .Select(o => new
                 {
                     o.CodTipoOcupacion,
@@ -197,7 +197,7 @@ namespace Back_Vinculacion_Fema.Controllers
         [Route("TipoEdificaciones")]
         public async Task<IActionResult> GetTipoEdificios()
         {
-            var tipoedificaciones = await _context.TipoEdificaciones
+            var tipoedificaciones = await _context.TipoEdificacions
                 .Select(o => new
                 {
                     o.CodTipoEdificacion,
@@ -213,12 +213,12 @@ namespace Back_Vinculacion_Fema.Controllers
         [Route("SubTipoEdificacion")]
         public async Task<IActionResult> GetSubTipoEdificacion()
         {
-            var subtipoedificacion = await _context.SubTipoEdificacion
+            var subtipoedificacion = await _context.SubtipoEdificacions
                 .Select(o => new
                 {
-                    o.cod_subtipo_edificacion,
-                    o.descripcion,
-                    o.estado
+                    o.CodSubtipoEdificacion,
+                    o.Descripcion,
+                    o.Estado
                 })
                 .ToListAsync();
             return Ok(subtipoedificacion);
@@ -228,7 +228,7 @@ namespace Back_Vinculacion_Fema.Controllers
         [Route("TipoPuntuacion")]
         public async Task<IActionResult> GetTipoPuntuacion()
         {
-            var tipopuntuacion = await _context.TipoPuntuaciones
+            var tipopuntuacion = await _context.TipoPuntuacions
                 .Select(o => new
                 {
                     o.CodTipoPuntuacion,
@@ -246,7 +246,7 @@ namespace Back_Vinculacion_Fema.Controllers
             var tipousos = await _context.TipoUsos
                 .Select(o => new
                 {
-                    o.Cod_Tipo_Uso_Edificacion,
+                    o.CodTipoUsoEdificacion,
                     o.Descripcion,
                     o.Estado
                 })
@@ -278,7 +278,7 @@ namespace Back_Vinculacion_Fema.Controllers
                     {
                         Direccion = femaDto.Direccion,
                         CodigoPostal = femaDto.CodigoPostal,
-                        OtrosIdentificadores = femaDto.OtrosIdentificadores,
+                        OtrosIdentificaciones = femaDto.OtrosIdentificaciones,
                         NomEdificacion = femaDto.NomEdificacion,
                         CodTipoUsoEdificacion = femaDto.CodTipoUsoEdificacion,
                         Latitud = femaDto.Latitud,
@@ -290,9 +290,9 @@ namespace Back_Vinculacion_Fema.Controllers
                         //RutaImagenCroquis = femaDto.RutaImagenCroquis,
                         Comentarios = femaDto.Comentarios,
                         //RequiereNivel2 = femaDto.RequiereNivel2,
-                        CodUsuarioIng = femaDto.CodUsuarioIng,
+                        UsuarioIng = femaDto.CodUsuarioIng,
                         FecIngreso = femaDto.FecIngreso,
-                        CodUsuarioAct = femaDto.CodUsuarioAct,
+                        UsuarioAct = femaDto.CodUsuarioAct,
                         FecActualiza = femaDto.FecActualiza,
                         Estado = femaDto.Estado
                     };
@@ -333,7 +333,7 @@ namespace Back_Vinculacion_Fema.Controllers
                         MimeType = femaDto.MimeType,
                         IdTipoArchivo = femaDto.IdTipoArchivo,
                         IdEstado = femaDto.IdEstado,
-                        Cod_Fema = fema.CodFema
+                        CodFema = fema.CodFema
                     };
 
                     _context.Archivos.Add(archivo);
@@ -411,7 +411,7 @@ namespace Back_Vinculacion_Fema.Controllers
                     {
                         Direccion = femaDto.Direccion,
                         CodigoPostal = femaDto.CodigoPostal,
-                        OtrosIdentificadores = femaDto.OtrosIdentificadores,
+                        OtrosIdentificaciones = femaDto.OtrosIdentificaciones,
                         NomEdificacion = femaDto.NomEdificacion,
                         CodTipoUsoEdificacion = femaDto.CodTipoUsoEdificacion,
                         Latitud = femaDto.Latitud,
@@ -496,7 +496,7 @@ namespace Back_Vinculacion_Fema.Controllers
                 {
                     Direccion = femaDto.Direccion,
                     CodigoPostal = femaDto.CodigoPostal,
-                    OtrosIdentificadores = femaDto.OtrosIdentificadores,
+                    OtrosIdentificaciones = femaDto.OtrosIdentificaciones,
                     NomEdificacion = femaDto.NomEdificacion,
                     UsoEdificacion = femaDto.UsoEdificacion,
                     Latitud = femaDto.Latitud,
@@ -519,9 +519,9 @@ namespace Back_Vinculacion_Fema.Controllers
                 await _context.SaveChangesAsync();
 
 
-                /*if (femaDto.OcupacionesSeleccionadas != null)
+                /*if (femaDto.OcupacionsSeleccionadas != null)
                 {
-                    foreach (var idOcupacion in femaDto.OcupacionesSeleccionadas)
+                    foreach (var idOcupacion in femaDto.OcupacionsSeleccionadas)
                     {
                         var femaOcupacion = new FemaOcupacion
                         {

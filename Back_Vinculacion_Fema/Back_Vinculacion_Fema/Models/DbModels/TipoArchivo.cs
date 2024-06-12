@@ -1,14 +1,19 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Back_Vinculacion_Fema.Models.DbModels
 {
-    public class TipoArchivo
+    public partial class TipoArchivo
     {
-        [Key]
+        public TipoArchivo()
+        {
+            Archivos = new HashSet<Archivo>();
+        }
+
         public short IdTipoArchivo { get; set; }
-        public string Descripcion { get; set; }
+        public string Descripcion { get; set; } = null!;
         public short IdEstado { get; set; }
 
-        public ICollection<Archivo> Archivos { get; set; }
+        public virtual ICollection<Archivo> Archivos { get; set; }
     }
 }

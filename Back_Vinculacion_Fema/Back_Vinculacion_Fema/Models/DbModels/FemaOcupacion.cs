@@ -12,7 +12,7 @@ namespace Back_Vinculacion_Fema.Models.DbModels
         public bool Estado { get; set; }
 
         public virtual Fema CodFemaNavigation { get; set; } = null!;
-        public virtual Ocupacion? CodOcupacionNavigation { get; set; }
-        public virtual TipoOcupacion? CodTipoOcupacionNavigation { get; set; }
+        public virtual Ocupacion CodOcupacionNavigation { get; set; } = null!;
+        public virtual TipoOcupacion CodTipoOcupacionNavigation { get; set; } = null!;
     }
 }

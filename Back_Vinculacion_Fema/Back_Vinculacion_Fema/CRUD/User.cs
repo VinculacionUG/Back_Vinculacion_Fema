@@ -13,10 +13,10 @@ namespace Back_Vinculacion_Fema.CRUD
             _context = context;
         }
 
-        public List<TblFemaRoles> ListarRoles()
+        public List<TblFemaRole> ListarRoles()
         {
             // Consultar los roles en la base de datos utilizando Entity Framework Core
-            var roles = _context.Tbl_Fema_Roles.ToList();
+            var roles = _context.TblFemaRoles.ToList();
 
             // Si prefieres utilizar una consulta LINQ explícita, puedes hacerlo así:
             // var roles = _contexto.Roles.Select(r => new Rol { id_rol = r.id_rol, descripcion = r.descripcion }).ToList();
@@ -86,7 +86,7 @@ namespace Back_Vinculacion_Fema.CRUD
 
         public TblFemaUsuario? GetUsuarioLogin(string userName, string encryptedPassword)
         {
-            return _context.TblFemaUsuarios.FirstOrDefault(u => u.id_estado == 1 && u.NombreUsuario == userName && u.Clave == encryptedPassword);
+            return _context.TblFemaUsuarios.FirstOrDefault(u => u.IdEstado == 1 && u.NombreUsuario == userName && u.Clave == encryptedPassword);
         }
 
         /*public async Task<TblFemaUsuario> CrearUsuario(RegisterUserRequest request, decimal idPersona)
