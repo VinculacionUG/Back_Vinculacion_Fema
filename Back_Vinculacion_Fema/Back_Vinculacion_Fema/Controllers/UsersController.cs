@@ -5,6 +5,10 @@ using Back_Vinculacion_Fema.Models.Utilidades;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
+using Back_Vinculacion_Fema.Models.DTOs;
+using System.Net.WebSockets;
 
 namespace Back_Vinculacion_Fema.Controllers
 {
@@ -127,21 +131,130 @@ namespace Back_Vinculacion_Fema.Controllers
 
         }
 
-        [HttpGet]
+        /*[HttpGet]
         [Route("Ocupacion")]
         public async Task<IActionResult> GetOcupaciones()
         {
             var ocupaciones = await _context.Ocupaciones.ToListAsync();
             return Ok(ocupaciones);
-        }
+        }*/
 
         [HttpGet]
+        [Route("Ocupacion")]
+        public async Task<IActionResult> GetOcupaciones()
+        {
+            var ocupaciones = await _context.Ocupaciones
+                .Select(o => new
+                {
+                    o.CodOcupacion,
+                    o.Descripcion,
+                    o.Estado
+                })
+                .ToListAsync();
+            return Ok(ocupaciones);
+        }
+
+        /*[HttpGet]
         [Route("TipoOcupacion")]
         public async Task<IActionResult> GetTipoOcupaciones()
         {
             var tipoOcupaciones = await _context.TipoOcupaciones.ToListAsync();
             return Ok(tipoOcupaciones);
+        }*/
+
+        [HttpGet]
+        [Route("TipoOcupacion")]
+        public async Task<IActionResult> GetTipoOcupaciones()
+        {
+            var tipoocupaciones = await _context.TipoOcupaciones
+                .Select(o => new
+                {
+                    o.CodTipoOcupacion,
+                    o.Descripcion,
+                    o.Estado
+                })
+                .ToListAsync();
+            return Ok(tipoocupaciones);
         }
+
+        [HttpGet]
+        [Route("TipoSuelo")]
+        public async Task<IActionResult> GetTipoSuelos()
+        {
+            var tiposuelos = await _context.TipoSuelos
+                .Select(o => new
+                {
+                    o.CodTipoSuelo,
+                    o.Tipo,
+                    o.Descripcion,
+                    o.Estado
+                })
+                .ToListAsync();
+            return Ok(tiposuelos);
+        }
+
+        [HttpGet]
+        [Route("TipoEdificaciones")]
+        public async Task<IActionResult> GetTipoEdificios()
+        {
+            var tipoedificaciones = await _context.TipoEdificaciones
+                .Select(o => new
+                {
+                    o.CodTipoEdificacion,
+                    o.Descripcion,
+                    o.Estado
+                })
+                .ToListAsync();
+            return Ok(tipoedificaciones);
+        }
+
+
+        [HttpGet]
+        [Route("SubTipoEdificacion")]
+        public async Task<IActionResult> GetSubTipoEdificacion()
+        {
+            var subtipoedificacion = await _context.SubTipoEdificacion
+                .Select(o => new
+                {
+                    o.cod_subtipo_edificacion,
+                    o.descripcion,
+                    o.estado
+                })
+                .ToListAsync();
+            return Ok(subtipoedificacion);
+        }
+
+        [HttpGet]
+        [Route("TipoPuntuacion")]
+        public async Task<IActionResult> GetTipoPuntuacion()
+        {
+            var tipopuntuacion = await _context.TipoPuntuaciones
+                .Select(o => new
+                {
+                    o.CodTipoPuntuacion,
+                    o.Descripcion,
+                    o.Estado
+                })
+                .ToListAsync();
+            return Ok(tipopuntuacion);
+        }
+
+        [HttpGet]
+        [Route("TipoUso")]
+        public async Task<IActionResult> GetTipoUso()
+        {
+            var tipousos = await _context.TipoUsos
+                .Select(o => new
+                {
+                    o.Cod_Tipo_Uso_Edificacion,
+                    o.Descripcion,
+                    o.Estado
+                })
+                .ToListAsync();
+            return Ok(tipousos);
+        }
+
+        //Uso de transacciones
 
         [HttpPost]
         [Route("FormularioFEMA")]
@@ -157,75 +270,210 @@ namespace Back_Vinculacion_Fema.Controllers
                 return BadRequest("Todos los campos son requeridos.");
             }
 
-            try
+            using (var transaction = _context.Database.BeginTransaction())
             {
-                var fema = new Fema
+                try
                 {
-                    Direccion = femaDto.Direccion,
-                    CodigoPostal = femaDto.CodigoPostal,
-                    OtrosIdentificadores = femaDto.OtrosIdentificadores,
-                    NomEdificacion = femaDto.NomEdificacion,
-                    UsoEdificacion = femaDto.UsoEdificacion,
-                    Latitud = femaDto.Latitud,
-                    Longitud = femaDto.Longitud,
-                    NomEncuestador = femaDto.NomEncuestador,
-                    FechaEncuesta = femaDto.FechaEncuesta,
-                    HoraEncuesta = femaDto.HoraEncuesta,
-                    RutaImagenEdif = femaDto.RutaImagenEdif,
-                    RutaImagenCroquis = femaDto.RutaImagenCroquis,
-                    Comentarios = femaDto.Comentarios,
-                    RequiereNivel2 = femaDto.RequiereNivel2,
-                    CodUsuarioIng = femaDto.CodUsuarioIng,
-                    FecIngreso = femaDto.FecIngreso,
-                    CodUsuarioAct = femaDto.CodUsuarioAct,
-                    FecActualiza = femaDto.FecActualiza,
-                    Estado = femaDto.Estado
-                };
+                    var fema = new Fema
+                    {
+                        Direccion = femaDto.Direccion,
+                        CodigoPostal = femaDto.CodigoPostal,
+                        OtrosIdentificadores = femaDto.OtrosIdentificadores,
+                        NomEdificacion = femaDto.NomEdificacion,
+                        CodTipoUsoEdificacion = femaDto.CodTipoUsoEdificacion,
+                        Latitud = femaDto.Latitud,
+                        Longitud = femaDto.Longitud,
+                        NomEncuestador = femaDto.NomEncuestador,
+                        FechaEncuesta = femaDto.FechaEncuesta,
+                        HoraEncuesta = femaDto.HoraEncuesta,
+                        //RutaImagenEdif = femaDto.RutaImagenEdif,
+                        //RutaImagenCroquis = femaDto.RutaImagenCroquis,
+                        Comentarios = femaDto.Comentarios,
+                        //RequiereNivel2 = femaDto.RequiereNivel2,
+                        CodUsuarioIng = femaDto.CodUsuarioIng,
+                        FecIngreso = femaDto.FecIngreso,
+                        CodUsuarioAct = femaDto.CodUsuarioAct,
+                        FecActualiza = femaDto.FecActualiza,
+                        Estado = femaDto.Estado
+                    };
 
-                _context.Femas.Add(fema);
-                await _context.SaveChangesAsync();
+                    _context.Femas.Add(fema);
+                    await _context.SaveChangesAsync();
 
-                var femaOcupacion = new FemaOcupacion
-                {
-                    Cod_Fema = fema.CodFema,
-                    Cod_Ocupacion = femaDto.CodOcupacion,
-                    Cod_Tipo_Ocupacion = femaDto.CodTipoOcupacion,
-                    Estado = femaDto.Estado
-                };
+                    var femaOcupacion = new FemaOcupacion
+                    {
+                        CodFema = fema.CodFema,
+                        CodOcupacion = femaDto.CodOcupacion,
+                        CodTipoOcupacion = femaDto.CodTipoOcupacion,
+                        Estado = femaDto.Estado
+                    };
 
-                _context.FemaOcupacions.Add(femaOcupacion);
-                await _context.SaveChangesAsync();
+                    _context.FemaOcupacions.Add(femaOcupacion);
+                    await _context.SaveChangesAsync();
 
-                var femaSuelo = new FemaSuelo
-                {
-                    CodFema = fema.CodFema,
-                    CodTipoSuelo = femaDto.CodTipoSuelo,
-                    AsumirTipo = "Tu", 
-                    RiesgoGeologico = "Tu", 
-                    Adyacencia = "HOLA", 
-                    Irregularidades = "Tu valor aquí", 
-                    PeligroCaidaExt = "Tu valor aquí" 
-                };
-            
+                    var femaSuelo = new FemaSuelo
+                    {
+                        CodFema = fema.CodFema,
+                        CodTipoSuelo = femaDto.CodTipoSuelo,
+                        //AsumirTipo = femaDto.AsumirTipo, 
+                        //RiesgoGeologico = femaDto.RiesgoGeologico, 
+                        //Adyacencia = femaDto.Adyacencia, 
+                        //Irregularidades = femaDto.Irregularidades, 
+                        //PeligroCaidaExt = femaDto.PeligroCaidaExt 
+                    };
 
-                _context.FemaSuelos.Add(femaSuelo);
-                await _context.SaveChangesAsync();
+                    _context.FemaSuelos.Add(femaSuelo);
+                    await _context.SaveChangesAsync();
 
-                return Ok(new { Id = fema.CodFema });
-            }
-            catch (DbUpdateException dbEx)
-            {
-                if (dbEx.InnerException is SqlException sqlEx && sqlEx.Number == 2627)
-                {
-                    return StatusCode(500, "Error: No se puede insertar una clave duplicada. El valor de 'CodFema' ya existe.");
+
+                    var archivo = new Archivo
+                    {
+                        Path = femaDto.Path,
+                        Data = femaDto.Data,
+                        MimeType = femaDto.MimeType,
+                        IdTipoArchivo = femaDto.IdTipoArchivo,
+                        IdEstado = femaDto.IdEstado,
+                        Cod_Fema = fema.CodFema
+                    };
+
+                    _context.Archivos.Add(archivo);
+                    await _context.SaveChangesAsync();
+
+                    var femaPuntuacion = new FemaPuntuacion
+                    {
+                        CodFema = fema.CodFema,
+                        CodPuntuacionMatriz = femaDto.CodPuntuacionMatriz,
+                        ResultadoFinal = femaDto.ResultadoFinal,
+                        EsEst = femaDto.EsEst,
+                        EsDnk = femaDto.EsDnk,
+                        Estado = femaDto.Estado
+                    };
+
+                    _context.FemaPuntuacions.Add(femaPuntuacion);
+                    await _context.SaveChangesAsync();
+
+
+                    var femaedificio = new FemaEdificio
+                    {
+                        CodFema = fema.CodFema,
+                        NroPisosSup = femaDto.NroPisosSup,
+                        NroPisosInf = femaDto.NroPisosInf,
+                        AnioConstruccion = femaDto.AnioContruccion,
+                        AreaTotalPiso = femaDto.AreaTotalPiso,
+                        AnioCodigo = femaDto.AnioCodigo,
+                        Ampliacion = femaDto.Ampliacion,
+                        AmplAnioConstruccion = femaDto.AmplAnioConstruccion,
+                        Estado = femaDto.Estado
+                    };
+
+                    _context.FemaEdificios.Add(femaedificio);
+                    await _context.SaveChangesAsync();
+
+                    transaction.Commit();
+
+                    return Ok(new { Id = fema.CodFema });
                 }
-                return StatusCode(500, "Error al guardar en la base de datos: " + dbEx.InnerException?.Message);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Error interno del servidor: " + ex.Message);
+                catch (DbUpdateException dbEx)
+                {
+                    transaction.Rollback();
+
+                    if (dbEx.InnerException is SqlException sqlEx && sqlEx.Number == 2627)
+                    {
+                        return StatusCode(500, "Error: No se puede insertar una clave duplicada. El valor de 'CodFema' ya existe.");
+                    }
+                    return StatusCode(500, "Error al guardar en la base de datos: " + dbEx.InnerException?.Message);
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    return StatusCode(500, "Error interno del servidor: " + ex.Message);
+                }
             }
         }
+
+        /*[HttpPost]
+        [Route("FormularioFEMA")]
+        public async Task<IActionResult> FormularioFEMA([FromBody] FemaDto femaDto)
+        {
+            if (femaDto == null)
+            {
+                return BadRequest("El objeto FemaDto es nulo.");
+            }
+
+            if (string.IsNullOrEmpty(femaDto.Direccion) || string.IsNullOrEmpty(femaDto.CodigoPostal))
+            {
+                return BadRequest("Todos los campos son requeridos.");
+            }
+
+                try
+                {
+                    var fema = new Fema
+                    {
+                        Direccion = femaDto.Direccion,
+                        CodigoPostal = femaDto.CodigoPostal,
+                        OtrosIdentificadores = femaDto.OtrosIdentificadores,
+                        NomEdificacion = femaDto.NomEdificacion,
+                        CodTipoUsoEdificacion = femaDto.CodTipoUsoEdificacion,
+                        Latitud = femaDto.Latitud,
+                        Longitud = femaDto.Longitud,
+                        NomEncuestador = femaDto.NomEncuestador,
+                        FechaEncuesta = femaDto.FechaEncuesta,
+                        HoraEncuesta = femaDto.HoraEncuesta,
+                        //RutaImagenEdif = femaDto.RutaImagenEdif,
+                        //RutaImagenCroquis = femaDto.RutaImagenCroquis,
+                        Comentarios = femaDto.Comentarios,
+                        //RequiereNivel2 = femaDto.RequiereNivel2,
+                        CodUsuarioIng = femaDto.CodUsuarioIng,
+                        FecIngreso = femaDto.FecIngreso,
+                        CodUsuarioAct = femaDto.CodUsuarioAct,
+                        FecActualiza = femaDto.FecActualiza,
+                        Estado = femaDto.Estado
+                    };
+
+                    _context.Femas.Add(fema);
+                    await _context.SaveChangesAsync();
+
+                    var femaOcupacion = new FemaOcupacion
+                    {
+                        CodFema = fema.CodFema,
+                        CodOcupacion = femaDto.CodOcupacion,
+                        CodTipoOcupacion = femaDto.CodTipoOcupacion,
+                        Estado = femaDto.Estado
+                    };
+
+                    _context.FemaOcupacions.Add(femaOcupacion);
+                    await _context.SaveChangesAsync();
+
+                    /*var femaSuelo = new FemaSuelo
+                    {
+                        CodFema = fema.CodFema,
+                        CodTipoSuelo = femaDto.CodTipoSuelo,
+                        AsumirTipo = "Tu", 
+                        RiesgoGeologico = "Tu", 
+                        Adyacencia = "HOLA", 
+                        Irregularidades = "Tu valor aquí", 
+                        PeligroCaidaExt = "Tu valor aquí" 
+                    };
+
+
+                    _context.FemaSuelos.Add(femaSuelo);
+                    await _context.SaveChangesAsync();
+
+                    return Ok(new { Id = fema.CodFema });
+                }
+                catch (DbUpdateException dbEx)
+                {
+                    if (dbEx.InnerException is SqlException sqlEx && sqlEx.Number == 2627)
+                    {
+                        return StatusCode(500, "Error: No se puede insertar una clave duplicada. El valor de 'CodFema' ya existe.");
+                    }
+                    return StatusCode(500, "Error al guardar en la base de datos: " + dbEx.InnerException?.Message);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, "Error interno del servidor: " + ex.Message);
+                }
+        }*/
 
         /*[HttpPost]
         [Route("FormularioFEMA")]

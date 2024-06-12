@@ -19,7 +19,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<vinculacionfemaContext>(options =>
 //options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionTestRobles")));
 //options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionTest")));
-options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionTest")));
+options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 #endregion
 
 #region JWT services

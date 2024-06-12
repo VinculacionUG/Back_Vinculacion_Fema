@@ -10,9 +10,9 @@ namespace Back_Vinculacion_Fema.Models.DbModels
             FemaOcupacions = new HashSet<FemaOcupacion>();
         }
 
-        public int CodOcupacion { get; set; }
+        public short CodOcupacion { get; set; }
         public string? Descripcion { get; set; }
-        public string? Estado { get; set; }
+        public bool? Estado { get; set; }
 
         public virtual ICollection<FemaOcupacion> FemaOcupacions { get; set; }
     }
