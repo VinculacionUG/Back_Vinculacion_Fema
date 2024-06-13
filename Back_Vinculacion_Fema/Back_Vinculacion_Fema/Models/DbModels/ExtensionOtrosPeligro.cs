@@ -10,7 +10,13 @@ namespace Back_Vinculacion_Fema.Models.DbModels
         public short CodOtrosPeligorsSec { get; set; }
         public bool Estado { get; set; }
 
-        public virtual FemaExtensionRevision CodExtensionRevisionNavigation { get; set; } = null!;
-        public virtual FemaOtrosPeligro CodOtrosPeligorsSecNavigation { get; set; } = null!;
+        //Propiedades de navegacion
+
+        public virtual FemaExtensionRevision FemaExtensionRevision { get; set; } = null!;
+        public virtual FemaOtrosPeligro FemaOtrosPeligros { get; set; } = null!;
+
+
+        /*public virtual FemaExtensionRevision CodExtensionRevisionNavigation { get; set; } = null!;
+        public virtual FemaOtrosPeligro CodOtrosPeligorsSecNavigation { get; set; } = null!;*/
     }
 }

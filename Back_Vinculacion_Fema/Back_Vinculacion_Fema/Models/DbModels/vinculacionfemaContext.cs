@@ -16,8 +16,8 @@ namespace Back_Vinculacion_Fema.Models.DbModels
         {
         }
 
-        public virtual DbSet<AccionPreguntum> AccionPregunta { get; set; } = null!;
-        public virtual DbSet<AccionRequeridum> AccionRequerida { get; set; } = null!;
+        public virtual DbSet<AccionPregunta> AccionPregunta { get; set; } = null!;
+        public virtual DbSet<AccionRequerida> AccionRequerida { get; set; } = null!;
         public virtual DbSet<Archivo> Archivos { get; set; } = null!;
         public virtual DbSet<Estado> Estados { get; set; } = null!;
         public virtual DbSet<EvaluacionExterior> EvaluacionExteriors { get; set; } = null!;
@@ -58,7 +58,7 @@ namespace Back_Vinculacion_Fema.Models.DbModels
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<AccionPreguntum>(entity =>
+            modelBuilder.Entity<AccionPregunta>(entity =>
             {
                 entity.HasKey(e => e.CodAccionPregunta);
 
@@ -81,28 +81,32 @@ namespace Back_Vinculacion_Fema.Models.DbModels
                     .HasColumnName("respuesta");
             });
 
-            modelBuilder.Entity<AccionRequeridum>(entity =>
+            modelBuilder.Entity<AccionRequerida>(entity =>
             {
                 entity.HasKey(e => e.CodAccionRequerida);
 
                 entity.ToTable("ACCION_REQUERIDA");
 
-                entity.Property(e => e.CodAccionRequerida).HasColumnName("cod_accion_requerida");
+                entity.Property(e => e.CodAccionRequerida)
+                    .HasColumnName("cod_accion_requerida");
 
-                entity.Property(e => e.CodAccionPregunta).HasColumnName("cod_accion_pregunta");
+                entity.Property(e => e.CodAccionPregunta)
+                    .HasColumnName("cod_accion_pregunta");
 
-                entity.Property(e => e.CodExtensionRevision).HasColumnName("cod_extension_revision");
+                entity.Property(e => e.CodExtensionRevision)
+                    .HasColumnName("cod_extension_revision");
 
-                entity.Property(e => e.Estado).HasColumnName("estado");
+                entity.Property(e => e.Estado)
+                    .HasColumnName("estado");
 
-                entity.HasOne(d => d.CodAccionPreguntaNavigation)
-                    .WithMany(p => p.AccionRequerida)
+                entity.HasOne(d => d.AccionPregunta)
+                    .WithMany(p => p.AccionRequeridas)
                     .HasForeignKey(d => d.CodAccionPregunta)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ACCION_REQUERIDA_ACCION_PREGUNTA");
 
-                entity.HasOne(d => d.CodExtensionRevisionNavigation)
-                    .WithMany(p => p.AccionRequerida)
+                entity.HasOne(d => d.FemaExtensionRevision)
+                    .WithMany(p => p.AccionRequeridas)
                     .HasForeignKey(d => d.CodExtensionRevision)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ACCION_REQUERIDA_FEMA_EXTENSION_REVISION");
@@ -178,7 +182,8 @@ namespace Back_Vinculacion_Fema.Models.DbModels
 
                 entity.ToTable("EVALUACION_INTERIOR");
 
-                entity.Property(e => e.CodEvalInterior).HasColumnName("cod_eval_interior");
+                entity.Property(e => e.CodEvalInterior)
+                    .HasColumnName("cod_eval_interior");
 
                 entity.Property(e => e.Descripcion)
                     .HasMaxLength(30)
@@ -194,21 +199,25 @@ namespace Back_Vinculacion_Fema.Models.DbModels
 
                 entity.ToTable("EXTENSION_EVALUACION_EXTERIOR");
 
-                entity.Property(e => e.CodExtensionEvaluacionExterior).HasColumnName("cod_extension_evaluacion_exterior");
+                entity.Property(e => e.CodExtensionEvaluacionExterior)
+                    .HasColumnName("cod_extension_evaluacion_exterior");
 
-                entity.Property(e => e.CodEvalExterior).HasColumnName("cod_eval_exterior");
+                entity.Property(e => e.CodEvalExterior)
+                    .HasColumnName("cod_eval_exterior");
 
-                entity.Property(e => e.CodExtensionRevision).HasColumnName("cod_extension_revision");
+                entity.Property(e => e.CodExtensionRevision)
+                    .HasColumnName("cod_extension_revision");
 
-                entity.Property(e => e.Estado).HasColumnName("estado");
+                entity.Property(e => e.Estado)
+                    .HasColumnName("estado");
 
-                entity.HasOne(d => d.CodEvalExteriorNavigation)
+                entity.HasOne(d => d.EvaluacionExterior)
                     .WithMany(p => p.ExtensionEvaluacionExteriors)
                     .HasForeignKey(d => d.CodEvalExterior)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_EXTENSION_EVALUACION_EXTERIOR_EVALUACION_EXTERIOR");
 
-                entity.HasOne(d => d.CodExtensionRevisionNavigation)
+                entity.HasOne(d => d.FemaExtensionRevision)
                     .WithMany(p => p.ExtensionEvaluacionExteriors)
                     .HasForeignKey(d => d.CodExtensionRevision)
                     .OnDelete(DeleteBehavior.ClientSetNull)
@@ -229,13 +238,13 @@ namespace Back_Vinculacion_Fema.Models.DbModels
 
                 entity.Property(e => e.Estado).HasColumnName("estado");
 
-                entity.HasOne(d => d.CodExtensionRevisionNavigation)
+                entity.HasOne(d => d.FemaExtensionRevision)
                     .WithMany(p => p.ExtensionOtrosPeligros)
                     .HasForeignKey(d => d.CodExtensionRevision)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_EXTENSION_OTROS_PELIGROS_FEMA_EXTENSION_REVISION");
 
-                entity.HasOne(d => d.CodOtrosPeligorsSecNavigation)
+                entity.HasOne(d => d.FemaOtrosPeligros)
                     .WithMany(p => p.ExtensionOtrosPeligros)
                     .HasForeignKey(d => d.CodOtrosPeligorsSec)
                     .OnDelete(DeleteBehavior.ClientSetNull)
@@ -250,7 +259,7 @@ namespace Back_Vinculacion_Fema.Models.DbModels
 
                 entity.Property(e => e.CodFema).HasColumnName("cod_fema");
 
-                entity.Property(e => e.CodTipoUsoEdificacion).HasColumnName("CodTipoUsoEdificacion");
+                entity.Property(e => e.CodTipoUsoEdificacion).HasColumnName("cod_tipo_uso_edificacion");
 
                 entity.Property(e => e.CodigoPostal)
                     .HasMaxLength(6)
@@ -398,13 +407,13 @@ namespace Back_Vinculacion_Fema.Models.DbModels
 
                 entity.Property(e => e.CodSecuencia).HasColumnName("cod_secuencia");
 
-                entity.Property(e => e.Chk1).HasColumnName("chk_1");
+                entity.Property(e => e.Chk1N).HasColumnName("chk_1");
 
-                entity.Property(e => e.Chk2).HasColumnName("chk_2");
+                entity.Property(e => e.Chk2N).HasColumnName("chk_2");
 
-                entity.Property(e => e.Chk3).HasColumnName("chk_3");
+                entity.Property(e => e.Chk3N).HasColumnName("chk_3");
 
-                entity.Property(e => e.Chk4).HasColumnName("chk_4");
+                entity.Property(e => e.Chk4N).HasColumnName("chk_4");
 
                 entity.Property(e => e.CodFema).HasColumnName("cod_fema");
 
@@ -422,11 +431,11 @@ namespace Back_Vinculacion_Fema.Models.DbModels
 
                 entity.Property(e => e.CodSecuencia).HasColumnName("cod_secuencia");
 
+                entity.Property(e => e.CodFema).HasColumnName("cod_fema");
+
                 entity.Property(e => e.CodEvalExterior).HasColumnName("cod_eval_exterior");
 
-                entity.Property(e => e.CodEvalInterior).HasColumnName("cod_eval_interior");
-
-                entity.Property(e => e.CodFema).HasColumnName("cod_fema");
+                entity.Property(e => e.CodEvalInteriorE).HasColumnName("cod_eval_interior");
 
                 entity.Property(e => e.DisenioRevisado)
                     .HasMaxLength(2)
@@ -462,45 +471,51 @@ namespace Back_Vinculacion_Fema.Models.DbModels
 
                 entity.ToTable("FEMA_EXTENSION_REVISION");
 
-                entity.Property(e => e.CodExtensionRevision).HasColumnName("cod_extension_revision");
+                entity.Property(e => e.CodExtensionRevision)
+                      .HasColumnName("cod_extension_revision");
 
-                entity.Property(e => e.CodEvalInterior).HasColumnName("cod_eval_interior");
+                entity.Property(e => e.CodEvalInterior)
+                       .HasColumnName("cod_eval_interior");
 
-                entity.Property(e => e.CodFema).HasColumnName("cod_fema");
+                entity.Property(e => e.CodFema)
+                      .HasColumnName("cod_fema");
 
                 entity.Property(e => e.ContactoRegistrado)
-                    .HasMaxLength(20)
-                    .IsUnicode(false)
-                    .HasColumnName("contacto_registrado");
+                      .HasMaxLength(20)
+                      .IsUnicode(false)
+                      .HasColumnName("contacto_registrado");
 
-                entity.Property(e => e.Estado).HasColumnName("estado");
+                entity.Property(e => e.Estado)
+                      .HasColumnName("estado");
 
                 entity.Property(e => e.FuentePeligroGeologicos)
-                    .HasMaxLength(150)
-                    .IsUnicode(false)
-                    .HasColumnName("fuente_peligro_geologicos");
+                      .HasMaxLength(150)
+                      .IsUnicode(false)
+                      .HasColumnName("fuente_peligro_geologicos");
 
                 entity.Property(e => e.FuenteTipoSuelo)
-                    .HasMaxLength(150)
-                    .IsUnicode(false)
-                    .HasColumnName("fuente_tipo_suelo");
+                      .HasMaxLength(150)
+                      .IsUnicode(false)
+                      .HasColumnName("fuente_tipo_suelo");
 
                 entity.Property(e => e.NombreContacto)
-                    .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("nombre_contacto");
+                      .HasMaxLength(50)
+                      .IsUnicode(false)
+                      .HasColumnName("nombre_contacto");
 
-                entity.Property(e => e.RevisionPlanos).HasColumnName("revision_planos");
+                entity.Property(e => e.RevisionPlanos)
+                      .HasColumnName("revision_planos");
 
-                entity.Property(e => e.TelefonoContacto).HasColumnName("telefono_contacto");
+                entity.Property(e => e.TelefonoContacto)
+                      .HasColumnName("telefono_contacto");
 
-                entity.HasOne(d => d.CodEvalInteriorNavigation)
+                entity.HasOne(d => d.EvaluacionInterior)
                     .WithMany(p => p.FemaExtensionRevisions)
                     .HasForeignKey(d => d.CodEvalInterior)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_FEMA_EXTENSION_REVISION_EVALUACION_INTERIOR");
 
-                entity.HasOne(d => d.CodFemaNavigation)
+                entity.HasOne(d => d.Fema)
                     .WithMany(p => p.FemaExtensionRevisions)
                     .HasForeignKey(d => d.CodFema)
                     .OnDelete(DeleteBehavior.ClientSetNull)
@@ -599,7 +614,10 @@ namespace Back_Vinculacion_Fema.Models.DbModels
 
             modelBuilder.Entity<FemaSuelo>(entity =>
             {
-                entity.HasNoKey();
+                entity.HasKey(e => e.CodTipoSuelo);
+
+                entity.Property(e => e.CodTipoSuelo)
+                     .HasColumnName("cod_puntuacion_sec");
 
                 entity.ToTable("FEMA_SUELO");
 
@@ -679,7 +697,7 @@ namespace Back_Vinculacion_Fema.Models.DbModels
 
                 entity.ToTable("SUBTIPO_EDIFICACION");
 
-                entity.Property(e => e.CodSubtipoEdificacion).HasColumnName("CodSubtipoEdificacion");
+                entity.Property(e => e.CodSubtipoEdificacion).HasColumnName("cod_subtipo_edificacion");
 
                 entity.Property(e => e.CodTipoEdificacion).HasColumnName("cod_tipo_edificacion");
 
@@ -903,7 +921,7 @@ namespace Back_Vinculacion_Fema.Models.DbModels
 
                 entity.ToTable("TIPO_USO");
 
-                entity.Property(e => e.CodTipoUsoEdificacion).HasColumnName("CodTipoUsoEdificacion");
+                entity.Property(e => e.CodTipoUsoEdificacion).HasColumnName("cod_tipo_uso_edificacion");
 
                 entity.Property(e => e.Descripcion)
                     .HasMaxLength(50)

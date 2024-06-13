@@ -8,7 +8,7 @@ namespace Back_Vinculacion_Fema.Models.DbModels
         public int CodSecuencia { get; set; }
         public int CodFema { get; set; }
         public int CodEvalExterior { get; set; }
-        public int CodEvalInterior { get; set; }
+        public int CodEvalInteriorE { get; set; }
         public string DisenioRevisado { get; set; } = null!;
         public string Fuente { get; set; } = null!;
         public string PeligrosGeologicos { get; set; } = null!;

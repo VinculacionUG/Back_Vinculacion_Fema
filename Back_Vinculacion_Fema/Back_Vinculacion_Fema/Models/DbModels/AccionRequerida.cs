@@ -3,19 +3,19 @@ using System.Collections.Generic;
 
 namespace Back_Vinculacion_Fema.Models.DbModels
 {
-    public partial class ExtensionEvaluacionExterior
+    public partial class AccionRequerida
     {
-        public int CodExtensionEvaluacionExterior { get; set; }
+        public int CodAccionRequerida { get; set; }
         public int CodExtensionRevision { get; set; }
-        public short CodEvalExterior { get; set; }
+        public short CodAccionPregunta { get; set; }
         public bool Estado { get; set; }
 
         //Propiedades de navegacion
 
         public virtual FemaExtensionRevision FemaExtensionRevision { get; set; } = null!;
-        public virtual EvaluacionExterior EvaluacionExterior { get; set; } = null!;
+        public virtual AccionPregunta AccionPregunta { get; set; } = null!;
 
-        /*public virtual EvaluacionExterior CodEvalExteriorNavigation { get; set; } = null!;
+        /*public virtual AccionPreguntum CodAccionPreguntaNavigation { get; set; } = null!;
         public virtual FemaExtensionRevision CodExtensionRevisionNavigation { get; set; } = null!;*/
     }
 }

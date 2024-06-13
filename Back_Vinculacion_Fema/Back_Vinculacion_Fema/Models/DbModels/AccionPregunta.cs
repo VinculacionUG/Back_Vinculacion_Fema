@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace Back_Vinculacion_Fema.Models.DbModels
 {
-    public partial class AccionPreguntum
+    public partial class AccionPregunta
     {
-        public AccionPreguntum()
+        public AccionPregunta()
         {
-            AccionRequerida = new HashSet<AccionRequeridum>();
+            AccionRequeridas = new HashSet<AccionRequerida>();
         }
 
         public short CodAccionPregunta { get; set; }
@@ -15,6 +15,6 @@ namespace Back_Vinculacion_Fema.Models.DbModels
         public string Respuesta { get; set; } = null!;
         public bool Estado { get; set; }
 
-        public virtual ICollection<AccionRequeridum> AccionRequerida { get; set; }
+        public virtual ICollection<AccionRequerida> AccionRequeridas { get; set; }
     }
 }

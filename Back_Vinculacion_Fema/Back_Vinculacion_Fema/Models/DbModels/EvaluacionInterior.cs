@@ -14,6 +14,6 @@ namespace Back_Vinculacion_Fema.Models.DbModels
         public string Descripcion { get; set; } = null!;
         public bool Estado { get; set; }
 
-        public virtual ICollection<FemaExtensionRevision> FemaExtensionRevisions { get; set; }
+        public virtual ICollection<FemaExtensionRevision> FemaExtensionRevisions { get; set; } 
     }
 }
