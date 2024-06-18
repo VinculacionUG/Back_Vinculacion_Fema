@@ -13,61 +13,44 @@ namespace Back_Vinculacion_Fema.CRUD
             _context = context;
         }
 
-        public List<Tbl_Fema_Roles> ListarRoles()
+        public List<TblFemaRole> ListarRoles()
         {
-            List<Tbl_Fema_Roles> listaRoles = new List<Tbl_Fema_Roles>();
             // Consultar los roles en la base de datos utilizando Entity Framework Core
-            var roles = _context.Tbl_Fema_Roles.ToList();
-            foreach ( var role in roles )
-            {
-                Tbl_Fema_Roles roles1 = new Tbl_Fema_Roles
-                {
-                    descripcion = role.descripcion,
-                    fecha_creacion = role.fecha_creacion,
-                    id_rol = role.id_rol
-                };
-                listaRoles.Add( roles1 );
-            }
-            // Si prefieres utilizar una consulta LINQ explícita, puedes hacerlo así:
-            // var roles = _context.Tbl_Fema_Roles.Select(r => new Tbl_Fema_Roles { id_rol = r.id_rol, descripcion = r.descripcion }).ToList();
-
-            return listaRoles;
-        }
-
-        public List<TblFemaEstado> ListarEstados()
-        {
-            List<TblFemaEstado> listaEstados = new List<TblFemaEstado>();
-            // Consultar los roles en la base de datos utilizando Entity Framework Core
-            var estados = _context.Estados.ToList();
-            foreach (var estado in estados)
-            {
-                TblFemaEstado estado1 = new TblFemaEstado
-                {
-                    descripcion = estado.descripcion,
-                    fecha_creacion = estado.fecha_creacion,
-                    id_estado = estado.id_estado
-                };
-                listaEstados.Add(estado1);
-            }
+            var roles = _context.TblFemaRoles.ToList();
 
             // Si prefieres utilizar una consulta LINQ explícita, puedes hacerlo así:
             // var roles = _contexto.Roles.Select(r => new Rol { id_rol = r.id_rol, descripcion = r.descripcion }).ToList();
-            return listaEstados;
+            return roles;
+        }
+
+        /*
+        public async Task<bool> ObtenerUsuario(string userName)
+        {
+            return await _context.TblFemaUsuarios.AnyAsync(u => u.UserName == userName);
+        }*/
+        public List<Estado> ListarEstados()
+        {
+            // Consultar los roles en la base de datos utilizando Entity Framework Core
+            var estados = _context.Estados.ToList();
+
+            // Si prefieres utilizar una consulta LINQ explícita, puedes hacerlo así:
+            // var roles = _contexto.Roles.Select(r => new Rol { id_rol = r.id_rol, descripcion = r.descripcion }).ToList();
+            return estados;
         }
 
         public TblFemaUsuario? GetUsuarioLogin(string userName, string encryptedPassword)
         {
             //short estadoActivo = 1;
 
-            //return _context.Tbl_Fema_Usuarios.FirstOrDefault(u => u.id_estado == estadoActivo && u.NombreUsuario == userName && u.Clave == encryptedPassword);
+            //return _context.TblFemaUsuarios.FirstOrDefault(u => u.id_estado == estadoActivo && u.NombreUsuario == userName && u.Clave == encryptedPassword);
 
             short estadoActivo = 1;  // Asegúrate de usar short aquí
-            var usuario = _context.Tbl_Fema_Usuarios.FirstOrDefault(u => u.id_estado == estadoActivo && u.NombreUsuario == userName && u.Clave == encryptedPassword);
+            var usuario = _context.TblFemaUsuarios.FirstOrDefault(u => u.IdEstado == estadoActivo && u.NombreUsuario == userName && u.Clave == encryptedPassword);
 
             if (usuario != null)
             {
                 // Añadir logs para inspeccionar id_estado
-                Console.WriteLine($"GetUsuarioLogin - id_estado: {usuario.id_estado} (Tipo: {usuario.id_estado.GetType()})");
+                Console.WriteLine($"GetUsuarioLogin - id_estado: {usuario.IdEstado} (Tipo: {usuario.IdEstado.GetType()})");
             }
 
             return usuario;
@@ -75,7 +58,7 @@ namespace Back_Vinculacion_Fema.CRUD
 
         public async Task<String> ObtenerUsuarioConCorreo(string correo)
         {
-            var usuario =  await _context.Tbl_Fema_Usuarios.FirstOrDefaultAsync(u => u.Correo == correo);
+            var usuario = await _context.TblFemaUsuarios.FirstOrDefaultAsync(u => u.Correo == correo);
             if (usuario != null)
             {
                 return usuario.NombreUsuario;
@@ -88,15 +71,15 @@ namespace Back_Vinculacion_Fema.CRUD
 
         public async Task<bool> ActualizarClave(string userName, string claveNueva)
         {
-            var usuario = await _context.Tbl_Fema_Usuarios.FirstOrDefaultAsync(u => u.NombreUsuario == userName);
-                usuario.Clave = claveNueva;
+            var usuario = await _context.TblFemaUsuarios.FirstOrDefaultAsync(u => u.NombreUsuario == userName);
+            usuario.Clave = claveNueva;
 
-                //Solicitar que se agregue campo a la tabla de la BD
-                //Agregar al contexto
-                //Agregar al modelo ya que es necesario para recuperación de contraseña
+            //Solicitar que se agregue campo a la tabla de la BD
+            //Agregar al contexto
+            //Agregar al modelo ya que es necesario para recuperación de contraseña
 
-                //usuario.ClaveTmp = claveNueva;
-            _context.Tbl_Fema_Usuarios.Update(usuario);
+            //usuario.ClaveTmp = claveNueva;
+            _context.TblFemaUsuarios.Update(usuario);
             await _context.SaveChangesAsync();
             return true;
         }
@@ -104,35 +87,13 @@ namespace Back_Vinculacion_Fema.CRUD
         public async Task<bool> EliminarUsuario(string userName)
         {
             //Previa verificación de la existencia del usuario se procede a eliminarlo de la BD
-            var usuario = await _context.Tbl_Fema_Usuarios
+            var usuario = await _context.TblFemaUsuarios
                 .FirstOrDefaultAsync(u => u.NombreUsuario == userName);
-            _context.Tbl_Fema_Usuarios.Remove(usuario);
+            _context.TblFemaUsuarios.Remove(usuario);
             await _context.SaveChangesAsync();
             return true;
         }
-
-
-
-        /*public async Task<bool> ObtenerUsuario(string userName)       
-        {
-            return await _context.Tbl_Fema_Usuarios.AnyAsync(u => u.UserName == userName);
-        }*/
-
-        /*public async Task<decimal> ObtenerIdPersonaConElUsuario(string userName)
-        {
-            var usuario = await _context.Tbl_Fema_Usuarios
-                .FirstOrDefaultAsync(u => u.UserName == userName);
-
-            if (usuario != null)
-            {
-                return usuario.IdPersona;
-            }
-            else
-            {
-                return (0);
-            }
-        }*/
-
+        
         /*public async Task<TblFemaUsuario> CrearUsuario(RegisterUserRequest request, decimal idPersona)
         {
             try
@@ -144,13 +105,13 @@ namespace Back_Vinculacion_Fema.CRUD
                     Correo = request.Correo,
                     Clave = request.Clave,
                     ClaveTmp = request.Clave,
-                    fecha_creacion = request.fecha_creacion,
-                    Fecha_modificacion = request.Fecha_modificacion,
+                    FechaCreacion = request.FechaCreacion,
+                    FechaModificacion = request.FechaModificacion,
                     Modulo = "Estudiante",
                     Estado = true
                 };
                
-                _context.Tbl_Fema_Usuarios.Add(user);
+                _context.TblFemaUsuarios.Add(user);
                 
                 await _context.SaveChangesAsync();
 
@@ -161,6 +122,9 @@ namespace Back_Vinculacion_Fema.CRUD
                 throw new Exception("Error al crear el usuario", ex);
             }
         }*/
+
+       
+
 
     }
 }

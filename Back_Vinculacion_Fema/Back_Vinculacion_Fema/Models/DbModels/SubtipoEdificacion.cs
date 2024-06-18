@@ -12,7 +12,7 @@ namespace Back_Vinculacion_Fema.Models.DbModels
 
         public short CodSubtipoEdificacion { get; set; }
         public short CodTipoEdificacion { get; set; }
-        public string descripcion { get; set; } = null!;
+        public string Descripcion { get; set; } = null!;
         public bool Estado { get; set; }
 
         public virtual TipoEdificacion CodTipoEdificacionNavigation { get; set; } = null!;

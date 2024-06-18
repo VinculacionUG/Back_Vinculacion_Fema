@@ -28,20 +28,21 @@ namespace Back_Vinculacion_Fema.Controllers
 
             if (usuario == null)
             {
-                return Unauthorized(new { message = "Usuario o contraseña incorrectos." });
+                return Unauthorized(new { message = "Usuario o contraseña incorrectos. Contactate con el administrador" });
             }
-            
+
             // Obtener datos adicionales del usuario, como el rol y los datos personales.
-            var userInfo = _contexto.Tbl_Fema_Usuarios
+            var userInfo = _contexto.TblFemaUsuarios
                 .Where(u => u.NombreUsuario == usuario.NombreUsuario)
-                .Join(_contexto.Tbl_Fema_Personas,
+                .Join(_contexto.TblFemaPersonas,
                       u => u.IdUsuario,
                       p => p.IdUsuario,
                       (u, p) => new
                       {
+                          IdUsuario = u.IdUsuario,
                           UserName = u.NombreUsuario,
-                          id_rol = u.id_rol,
-                          id_estado = u.id_estado,
+                          id_rol = u.IdRol,
+                          id_estado = u.IdEstado,
                           Nombre = p.Nombre,
                           Apellido = p.Apellido
                       })
@@ -52,7 +53,7 @@ namespace Back_Vinculacion_Fema.Controllers
                 return Unauthorized(new { message = "No se pudo recuperar datos del usuario." });
             }
 
-            var token = Token.GenerarToken(userInfo.UserName, userInfo.Nombre, userInfo.Apellido, (short)userInfo.id_rol, userInfo.id_estado);
+            var token = Token.GenerarToken(userInfo.UserName, userInfo.Nombre, userInfo.Apellido, userInfo.id_rol, userInfo.id_estado);
 
             return Ok(new
             {
@@ -69,6 +70,6 @@ namespace Back_Vinculacion_Fema.Controllers
             });
 
             //return Ok(new { token });
-        }   
+        }
     }
 }

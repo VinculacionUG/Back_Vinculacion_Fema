@@ -7,13 +7,13 @@ namespace Back_Vinculacion_Fema.Models.DbModels
     {
         public EvaluacionExterior()
         {
-            FemaEvaluacions = new HashSet<FemaEvaluacion>();
+            ExtensionEvaluacionExteriors = new HashSet<ExtensionEvaluacionExterior>();
         }
 
-        public int CodEvalExterior { get; set; }
-        public string descripcion { get; set; } = null!;
+        public short CodEvalExterior { get; set; }
+        public string Descripcion { get; set; } = null!;
         public bool Estado { get; set; }
 
-        public virtual ICollection<FemaEvaluacion> FemaEvaluacions { get; set; }
+        public virtual ICollection<ExtensionEvaluacionExterior> ExtensionEvaluacionExteriors { get; set; }
     }
 }

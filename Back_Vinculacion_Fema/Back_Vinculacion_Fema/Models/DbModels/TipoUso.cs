@@ -11,7 +11,7 @@ namespace Back_Vinculacion_Fema.Models.DbModels
         }
 
         public short CodTipoUsoEdificacion { get; set; }
-        public string descripcion { get; set; } = null!;
+        public string Descripcion { get; set; } = null!;
         public bool Estado { get; set; }
 
         public virtual ICollection<Fema> Femas { get; set; }

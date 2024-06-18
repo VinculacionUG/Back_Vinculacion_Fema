@@ -16,8 +16,8 @@ namespace Back_Vinculacion_Fema.Models.Utilidades
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(ClaimTypes.Name, nameUser),
-                    new Claim("id_rol", id_rol.ToString()), 
-                    new Claim("nombre", nombre), 
+                    new Claim("id_rol", id_rol.ToString()),
+                    new Claim("nombre", nombre),
                     new Claim("apellido", apellido),
                     new Claim("estado", estado.ToString())
                 }),

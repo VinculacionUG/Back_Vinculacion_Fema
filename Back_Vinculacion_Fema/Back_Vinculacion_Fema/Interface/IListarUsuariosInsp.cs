@@ -4,6 +4,6 @@ namespace Back_Vinculacion_Fema.Interface
 {
     public interface IListarUsuariosInsp
     {
-        Task<List<UserInspectorVM>> ConsultarUsuariosInspector();
+        Task<List<ListaUsuariosVM>> ConsultarUsuariosInspector();
     }
 }

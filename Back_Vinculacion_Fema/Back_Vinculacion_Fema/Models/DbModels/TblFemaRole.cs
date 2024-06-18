@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Back_Vinculacion_Fema.Models.DbModels
 {
@@ -7,13 +8,14 @@ namespace Back_Vinculacion_Fema.Models.DbModels
     {
         public TblFemaRole()
         {
-            Tbl_Fema_Usuarios = new HashSet<TblFemaUsuario>();
+            TblFemaUsuarios = new HashSet<TblFemaUsuario>();
         }
 
-        public short id_rol { get; set; }
-        public string descripcion { get; set; } = null!;
-        public DateTime fecha_creacion { get; set; }
+        [Key]
+        public short IdRol { get; set; }
+        public string Descripcion { get; set; } = null!;
+        public DateTime FechaCreacion { get; set; }
 
-        public virtual ICollection<TblFemaUsuario> Tbl_Fema_Usuarios { get; set; }
+        public virtual ICollection<TblFemaUsuario> TblFemaUsuarios { get; set; }
     }
 }

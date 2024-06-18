@@ -24,15 +24,13 @@ builder.Services.AddDbContext<vinculacionfemaContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionTest")));
 #endregion
 
-builder.Services.AddScoped<IFemaDos, FemaDos>()
-    .AddScoped<IFema, FemaService>()
-    ; 
+builder.Services.AddScoped<IFemaDos, FemaDos>();
 builder.Services.AddScoped<IListarUsuariosSuper, UserSuperService>();
-builder.Services.AddScoped<IDetalleUsuarioSuper, DetalleSuperService>();
 builder.Services.AddScoped<IListarUsuariosInsp, UserInspService>();
-builder.Services.AddScoped<IDetalleUsuarioInsp, DetalleInspService>();
+builder.Services.AddScoped<IDetalleUsuarios, DetalleUsuariosService>();
+builder.Services.AddScoped<IEliminarUsuario, EliminarUsuarioService>();
+builder.Services.AddScoped<IActualizarDatosUsuario, ActualizarUsuarioService>();
 
-builder.Services.AddControllers();
 
 #region JWT services
 builder.Services.AddAuthorization();

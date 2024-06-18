@@ -6,22 +6,24 @@ using Back_Vinculacion_Fema.Interface;
 
 namespace Back_Vinculacion_Fema.Service
 {
-    public class DetalleSuperService : IDetalleUsuarioSuper
+    public class DetalleUsuariosService : IDetalleUsuarios
     {
         private readonly vinculacionfemaContext _contexto;
-        public DetalleSuperService(vinculacionfemaContext contexto)
+        public DetalleUsuariosService(vinculacionfemaContext contexto)
         {
             _contexto = contexto;
         }
-        public async Task<DetalleSupervisorVM> DetallesUsuariosSupervisor(int idUsuario)
+        public async Task<DetalleUsuariosVM> CargarDetallesUsuarios(int idUsuario)
         {
-            var query = from us in _contexto.Tbl_Fema_Usuarios
-                        join r in _contexto.Tbl_Fema_Roles on us.id_rol equals r.id_rol
-                        join e in _contexto.Estados on us.id_estado equals e.id_estado
-                        join pr in _contexto.Tbl_Fema_Personas on us.IdUsuario equals pr.IdUsuario
+            var query = from us in _contexto.TblFemaUsuarios
+                        join r in _contexto.TblFemaRoles on us.IdRol equals r.IdRol
+                        join e in _contexto.Estados on us.IdEstado equals e.IdEstado
+                        join pr in _contexto.TblFemaPersonas on us.IdUsuario equals pr.IdUsuario
                         where us.IdUsuario == idUsuario //Usuario recibido del front
-                        select new DetalleSupervisorVM
+                        select new DetalleUsuariosVM
                         {
+                            IdUsuario = us.IdUsuario,
+                            IdPersona = pr.IdPersona,
                             TipoIdentifiacion = pr.TipoIdentificacion,
                             Identificacion = pr.Identificacion,
                             Nombre = pr.Nombre,

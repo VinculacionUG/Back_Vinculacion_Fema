@@ -18,7 +18,7 @@ namespace Back_Vinculacion_Fema.CRUD
 
         public TblFemaPersona? ObtenerPersona(string identificacion)
         {
-            return _context.Tbl_Fema_Personas.FirstOrDefault(u => u.Identificacion == identificacion);
+            return _context.TblFemaPersonas.FirstOrDefault(u => u.Identificacion == identificacion);
         }
 
         public decimal ObtenerPersonaId(string identificacion)
@@ -35,20 +35,18 @@ namespace Back_Vinculacion_Fema.CRUD
                     IdTipo = request.IdTipo,
                     TipoIdentificacion = request.TipoIdentificacion,
                     Identificacion = request.Identificacion,
-                    Nombre1 = request.Nombre1,
-                    Nombre2 = request.Nombre2,
-                    Apellido1 = request.Apellido1,
-                    Apellido2 = request.Apellido2,
+                    Nombre = request.Nombre,
+                    Apellido = request.Apellido,
                     FechaNacimiento = request.FechaNacimiento,
                     Direccion = request.Direccion,
                     Sexo = request.Sexo,
-                    id_rol = request.id_rol,
+                    //Id_rol = request.IdRol,
                     Contacto = request.Contacto,
                     Correo = request.Correo,
                     Estado = true
                 };
 
-                _context.Tbl_Fema_Personas.Add(personaCreate);
+                _context.TblFemaPersonas.Add(personaCreate);
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -59,8 +57,8 @@ namespace Back_Vinculacion_Fema.CRUD
 
         public async Task<bool> EliminarPersona(decimal idPersona)
         {
-            var usuario = await _context.Tbl_Fema_Personas.FirstOrDefaultAsync(u => u.IdPersona == idPersona);
-            _context.Tbl_Fema_Personas.Remove(usuario);
+            var usuario = await _context.TblFemaPersonas.FirstOrDefaultAsync(u => u.IdPersona == idPersona);
+            _context.TblFemaPersonas.Remove(usuario);
             await _context.SaveChangesAsync();
             return true;
         }

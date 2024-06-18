@@ -11,8 +11,8 @@ namespace Back_Vinculacion_Fema.Models.DbModels
         }
 
         public short IdTipoArchivo { get; set; }
-        public string descripcion { get; set; } = null!;
-        public short id_estado { get; set; }
+        public string Descripcion { get; set; } = null!;
+        public short IdEstado { get; set; }
 
         public virtual ICollection<Archivo> Archivos { get; set; }
     }
