@@ -41,8 +41,8 @@ namespace Back_Vinculacion_Fema.Controllers
                       {
                           IdUsuario = u.IdUsuario,
                           UserName = u.NombreUsuario,
-                          id_rol = u.id_rol,
-                          id_estado = u.id_estado,
+                          id_rol = u.IdRol,
+                          id_estado = u.IdEstado,
                           Nombre = p.Nombre,
                           Apellido = p.Apellido
                       })
@@ -70,6 +70,6 @@ namespace Back_Vinculacion_Fema.Controllers
             });
 
             //return Ok(new { token });
-        }   
+        }
     }
 }

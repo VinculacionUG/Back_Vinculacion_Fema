@@ -16,8 +16,8 @@ namespace Back_Vinculacion_Fema.Service
         public async Task<DetalleUsuariosVM> CargarDetallesUsuarios(int idUsuario)
         {
             var query = from us in _contexto.TblFemaUsuarios
-                        join r in _contexto.Tbl_Fema_Roles on us.id_rol equals r.id_rol
-                        join e in _contexto.Estado on us.id_estado equals e.id_estado
+                        join r in _contexto.TblFemaRoles on us.IdRol equals r.IdRol
+                        join e in _contexto.Estados on us.IdEstado equals e.IdEstado
                         join pr in _contexto.TblFemaPersonas on us.IdUsuario equals pr.IdUsuario
                         where us.IdUsuario == idUsuario //Usuario recibido del front
                         select new DetalleUsuariosVM
