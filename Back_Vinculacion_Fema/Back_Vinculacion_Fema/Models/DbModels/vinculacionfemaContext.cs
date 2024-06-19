@@ -40,6 +40,8 @@ namespace Back_Vinculacion_Fema.Models.DbModels
         public virtual DbSet<TipoPuntuacion> TipoPuntuacions { get; set; } = null!;
         public virtual DbSet<TipoSuelo> TipoSuelos { get; set; } = null!;
 
+        public virtual DbSet<AccionPregunta> Preguntas { get; set; } = null!;
+        public virtual DbSet<AccionRespuesta> Respuestas { get; set; } = null!;
         public virtual DbSet<TblFemaEstado> Estado { get; set; } = null!;
 
 
@@ -679,7 +681,7 @@ namespace Back_Vinculacion_Fema.Models.DbModels
 
                 entity.ToTable("TIPO_SUELO");
 
-                entity.Property(e => e.CodTipoSuelo) 
+                entity.Property(e => e.CodTipoSuelo)
                     .ValueGeneratedNever()
                     .HasColumnName("cod_tipo_suelo");
 
@@ -693,6 +695,52 @@ namespace Back_Vinculacion_Fema.Models.DbModels
                     .IsUnicode(false)
                     .HasColumnName("estado")
                     .IsFixedLength();
+            });
+
+            modelBuilder.Entity<AccionRespuesta>(entity =>
+            {
+                entity.HasKey(e => e.IdRespuesta);
+
+                entity.ToTable("ACCION_RESPUESTA");
+
+                entity.Property(e => e.IdRespuesta)
+                    .ValueGeneratedNever()
+                    .HasColumnName("id_respuesta");
+
+                entity.Property(e => e.IdPregunta)
+                    .HasColumnName("id_pregunta");
+
+                entity.Property(e => e.Respuesta)
+                    .HasMaxLength(500)
+                    .IsUnicode(false)
+                    .HasColumnName("respuesta");
+
+                entity.Property(e => e.Estado)
+                    .HasColumnName("estado");
+
+                entity.HasOne(d => d.IdPreguntaNavigation)
+                    .WithMany(p => p.Respuestas)
+                    .HasForeignKey(d => d.IdPregunta)
+                    .HasConstraintName("FK_ACCCION_RESPUESTA_ACCION_PREGUNTA");
+            });
+
+            modelBuilder.Entity<AccionPregunta>(entity =>
+            {
+                entity.HasKey(e => e.IdPregunta);
+
+                entity.ToTable("ACCION_PREGUNTA");
+
+                entity.Property(e => e.IdPregunta)
+                    .ValueGeneratedNever()
+                    .HasColumnName("id_pregunta");
+
+                entity.Property(e => e.Pregunta)
+                    .HasMaxLength(500)
+                    .IsUnicode(false)
+                    .HasColumnName("pregunta");
+
+                entity.Property(e => e.Estado)
+                    .HasColumnName("estado");
             });
 
             OnModelCreatingPartial(modelBuilder);
