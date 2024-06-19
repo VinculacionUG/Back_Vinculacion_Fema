@@ -419,7 +419,7 @@ namespace Back_Vinculacion_Fema.Controllers
             var subtipoedificacion = await _context.SubtipoEdificacions
                 .Select(o => new
                 {
-                    o.CodSubtipoEdificacion,
+                    //o.CodSubtipoEdificacion,
                     o.Descripcion,
                     o.Estado
                 })
@@ -449,7 +449,7 @@ namespace Back_Vinculacion_Fema.Controllers
             var tipousos = await _context.TipoUsos
                 .Select(o => new
                 {
-                    o.CodTipoUsoEdificacion,
+                    //o.CodTipoUsoEdificacion,
                     o.Descripcion,
                     o.Estado
                 })
