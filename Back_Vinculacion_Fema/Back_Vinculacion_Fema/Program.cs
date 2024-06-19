@@ -22,6 +22,7 @@ builder.Services.AddDbContext<vinculacionfemaContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionTestRobles")));
 //options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionTest")));
 //options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionTest")));
+options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 #endregion
 
 builder.Services.AddScoped<IFemaDos, FemaDos>(); 
@@ -31,8 +32,6 @@ builder.Services.AddScoped<IListarUsuariosInsp, UserInspService>();
 builder.Services.AddScoped<IDetalleUsuarios, DetalleUsuariosService>();
 builder.Services.AddScoped<IEliminarUsuario, EliminarUsuarioService>();
 builder.Services.AddScoped<IActualizarDatosUsuario, ActualizarUsuarioService>();
-
-builder.Services.AddControllers();
 
 #region JWT services
 builder.Services.AddAuthorization();

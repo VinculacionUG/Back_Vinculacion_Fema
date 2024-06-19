@@ -5,14 +5,15 @@ namespace Back_Vinculacion_Fema.Models.DbModels
 {
     public partial class FemaPuntuacion
     {
-        public int CodSecuencia { get; set; }
-        public int? CodFema { get; set; }
-        public int? CodTipoEdificacion { get; set; }
-        public int? CodTipoPuntuacion { get; set; }
-        public decimal? Valor { get; set; }
+        public long CodPuntuacionSec { get; set; }
+        public int CodFema { get; set; }
+        public short CodPuntuacionMatriz { get; set; }
+        public decimal ResultadoFinal { get; set; }
+        public bool EsEst { get; set; }
+        public bool Estado { get; set; }
+        public bool EsDnk { get; set; }
 
-        public virtual Fema? CodFemaNavigation { get; set; }
-        public virtual TipoEdificacion? CodTipoEdificacionNavigation { get; set; }
-        public virtual TipoPuntuacion? CodTipoPuntuacionNavigation { get; set; }
+        public virtual Fema CodFemaNavigation { get; set; } = null!;
+        public virtual PuntuacionMatriz CodPuntuacionMatrizNavigation { get; set; } = null!;
     }
 }

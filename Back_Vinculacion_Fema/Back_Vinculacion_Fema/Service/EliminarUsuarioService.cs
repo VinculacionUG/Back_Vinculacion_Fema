@@ -24,7 +24,7 @@ namespace Back_Vinculacion_Fema.Service
                 };
             }
 
-            usuario.id_estado = idEstado;
+            usuario.IdEstado = idEstado;
 
             try
             {

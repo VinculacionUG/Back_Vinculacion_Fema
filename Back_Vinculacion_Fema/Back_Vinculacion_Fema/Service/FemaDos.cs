@@ -29,7 +29,7 @@ namespace Back_Vinculacion_Fema.Service
 
         public async Task<IEnumerable<Ocupacion>> ConsultarOcupacion()
         {
-            return await _contexto.Ocupacion
+            return await _contexto.Ocupacions
                 .Select(t => new Ocupacion
                 {
                     CodOcupacion = t.CodOcupacion,
