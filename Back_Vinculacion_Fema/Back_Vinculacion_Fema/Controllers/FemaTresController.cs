@@ -17,7 +17,7 @@ namespace Back_Vinculacion_Fema.Controllers
         }
 
         [HttpGet]
-        [Route("accionpreguntas")]
+        [Route("accionPreguntas")]
         public async Task<IEnumerable<AccionPregunta>> GetPreguntas()
         {
             return await femaTres.GetAccionPreguntas();
