@@ -131,13 +131,6 @@ namespace Back_Vinculacion_Fema.Controllers
 
         }
 
-        /*[HttpGet]
-        [Route("Ocupacion")]
-        public async Task<IActionResult> GetOcupaciones()
-        {
-            var ocupaciones = await _context.Ocupacions.ToListAsync();
-            return Ok(ocupaciones);
-        }*/
 
         [HttpGet]
         [Route("Ocupacion")]
@@ -154,13 +147,6 @@ namespace Back_Vinculacion_Fema.Controllers
             return Ok(ocupaciones);
         }
 
-        /*[HttpGet]
-        [Route("TipoOcupacion")]
-        public async Task<IActionResult> GetTipoOcupaciones()
-        {
-            var tipoOcupaciones = await _context.TipoOcupacions.ToListAsync();
-            return Ok(tipoOcupaciones);
-        }*/
 
         [HttpGet]
         [Route("TipoOcupacion")]
