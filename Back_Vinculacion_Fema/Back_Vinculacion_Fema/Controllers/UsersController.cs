@@ -9,6 +9,9 @@ using System.Data.SqlClient;
 using Microsoft.Data.SqlClient;
 using Back_Vinculacion_Fema.Models.DTOs;
 using System.Net.WebSockets;
+using System.Text;
+using Back_Vinculacion_Fema.Interface;
+using Back_Vinculacion_Fema.Viewmodel;
 
 namespace Back_Vinculacion_Fema.Controllers
 {
@@ -17,10 +20,21 @@ namespace Back_Vinculacion_Fema.Controllers
     public class UsersController : ControllerBase
     {
         private readonly vinculacionfemaContext _context;
-
-        public UsersController(vinculacionfemaContext context)
+        private readonly IListarUsuariosSuper _usuarioServicio;
+        private readonly IDetalleUsuarios _detailUser;
+        private readonly IListarUsuariosInsp _inspectorServicio;
+        private readonly IEliminarUsuario _eliminarUsuario;
+        private readonly IActualizarDatosUsuario _actualizarUsuario;
+        public UsersController(vinculacionfemaContext context, IListarUsuariosSuper usuarioServicio,
+                               IDetalleUsuarios detailUser, IListarUsuariosInsp inspectorServicio,
+                               IEliminarUsuario eliminarUsuario, IActualizarDatosUsuario actualizarUsuario)
         {
             _context = context;
+            _usuarioServicio = usuarioServicio;
+            _detailUser = detailUser;
+            _inspectorServicio = inspectorServicio;
+            _eliminarUsuario = eliminarUsuario;
+            _actualizarUsuario = actualizarUsuario;
         }
 
 
@@ -39,14 +53,31 @@ namespace Back_Vinculacion_Fema.Controllers
                 return StatusCode(500, $"Error interno del servidor: {ex.Message}");
             }
         }
-
-        [HttpPost]
-        [Route("registrarUsuario")]
-        public async Task<IActionResult> RegistrarUsuario(TblFemaUsuario usuario)
+        [HttpGet]
+        [Route("listarEstados")]
+        public IActionResult CargarEstados()
         {
             try
             {
-                if (usuario == null)
+                var estadoService = new User(_context);
+                var estados = estadoService.ListarEstados();
+                return Ok(estados);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error interno del servidor: {ex.Message}");
+            }
+        }
+
+        [HttpPost]
+        [Route("registrarUsuario")]
+        public async Task<IActionResult> RegistrarUsuario(RegistroUsuarioVM usuarioPersona)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                if (usuarioPersona == null)
                 {
                     return BadRequest("El objeto de usuario es nulo.");
                 }
@@ -57,26 +88,62 @@ namespace Back_Vinculacion_Fema.Controllers
                 }
 
                 // Validación para evitar usuarios duplicados
-                var usuarioExiste = await _context.TblFemaUsuarios.FirstOrDefaultAsync(u => u.NombreUsuario == usuario.NombreUsuario);
+                var usuarioExiste = await _context.TblFemaUsuarios.FirstOrDefaultAsync(u => u.NombreUsuario == usuarioPersona.NombreUsuario);
                 if (usuarioExiste != null)
                 {
-                    return Conflict("El usuario ya existe.");
+                    return Conflict("El nombre de usuario ya existe.");
                 }
 
                 // Validación para evitar correos duplicados
-                var correoExiste = await _context.TblFemaUsuarios.FirstOrDefaultAsync(u => u.Correo == usuario.Correo);
+                var correoExiste = await _context.TblFemaUsuarios.FirstOrDefaultAsync(u => u.Correo == usuarioPersona.Correo);
                 if (correoExiste != null)
                 {
                     return Conflict("El correo ya se encuentra registrado para otro usuario.");
                 }
 
+                var personaExiste = await _context.TblFemaPersonas.FirstOrDefaultAsync(p => p.Identificacion == usuarioPersona.Identificacion);
+                if (personaExiste != null)
+                {
+                    return Conflict("Ya existe una persona registrada con este numero de identificacion");
+                }
+
+                var usuario = new TblFemaUsuario
+                {
+                    NombreUsuario = usuarioPersona.NombreUsuario,
+                    Correo = usuarioPersona.Correo,
+                    Clave = usuarioPersona.Clave,
+                    FechaCreacion = DateTime.Now,
+                    IdRol = usuarioPersona.id_rol,
+                    IdEstado = usuarioPersona.id_estado
+                };
+
                 _context.TblFemaUsuarios.Add(usuario);
                 await _context.SaveChangesAsync();
 
-                return Ok();
+                var persona = new TblFemaPersona
+                {
+                    Identificacion = usuarioPersona.Identificacion,
+                    IdUsuario = usuario.IdUsuario,
+                    TipoIdentificacion = usuarioPersona.TipoIdentificacion,
+                    Nombre = usuarioPersona.Nombre,
+                    Apellido = usuarioPersona.Apellido,
+                    FechaNacimiento = (DateTime)usuarioPersona.FechaNacimiento,
+                    Direccion = usuarioPersona.Direccion,
+                    Sexo = usuarioPersona.Sexo,
+                    Contacto = usuarioPersona.Contacto
+                };
+
+                _context.TblFemaPersonas.Add(persona);
+                await _context.SaveChangesAsync();
+
+                await transaction.CommitAsync();
+
+                return Ok(Token.GenerarToken(usuario.NombreUsuario, persona.Nombre, persona.Apellido, usuario.IdRol, usuario.IdEstado));
             }
             catch (DbUpdateException ex)
             {
+                await transaction.RollbackAsync();
+
                 // Accede a la excepción interna para obtener más detalles
                 var detalleException = ex.InnerException;
                 while (detalleException?.InnerException != null)
@@ -84,11 +151,147 @@ namespace Back_Vinculacion_Fema.Controllers
                     detalleException = detalleException.InnerException;
                 }
 
+                var mensajeError = new StringBuilder();
+
+                if (detalleException is InvalidCastException)
+                {
+                    mensajeError.AppendLine("Detalles adicionales de la conversión fallida: ");
+                    mensajeError.AppendLine(detalleException.StackTrace);
+                }
+
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Ocurrió un error al registrar el usuario: {detalleException?.Message}");
             }
             catch (Exception ex)
             {
+                await transaction.RollbackAsync();
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Ocurrió un error al registrar el usuario: {ex.Message}");
+            }
+        }
+
+        [HttpGet]
+        [Route("listarUsuariosSupervisor")]
+        public async Task<IActionResult> ListarUsuariosSupervisor()
+        {
+            try
+            {
+                var users = await _usuarioServicio.ConsultarUsuariosSupervisor();
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Ocurrió un error al obtener los usuarios: {ex.Message}");
+            }
+        }
+
+        [HttpGet]
+        [Route("listarUsuariosInspector")]
+        public async Task<IActionResult> ListarUsuariosInspector()
+        {
+            try
+            {
+                var users = await _inspectorServicio.ConsultarUsuariosInspector();
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Ocurrió un error al obtener los usuarios: {ex.Message}");
+            }
+        }
+
+        [HttpGet]
+        [Route("consultarDetallesSuper/{idUsuario}")]
+        public async Task<IActionResult> ConsultarDetallesUsuarios(int idUsuario)
+        {
+            try
+            {
+                var userDetails = await _detailUser.CargarDetallesUsuarios(idUsuario);
+                if (userDetails == null)
+                {
+                    return NotFound($"No se encontró un usuario con el ID {idUsuario}");
+                }
+                return Ok(userDetails);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Ocurrió un error al obtener los detalles del usuario: {ex.Message}");
+            }
+        }
+
+        [HttpPut]
+        [Route("eliminarUsuario")]
+        public async Task<IActionResult> EliminarUsuarios([FromBody] EliminarUsuarioVM model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _eliminarUsuario.EliminarUsuarioAsync(model.IdUsuario, model.id_estado);
+            if (!result.Success)
+            {
+                return StatusCode(500, result.ErrorMessage); // Devuelve el mensaje de error
+            }
+
+            return Ok("Estado del usuario actualizado exitosamente.");
+        }
+
+        [HttpPut]
+        [Route("ActualizarUsuario")]
+        public async Task<IActionResult> ActualizarUsuario([FromBody] DetalleUsuariosVM usuarioDetalle)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _actualizarUsuario.ActualizarUsuarioAsync(usuarioDetalle);
+            if (!result.Success)
+            {
+                return StatusCode(500, "Error al actualizar los detalles del usuario.");
+            }
+
+            return Ok("Detalles del usuario actualizados exitosamente.");
+        }
+
+
+        [HttpPut("Recuperacion/{_Correo}")]
+        public async Task<ActionResult> Recovery(String _Correo, String motivo)
+        {
+            //motivo hace referencia a si se está recuperando la contraseña o el usuario
+            //motivo puede ser "USUARIO" o "CLAVE"
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                User usuarioLogic = new User(_context);
+
+                // Verificar si el correo está asociado a un usuario
+                String Usuario = await usuarioLogic.ObtenerUsuarioConCorreo(_Correo);
+
+                if (Usuario.Length > 0)
+                {
+                    if (motivo == "USUARIO")
+                    {
+                        Correo.sendEmail(_Correo, "USUARIO", Usuario);
+                    }
+                    else //MOTIVO = "CLAVE"
+                    {
+                        //Se guarda la nueva clave y se la actualiza en la BD
+                        String claveNueva = Correo.sendEmail(_Correo, "CLAVE", "");
+                        await usuarioLogic.ActualizarClave(Usuario, claveNueva);
+                    }
+                    await transaction.CommitAsync();
+                    return Ok("Correo enviado exitosamente.");
+                }
+                else
+                {
+                    return Conflict("El usuario no existe.");
+                }
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                return StatusCode(500, "Error interno del servidor " + ex.Message);
             }
         }
 
@@ -131,6 +334,13 @@ namespace Back_Vinculacion_Fema.Controllers
 
         }
 
+        /*[HttpGet]
+        [Route("Ocupacion")]
+        public async Task<IActionResult> GetOcupaciones()
+        {
+            var ocupaciones = await _context.Ocupacions.ToListAsync();
+            return Ok(ocupaciones);
+        }*/
 
         [HttpGet]
         [Route("Ocupacion")]
@@ -147,6 +357,13 @@ namespace Back_Vinculacion_Fema.Controllers
             return Ok(ocupaciones);
         }
 
+        /*[HttpGet]
+        [Route("TipoOcupacion")]
+        public async Task<IActionResult> GetTipoOcupaciones()
+        {
+            var tipoOcupaciones = await _context.TipoOcupacions.ToListAsync();
+            return Ok(tipoOcupaciones);
+        }*/
 
         [HttpGet]
         [Route("TipoOcupacion")]
@@ -202,7 +419,7 @@ namespace Back_Vinculacion_Fema.Controllers
             var subtipoedificacion = await _context.SubtipoEdificacions
                 .Select(o => new
                 {
-                    o.CodSubtipoEdificacion,
+                    //o.CodSubtipoEdificacion,
                     o.Descripcion,
                     o.Estado
                 })
@@ -232,7 +449,7 @@ namespace Back_Vinculacion_Fema.Controllers
             var tipousos = await _context.TipoUsos
                 .Select(o => new
                 {
-                    o.CodTipoUsoEdificacion,
+                    //o.CodTipoUsoEdificacion,
                     o.Descripcion,
                     o.Estado
                 })
@@ -355,64 +572,6 @@ namespace Back_Vinculacion_Fema.Controllers
                     _context.FemaEdificios.Add(femaedificio);
                     await _context.SaveChangesAsync();
 
-
-                    var femaextensionrevision = new FemaExtensionRevision
-                    {
-                        CodFema = fema.CodFema,
-                        CodEvalInterior = femaDto.CodEvalInterior,
-                        RevisionPlanos = femaDto.RevisionPlanos,
-                        FuenteTipoSuelo = femaDto.FuenteTipoSuelo,
-                        FuentePeligroGeologicos = femaDto.FuentePeligroGeologicos,
-                        NombreContacto = femaDto.NombreContacto,
-                        TelefonoContacto = femaDto.TelefonoContacto,
-                        ContactoRegistrado = femaDto.ContactoRegistrado,
-                        Estado = true
-                    };
-
-                    _context.FemaExtensionRevisions.Add(femaextensionrevision);
-                    await _context.SaveChangesAsync();
-
-
-                    var femaevaluacion = new FemaEvaluacion
-                    {
-                        CodFema = fema.CodFema,
-                        CodEvalExterior = femaDto.CodEvalExterior,
-                        CodEvalInteriorE = femaDto.CodEvalInterior,
-                        DisenioRevisado = femaDto.DisenioRevisado,
-                        Fuente = femaDto.Fuente,
-                        PeligrosGeologicos = femaDto.PeligorsGeologicos,
-                        PersonaContacto = femaDto.PersonaContacto
-                    };
-
-                    _context.FemaEvaluacions.Add(femaevaluacion);
-                    await _context.SaveChangesAsync();
-
-
-                    var femaevalestructuradum = new FemaEvalEstructuradum
-                    {
-                        CodFema = fema.CodFema,
-                        Chk1 = femaDto.Chk1,
-                        Chk2 = femaDto.Chk2,
-                        Chk3 = femaDto.Chk3,
-                        Chk4 = femaDto.Chk4,
-                    };
-
-                    _context.FemaEvalEstructurada.Add(femaevalestructuradum);
-                    await _context.SaveChangesAsync();
-
-
-                    var femaevalnoestructuradum = new FemaEvalNoEstructuradum
-                    {
-                        CodFema = fema.CodFema,
-                        Chk1N = femaDto.Chk1,
-                        Chk2N = femaDto.Chk2,
-                        Chk3N = femaDto.Chk3,
-                        Chk4N = femaDto.Chk4,
-                    };
-
-                    _context.FemaEvalNoEstructurada.Add(femaevalnoestructuradum);
-                    await _context.SaveChangesAsync();
-
                     transaction.Commit();
 
                     return Ok(new { Id = fema.CodFema });
@@ -435,47 +594,172 @@ namespace Back_Vinculacion_Fema.Controllers
             }
         }
 
-
-        [HttpPut("Recuperacion/{_Correo}")]                     
-        public async Task<ActionResult> Recovery(String _Correo, String motivo)
+        /*[HttpPost]
+        [Route("FormularioFEMA")]
+        public async Task<IActionResult> FormularioFEMA([FromBody] FemaDto femaDto)
         {
-            //motivo hace referencia a si se está recuperando la contraseña o el usuario
-            //motivo puede ser "USUARIO" o "CLAVE"
-            using var transaction = await _context.Database.BeginTransactionAsync();
+            if (femaDto == null)
+            {
+                return BadRequest("El objeto FemaDto es nulo.");
+            }
+
+            if (string.IsNullOrEmpty(femaDto.Direccion) || string.IsNullOrEmpty(femaDto.CodigoPostal))
+            {
+                return BadRequest("Todos los campos son requeridos.");
+            }
+
+                try
+                {
+                    var fema = new Fema
+                    {
+                        Direccion = femaDto.Direccion,
+                        CodigoPostal = femaDto.CodigoPostal,
+                        OtrosIdentificaciones = femaDto.OtrosIdentificaciones,
+                        NomEdificacion = femaDto.NomEdificacion,
+                        CodTipoUsoEdificacion = femaDto.CodTipoUsoEdificacion,
+                        Latitud = femaDto.Latitud,
+                        Longitud = femaDto.Longitud,
+                        NomEncuestador = femaDto.NomEncuestador,
+                        FechaEncuesta = femaDto.FechaEncuesta,
+                        HoraEncuesta = femaDto.HoraEncuesta,
+                        //RutaImagenEdif = femaDto.RutaImagenEdif,
+                        //RutaImagenCroquis = femaDto.RutaImagenCroquis,
+                        Comentarios = femaDto.Comentarios,
+                        //RequiereNivel2 = femaDto.RequiereNivel2,
+                        CodUsuarioIng = femaDto.CodUsuarioIng,
+                        FecIngreso = femaDto.FecIngreso,
+                        CodUsuarioAct = femaDto.CodUsuarioAct,
+                        FecActualiza = femaDto.FecActualiza,
+                        Estado = femaDto.Estado
+                    };
+
+                    _context.Femas.Add(fema);
+                    await _context.SaveChangesAsync();
+
+                    var femaOcupacion = new FemaOcupacion
+                    {
+                        CodFema = fema.CodFema,
+                        CodOcupacion = femaDto.CodOcupacion,
+                        CodTipoOcupacion = femaDto.CodTipoOcupacion,
+                        Estado = femaDto.Estado
+                    };
+
+                    _context.FemaOcupacions.Add(femaOcupacion);
+                    await _context.SaveChangesAsync();
+
+                    /*var femaSuelo = new FemaSuelo
+                    {
+                        CodFema = fema.CodFema,
+                        CodTipoSuelo = femaDto.CodTipoSuelo,
+                        AsumirTipo = "Tu", 
+                        RiesgoGeologico = "Tu", 
+                        Adyacencia = "HOLA", 
+                        Irregularidades = "Tu valor aquí", 
+                        PeligroCaidaExt = "Tu valor aquí" 
+                    };
+
+
+                    _context.FemaSuelos.Add(femaSuelo);
+                    await _context.SaveChangesAsync();
+
+                    return Ok(new { Id = fema.CodFema });
+                }
+                catch (DbUpdateException dbEx)
+                {
+                    if (dbEx.InnerException is SqlException sqlEx && sqlEx.Number == 2627)
+                    {
+                        return StatusCode(500, "Error: No se puede insertar una clave duplicada. El valor de 'CodFema' ya existe.");
+                    }
+                    return StatusCode(500, "Error al guardar en la base de datos: " + dbEx.InnerException?.Message);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, "Error interno del servidor: " + ex.Message);
+                }
+        }*/
+
+        /*[HttpPost]
+        [Route("FormularioFEMA")]
+        public async Task<IActionResult> FormularioFEMA([FromBody] FemaDto femaDto)
+        {
+            if (femaDto == null)
+            {
+                return BadRequest("El objeto FemaDto es nulo.");
+            }
+
+            // Verificar que todos los campos necesarios estén presentes y no sean null
+            if (string.IsNullOrEmpty(femaDto.Direccion) || string.IsNullOrEmpty(femaDto.CodigoPostal))
+            {
+                return BadRequest("Todos los campos son requeridos.");
+            }
 
             try
             {
-                User usuarioLogic = new User(_context);
+                var fema = new Fema
+                {
+                    Direccion = femaDto.Direccion,
+                    CodigoPostal = femaDto.CodigoPostal,
+                    OtrosIdentificaciones = femaDto.OtrosIdentificaciones,
+                    NomEdificacion = femaDto.NomEdificacion,
+                    UsoEdificacion = femaDto.UsoEdificacion,
+                    Latitud = femaDto.Latitud,
+                    Longitud = femaDto.Longitud,
+                    NomEncuestador = femaDto.NomEncuestador,
+                    FechaEncuesta = femaDto.FechaEncuesta,
+                    HoraEncuesta = femaDto.HoraEncuesta,
+                    RutaImagenEdif = femaDto.RutaImagenEdif,
+                    RutaImagenCroquis = femaDto.RutaImagenCroquis,
+                    Comentarios = femaDto.Comentarios,
+                    RequiereNivel2 = femaDto.RequiereNivel2,
+                    CodUsuarioIng = femaDto.CodUsuarioIng,
+                    FecIngreso = femaDto.FecIngreso,
+                    CodUsuarioAct = femaDto.CodUsuarioAct,
+                    FecActualiza = femaDto.FecActualiza,
+                    Estado = femaDto.Estado
+                };
 
-                // Verificar si el correo está asociado a un usuario
-                String Usuario = await usuarioLogic.ObtenerUsuarioConCorreo(_Correo);
-                
-                if (Usuario.Length > 0)
+                _context.Femas.Add(fema);
+                await _context.SaveChangesAsync();
+
+
+                /*if (femaDto.OcupacionsSeleccionadas != null)
                 {
-                    if (motivo == "USUARIO")
+                    foreach (var idOcupacion in femaDto.OcupacionsSeleccionadas)
                     {
-                        Correo.sendEmail(_Correo, "USUARIO", Usuario);
+                        var femaOcupacion = new FemaOcupacion
+                        {
+                            CodFema = fema.CodFema,
+                            CodOcupacion = (short)idOcupacion
+                        };
+
+                        _context.FemaOcupacions.Add(femaOcupacion);
                     }
-                    else //MOTIVO = "CLAVE"
-                    {
-                        //Se guarda la nueva clave y se la actualiza en la BD
-                        String claveNueva = Correo.sendEmail(_Correo, "CLAVE", "");
-                        await usuarioLogic.ActualizarClave(Usuario, claveNueva);
-                    }
-                    await transaction.CommitAsync();
-                    return Ok("Correo enviado exitosamente.");
                 }
-                else
+
+
+
+                return Ok(new { Id = fema.CodFema });
+            }
+            catch (DbUpdateException dbEx)
+            {
+                if (dbEx.InnerException is SqlException sqlEx && sqlEx.Number == 2627)
                 {
-                    return Conflict("El usuario no existe.");
+                    // Violación de la restricción de clave primaria
+                    return StatusCode(500, "Error: No se puede insertar una clave duplicada. El valor de 'CodFema' ya existe.");
                 }
+                // Otros errores relacionados con la actualización de la base de datos
+                return StatusCode(500, "Error al guardar en la base de datos: " + dbEx.InnerException?.Message);
             }
             catch (Exception ex)
             {
-                await transaction.RollbackAsync();
-                return StatusCode(500, "Error interno del servidor " + ex.Message);
+                // Otros tipos de errores no capturados específicamente
+                return StatusCode(500, "Error interno del servidor: " + ex.Message);
             }
-        }
+        }*/
+
+        
+
+     
 
     }
 }

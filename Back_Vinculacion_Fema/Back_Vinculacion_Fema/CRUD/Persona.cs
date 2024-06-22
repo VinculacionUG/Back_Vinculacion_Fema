@@ -26,7 +26,7 @@ namespace Back_Vinculacion_Fema.CRUD
             return ObtenerPersona(identificacion).IdPersona;
         }
 
-        public async Task CrearPersona(RegisterUserRequest request)
+        /*public async Task CrearPersona(RegisterUserRequest request)
         {
             try
             {
@@ -53,7 +53,7 @@ namespace Back_Vinculacion_Fema.CRUD
             {
                 throw new Exception("Error al crear la persona", ex);
             }
-        }
+        }*/
 
         public async Task<bool> EliminarPersona(decimal idPersona)
         {

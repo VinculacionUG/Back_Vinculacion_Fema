@@ -7,7 +7,7 @@ namespace Back_Vinculacion_Fema.Models.DbModels
     {
         public FemaExtensionRevision()
         {
-            AccionRequeridas = new HashSet<AccionRequerida>();
+            AccionRequerida = new HashSet<AccionRequeridum>();
             ExtensionEvaluacionExteriors = new HashSet<ExtensionEvaluacionExterior>();
             ExtensionOtrosPeligros = new HashSet<ExtensionOtrosPeligro>();
         }
@@ -23,18 +23,10 @@ namespace Back_Vinculacion_Fema.Models.DbModels
         public string ContactoRegistrado { get; set; } = null!;
         public bool Estado { get; set; }
 
-        //Propiedades de navegacion
-
-        public virtual Fema Fema { get; set; } = null!;
-        public virtual EvaluacionInterior EvaluacionInterior { get; set; } = null!;
-        public virtual ICollection<ExtensionEvaluacionExterior> ExtensionEvaluacionExteriors { get; set; } = null!;
-        public virtual ICollection<ExtensionOtrosPeligro> ExtensionOtrosPeligros { get; set; } = null!;
-        public virtual ICollection<AccionRequerida> AccionRequeridas { get; set; } = null!;
-
-        /*public virtual EvaluacionInterior CodEvalInteriorNavigation { get; set; } = null!;
+        public virtual EvaluacionInterior CodEvalInteriorNavigation { get; set; } = null!;
         public virtual Fema CodFemaNavigation { get; set; } = null!;
         public virtual ICollection<AccionRequeridum> AccionRequerida { get; set; }
         public virtual ICollection<ExtensionEvaluacionExterior> ExtensionEvaluacionExteriors { get; set; }
-        public virtual ICollection<ExtensionOtrosPeligro> ExtensionOtrosPeligros { get; set; }*/
+        public virtual ICollection<ExtensionOtrosPeligro> ExtensionOtrosPeligros { get; set; }
     }
 }

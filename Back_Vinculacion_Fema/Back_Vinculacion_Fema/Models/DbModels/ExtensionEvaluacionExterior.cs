@@ -10,12 +10,7 @@ namespace Back_Vinculacion_Fema.Models.DbModels
         public short CodEvalExterior { get; set; }
         public bool Estado { get; set; }
 
-        //Propiedades de navegacion
-
-        public virtual FemaExtensionRevision FemaExtensionRevision { get; set; } = null!;
-        public virtual EvaluacionExterior EvaluacionExterior { get; set; } = null!;
-
-        /*public virtual EvaluacionExterior CodEvalExteriorNavigation { get; set; } = null!;
-        public virtual FemaExtensionRevision CodExtensionRevisionNavigation { get; set; } = null!;*/
+        public virtual EvaluacionExterior CodEvalExteriorNavigation { get; set; } = null!;
+        public virtual FemaExtensionRevision CodExtensionRevisionNavigation { get; set; } = null!;
     }
 }
