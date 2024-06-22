@@ -15,10 +15,10 @@ namespace Back_Vinculacion_Fema.Service
         public async Task<List<ListaUsuariosVM>> ConsultarUsuariosInspector()
         {
             var query = from us in _contexto.TblFemaUsuarios
-                        join r in _contexto.Tbl_Fema_Roles on us.id_rol equals r.id_rol
-                        join e in _contexto.Estado on us.id_estado equals e.id_estado
+                        join r in _contexto.TblFemaRoles on us.IdRol equals r.IdRol
+                        join e in _contexto.Estados on us.IdEstado equals e.IdEstado
                         join pr in _contexto.TblFemaPersonas on us.IdUsuario equals pr.IdUsuario
-                        where r.id_rol == 3 //Estado id = 3 Inspector
+                        where r.IdRol == 3 //Estado id = 3 Inspector
                         select new ListaUsuariosVM
                         {
                             IdUsuario = us.IdUsuario, 

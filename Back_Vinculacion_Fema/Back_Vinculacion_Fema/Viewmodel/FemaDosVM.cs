@@ -11,8 +11,6 @@
         public int anio_construccion { get; set; }
         public int ? id_ocupacion { get; set; }
         public int ? id_tipo_suelo { get; set; }
-        public string ? descripcion { get; set; }
-        public string ? estado {  get; set; }
         public string ? comentario { get; set; }
     }
 }
