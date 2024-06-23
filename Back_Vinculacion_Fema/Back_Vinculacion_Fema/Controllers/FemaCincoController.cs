@@ -7,20 +7,20 @@ namespace Back_Vinculacion_Fema.Controllers
 
     [ApiController]
     [Route("api/[controller]")]
-    public class FemaTresController : Controller
+    public class FemaCincoController : Controller
     {
-        private readonly IFemaTres femaTres;
+        private readonly IFemaCinco femaCinco;
 
-        public FemaTresController(IFemaTres femaTres)
+        public FemaCincoController(IFemaCinco femaCinco)
         {
-            this.femaTres = femaTres;
+            this.femaCinco = femaCinco;
         }
 
         [HttpGet]
         [Route("accionPreguntas")]
-        public async Task<IEnumerable<AccionPregunta>> GetPreguntas()
+        public async Task<IEnumerable<AccionPreguntum>> GetPreguntas()
         {
-            return await femaTres.GetAccionPreguntas();
+            return await femaCinco.GetAccionPreguntas();
         }
     }
 }
