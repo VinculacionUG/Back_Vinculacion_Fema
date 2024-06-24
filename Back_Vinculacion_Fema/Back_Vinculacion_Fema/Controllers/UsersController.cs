@@ -569,7 +569,61 @@ namespace Back_Vinculacion_Fema.Controllers
                         Estado = femaDto.Estado
                     };
 
-                    _context.FemaEdificios.Add(femaedificio);
+                    var femaextensionrevision = new FemaExtensionRevision
+                    {
+                        CodFema = fema.CodFema,
+                        CodEvalInterior = femaDto.CodEvalInterior,
+                        RevisionPlanos = femaDto.RevisionPlanos,
+                        FuenteTipoSuelo = femaDto.FuenteTipoSuelo,
+                        FuentePeligroGeologicos = femaDto.FuentePeligroGeologicos,
+                        NombreContacto = femaDto.NombreContacto,
+                        TelefonoContacto = femaDto.TelefonoContacto,
+                        ContactoRegistrado = femaDto.ContactoRegistrado,
+                        Estado = true
+                    };
+
+                    _context.FemaExtensionRevisions.Add(femaextensionrevision);
+                    await _context.SaveChangesAsync();
+
+
+                    var femaevaluacion = new FemaEvaluacion
+                    {
+                        CodFema = fema.CodFema,
+                        CodEvalExterior = femaDto.CodEvalExterior,
+                        CodEvalInterior = femaDto.CodEvalInterior,
+                        DisenioRevisado = femaDto.DisenioRevisado,
+                        Fuente = femaDto.Fuente,
+                        PeligrosGeologicos = femaDto.PeligorsGeologicos,
+                        PersonaContacto = femaDto.PersonaContacto
+                    };
+
+                    _context.FemaEvaluacions.Add(femaevaluacion);
+                    await _context.SaveChangesAsync();
+
+
+                    var femaevalestructuradum = new FemaEvalEstructuradum
+                    {
+                        CodFema = fema.CodFema,
+                        Chk1 = femaDto.Chk1,
+                        Chk2 = femaDto.Chk2,
+                        Chk3 = femaDto.Chk3,
+                        Chk4 = femaDto.Chk4,
+                    };
+
+                    _context.FemaEvalEstructurada.Add(femaevalestructuradum);
+                    await _context.SaveChangesAsync();
+
+
+                    var femaevalnoestructuradum = new FemaEvalNoEstructuradum
+                    {
+                        CodFema = fema.CodFema,
+                        Chk1 = femaDto.Chk1N,
+                        Chk2 = femaDto.Chk2N,
+                        Chk3 = femaDto.Chk3N,
+                        Chk4 = femaDto.Chk4N,
+                    };
+
+                    _context.FemaEvalNoEstructurada.Add(femaevalnoestructuradum);
                     await _context.SaveChangesAsync();
 
                     transaction.Commit();
