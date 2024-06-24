@@ -25,7 +25,8 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectio
 //options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 #endregion
 
-builder.Services.AddScoped<IFemaDos, FemaDos>(); 
+builder.Services.AddScoped<IFemaDos, FemaDos>();
+builder.Services.AddScoped<IFemaTres, FemaTres>();
 builder.Services.AddScoped<IFemaCinco, FemaCinco>();
 builder.Services.AddScoped<IFemaCuatro, FemaCuatro>();
 builder.Services.AddScoped<IListarUsuariosSuper, UserSuperService>();
