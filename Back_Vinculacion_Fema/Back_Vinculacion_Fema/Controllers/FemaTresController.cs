@@ -23,9 +23,9 @@ namespace Back_Vinculacion_Fema.Controllers
 
         [HttpGet]
         [Route("consultarSubTipoEdificacionDNK/{idTipoEdificacion}")]
-        public Dictionary<string, Object> GetSubTipoEdificacions(int idTipoEdificacion)
+        public async Task<IEnumerable<SubtipoEdificacion>> GetSubTipoEdificacions(int idTipoEdificacion)
         {
-            return femaTres.SubtipoEdificacions(idTipoEdificacion);
+            return await femaTres.SubtipoEdificacions(idTipoEdificacion);
         }
 
 

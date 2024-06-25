@@ -29,29 +29,15 @@ namespace Back_Vinculacion_Fema.Service
             }).Where(pm => pm.CodSubtipoEdificacion == codSubTipoEdificacion).ToListAsync();
         }
 
-        public Dictionary<string, Object> SubtipoEdificacions(int tipoEdificacion)
+        public async Task<IEnumerable<SubtipoEdificacion>> SubtipoEdificacions(int tipoEdificacion)
         {
-            Dictionary<string, Object> values = new Dictionary<string, object>();
-            values.Add("SubtipoEdificacion", _contexto.SubtipoEdificacions.Select(ste => new SubtipoEdificacion
+            return await _contexto.SubtipoEdificacions.Select(ste => new SubtipoEdificacion
             {
                 CodSubtipoEdificacion = ste.CodSubtipoEdificacion,
                 CodTipoEdificacion = ste.CodTipoEdificacion,
                 Descripcion = ste.Descripcion,
                 Estado = ste.Estado
-            }).Where(ste => ste.CodSubtipoEdificacion == tipoEdificacion).ToList());
-            values.Add("PuntuacionMatriz", _contexto.PuntuacionMatrizs.Select(pm => new PuntuacionMatriz
-            {
-                CodPuntuacionMatrizSec = pm.CodPuntuacionMatrizSec,
-                CodSubtipoEdificacion = pm.CodSubtipoEdificacion,
-                CodTipoPuntuacion = pm.CodTipoPuntuacion,
-                CodTipoPuntuacionNavigation = _contexto.TipoPuntuacions.Select(tp => new TipoPuntuacion
-                {
-                    CodTipoPuntuacion = tp.CodTipoPuntuacion,
-                    Descripcion = tp.Descripcion
-                }).Where(tp => tp.CodTipoPuntuacion == pm.CodTipoPuntuacion).First(),
-                Valor = pm.Valor
-            }).Where(pm => pm.CodSubtipoEdificacion == 1).ToList());
-            return values;
+            }).Where(ste => ste.CodSubtipoEdificacion == tipoEdificacion).ToListAsync();
         }
 
         public Dictionary<string, Object> tipoEdificacions()
