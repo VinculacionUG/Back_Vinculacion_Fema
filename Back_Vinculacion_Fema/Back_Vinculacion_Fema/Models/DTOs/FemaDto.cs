@@ -24,7 +24,11 @@ namespace Back_Vinculacion_Fema.Models.DTOs
         public string CodUsuarioAct { get; set; }
         public DateTime FecActualiza { get; set; }
 
-        public bool Estado { get; set; }
+        public short Estado { get; set; }
+
+        public bool EstadoFemaOcu { get; set; }
+
+        
 
         public short CodOcupacion { get; set; }
         public short CodTipoOcupacion { get; set; }
@@ -74,6 +78,7 @@ namespace Back_Vinculacion_Fema.Models.DTOs
         public string FuentePeligroGeologicos { get; set; }
         public string NombreContacto { get; set; }
         public int TelefonoContacto { get; set; }
+        public bool Inspeccion_nivel2 { get; set; }
         public string ContactoRegistrado { get; set; }
 
 

@@ -508,7 +508,7 @@ namespace Back_Vinculacion_Fema.Controllers
                         CodFema = fema.CodFema,
                         CodOcupacion = femaDto.CodOcupacion,
                         CodTipoOcupacion = femaDto.CodTipoOcupacion,
-                        Estado = femaDto.Estado
+                        Estado = femaDto.EstadoFemaOcu
                     };
 
                     _context.FemaOcupacions.Add(femaOcupacion);
@@ -549,7 +549,7 @@ namespace Back_Vinculacion_Fema.Controllers
                         ResultadoFinal = femaDto.ResultadoFinal,
                         EsEst = femaDto.EsEst,
                         EsDnk = femaDto.EsDnk,
-                        Estado = femaDto.Estado
+                        Estado = femaDto.EstadoFemaOcu
                     };
 
                     _context.FemaPuntuacions.Add(femaPuntuacion);
@@ -566,7 +566,7 @@ namespace Back_Vinculacion_Fema.Controllers
                         AnioCodigo = femaDto.AnioCodigo,
                         Ampliacion = femaDto.Ampliacion,
                         AmplAnioConstruccion = femaDto.AmplAnioConstruccion,
-                        Estado = femaDto.Estado
+                        Estado = femaDto.EstadoFemaOcu
                     };
 
                     var femaextensionrevision = new FemaExtensionRevision
@@ -579,6 +579,7 @@ namespace Back_Vinculacion_Fema.Controllers
                         NombreContacto = femaDto.NombreContacto,
                         TelefonoContacto = femaDto.TelefonoContacto,
                         ContactoRegistrado = femaDto.ContactoRegistrado,
+                        Inspeccion_nivel2 = femaDto.Inspeccion_nivel2,
                         Estado = true
                     };
 

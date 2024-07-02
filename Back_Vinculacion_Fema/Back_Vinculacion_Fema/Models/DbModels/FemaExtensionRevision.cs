@@ -21,6 +21,8 @@ namespace Back_Vinculacion_Fema.Models.DbModels
         public string NombreContacto { get; set; } = null!;
         public int TelefonoContacto { get; set; }
         public string ContactoRegistrado { get; set; } = null!;
+
+        public bool Inspeccion_nivel2 { get; set; }
         public bool Estado { get; set; }
 
         public virtual EvaluacionInterior CodEvalInteriorNavigation { get; set; } = null!;
