@@ -679,7 +679,7 @@ namespace Back_Vinculacion_Fema.Models.DbModels
 
                 entity.ToTable("SUBTIPO_EDIFICACION");
 
-                entity.Property(e => e.CodSubtipoEdificacion).HasColumnName("CodSubtipoEdificacion");
+                entity.Property(e => e.CodSubtipoEdificacion).HasColumnName("cod_subtipo_edificacion");
 
                 entity.Property(e => e.CodTipoEdificacion).HasColumnName("cod_tipo_edificacion");
 
@@ -903,7 +903,7 @@ namespace Back_Vinculacion_Fema.Models.DbModels
 
                 entity.ToTable("TIPO_USO");
 
-                entity.Property(e => e.CodTipoUsoEdificacion).HasColumnName("CodTipoUsoEdificacion");
+                entity.Property(e => e.CodTipoUsoEdificacion).HasColumnName("cod_tipo_uso_edificacion");
 
                 entity.Property(e => e.Descripcion)
                     .HasMaxLength(50)
