@@ -33,7 +33,7 @@ namespace Back_Vinculacion_Fema.Models.DbModels
         public DateTime FecIngreso { get; set; }
         public string UsuarioAct { get; set; } = null!;
         public DateTime FecActualiza { get; set; }
-        public bool Estado { get; set; }
+        public short Estado { get; set; }
 
         public virtual TipoUso CodTipoUsoEdificacionNavigation { get; set; } = null!;
         public virtual ICollection<Archivo> Archivos { get; set; }

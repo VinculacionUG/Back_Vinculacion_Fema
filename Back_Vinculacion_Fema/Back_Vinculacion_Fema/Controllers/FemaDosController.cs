@@ -24,7 +24,6 @@ namespace Back_Vinculacion_Fema.Controllers
         {
             return await _FemaDosService.ConsultarTipoSuelo();
         }
-
         [HttpGet]
         [Route("listarOcupacion")]
         public async Task<IEnumerable<Ocupacion>> ListarOcupacion()
