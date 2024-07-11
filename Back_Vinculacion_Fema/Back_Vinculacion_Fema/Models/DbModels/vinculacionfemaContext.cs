@@ -653,7 +653,7 @@ namespace Back_Vinculacion_Fema.Models.DbModels
 
                 entity.Property(e => e.CodPuntuacionMatrizSec).HasColumnName("cod_puntuacion_matriz_sec");
 
-                entity.Property(e => e.CodSubtipoEdificacion).HasColumnName("CodSubtipoEdificacion");
+                entity.Property(e => e.CodSubtipoEdificacion).HasColumnName("cod_subtipo_edificacion");
 
                 entity.Property(e => e.CodTipoPuntuacion).HasColumnName("cod_tipo_puntuacion");
 
