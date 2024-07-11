@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Back_Vinculacion_Fema.Controllers
 {
+    [ApiController]
+    [Route("[controller]")]
     public class FemaTresController : Controller
     {
         private readonly IFemaTres femaTres;
