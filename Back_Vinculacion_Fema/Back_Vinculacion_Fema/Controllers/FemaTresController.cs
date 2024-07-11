@@ -18,7 +18,7 @@ namespace Back_Vinculacion_Fema.Controllers
         [Route("consultarTipoEdificacionDNK")]
         public Dictionary<string, Object> GetTipoEdificacions()
         {
-            return femaTres.tipoEdificacions();
+            return  femaTres.tipoEdificacions();
         }
 
         [HttpGet]
@@ -27,6 +27,7 @@ namespace Back_Vinculacion_Fema.Controllers
         {
             return await femaTres.SubtipoEdificacions(idTipoEdificacion);
         }
+
 
         [HttpGet]
         [Route("consultarResultadoBase/{idSubTipoEdificacion}")]

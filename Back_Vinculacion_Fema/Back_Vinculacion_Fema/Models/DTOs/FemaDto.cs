@@ -24,7 +24,11 @@ namespace Back_Vinculacion_Fema.Models.DTOs
         public string CodUsuarioAct { get; set; }
         public DateTime FecActualiza { get; set; }
 
-        public bool Estado { get; set; }
+        public short Estado { get; set; }
+
+        public bool EstadoFemaOcu { get; set; }
+
+        
 
         public short CodOcupacion { get; set; }
         public short CodTipoOcupacion { get; set; }
@@ -66,6 +70,42 @@ namespace Back_Vinculacion_Fema.Models.DTOs
         public int AmplAnioConstruccion { get; set; }
         public bool EdifEstado {  get; set; }
 
+        //Sirven para registrar en la tabla FEMA_EXTENSION_REVISION
+
+        public short CodEvalInterior { get; set; }
+        public bool RevisionPlanos { get; set; }
+        public string FuenteTipoSuelo { get; set; }
+        public string FuentePeligroGeologicos { get; set; }
+        public string NombreContacto { get; set; }
+        public int TelefonoContacto { get; set; }
+        public bool Inspeccion_nivel2 { get; set; }
+        public string ContactoRegistrado { get; set; }
+
+
+        //Sirven para registar en la tabla FEMA_EVALUACION
+
+        public int CodEvalExterior { get; set; }
+        //public int CodEvalInteriorE { get; set; }
+        public string DisenioRevisado { get; set; }
+        public string Fuente { get; set; }
+        public string PeligorsGeologicos { get; set; }
+        public string PersonaContacto { get; set; }
+
+
+        //Sirven para registrar en la tabla FEMA_EVAL_ESTRUCTURADA
+
+        public int Chk1 { get; set; }
+        public int Chk2 { get; set; }
+        public int Chk3 { get; set; }
+        public int Chk4 { get; set; }
+
+
+        //Sirven para registrar en la tabla FEMA_EVAL_NO_ESTRUCTURADA
+
+        public int Chk1N { get; set; }
+        public int Chk2N { get; set; }
+        public int Chk3N { get; set; }
+        public int Chk4N { get; set; }
         //public List<OcupacionDto> Ocupaciones { get; set; }
         /*public List<int>? OcupacionesSeleccionadas { get; set; }
         public List<int>? SuelosSeleccionados { get; set; }*/
