@@ -419,7 +419,7 @@ namespace Back_Vinculacion_Fema.Controllers
             var subtipoedificacion = await _context.SubtipoEdificacions
                 .Select(o => new
                 {
-                    //o.CodSubtipoEdificacion,
+                    o.CodSubtipoEdificacion,
                     o.Descripcion,
                     o.Estado
                 })
@@ -449,7 +449,7 @@ namespace Back_Vinculacion_Fema.Controllers
             var tipousos = await _context.TipoUsos
                 .Select(o => new
                 {
-                    //o.CodTipoUsoEdificacion,
+                    o.CodTipoUsoEdificacion,
                     o.Descripcion,
                     o.Estado
                 })
@@ -508,7 +508,7 @@ namespace Back_Vinculacion_Fema.Controllers
                         CodFema = fema.CodFema,
                         CodOcupacion = femaDto.CodOcupacion,
                         CodTipoOcupacion = femaDto.CodTipoOcupacion,
-                        Estado = femaDto.Estado
+                        Estado = femaDto.EstadoFemaOcu
                     };
 
                     _context.FemaOcupacions.Add(femaOcupacion);
@@ -549,7 +549,7 @@ namespace Back_Vinculacion_Fema.Controllers
                         ResultadoFinal = femaDto.ResultadoFinal,
                         EsEst = femaDto.EsEst,
                         EsDnk = femaDto.EsDnk,
-                        Estado = femaDto.Estado
+                        Estado = femaDto.EstadoFemaOcu
                     };
 
                     _context.FemaPuntuacions.Add(femaPuntuacion);
@@ -566,10 +566,65 @@ namespace Back_Vinculacion_Fema.Controllers
                         AnioCodigo = femaDto.AnioCodigo,
                         Ampliacion = femaDto.Ampliacion,
                         AmplAnioConstruccion = femaDto.AmplAnioConstruccion,
-                        Estado = femaDto.Estado
+                        Estado = femaDto.EstadoFemaOcu
                     };
 
-                    _context.FemaEdificios.Add(femaedificio);
+                    var femaextensionrevision = new FemaExtensionRevision
+                    {
+                        CodFema = fema.CodFema,
+                        CodEvalInterior = femaDto.CodEvalInterior,
+                        RevisionPlanos = femaDto.RevisionPlanos,
+                        FuenteTipoSuelo = femaDto.FuenteTipoSuelo,
+                        FuentePeligroGeologicos = femaDto.FuentePeligroGeologicos,
+                        NombreContacto = femaDto.NombreContacto,
+                        TelefonoContacto = femaDto.TelefonoContacto,
+                        ContactoRegistrado = femaDto.ContactoRegistrado,
+                        Inspeccion_nivel2 = femaDto.Inspeccion_nivel2,
+                        Estado = true
+                    };
+
+                    _context.FemaExtensionRevisions.Add(femaextensionrevision);
+                    await _context.SaveChangesAsync();
+
+
+                    var femaevaluacion = new FemaEvaluacion
+                    {
+                        CodFema = fema.CodFema,
+                        CodEvalExterior = femaDto.CodEvalExterior,
+                        CodEvalInterior = femaDto.CodEvalInterior,
+                        DisenioRevisado = femaDto.DisenioRevisado,
+                        Fuente = femaDto.Fuente,
+                        PeligrosGeologicos = femaDto.PeligorsGeologicos,
+                        PersonaContacto = femaDto.PersonaContacto
+                    };
+
+                    _context.FemaEvaluacions.Add(femaevaluacion);
+                    await _context.SaveChangesAsync();
+
+
+                    var femaevalestructuradum = new FemaEvalEstructuradum
+                    {
+                        CodFema = fema.CodFema,
+                        Chk1 = femaDto.Chk1,
+                        Chk2 = femaDto.Chk2,
+                        Chk3 = femaDto.Chk3,
+                        Chk4 = femaDto.Chk4,
+                    };
+
+                    _context.FemaEvalEstructurada.Add(femaevalestructuradum);
+                    await _context.SaveChangesAsync();
+
+
+                    var femaevalnoestructuradum = new FemaEvalNoEstructuradum
+                    {
+                        CodFema = fema.CodFema,
+                        Chk1 = femaDto.Chk1N,
+                        Chk2 = femaDto.Chk2N,
+                        Chk3 = femaDto.Chk3N,
+                        Chk4 = femaDto.Chk4N,
+                    };
+
+                    _context.FemaEvalNoEstructurada.Add(femaevalnoestructuradum);
                     await _context.SaveChangesAsync();
 
                     transaction.Commit();
@@ -685,6 +740,12 @@ namespace Back_Vinculacion_Fema.Controllers
             if (femaDto == null)
             {
                 return BadRequest("El objeto FemaDto es nulo.");
+            }
+
+            // Verificar que todos los campos necesarios estén presentes y no sean null
+            if (string.IsNullOrEmpty(femaDto.Direccion) || string.IsNullOrEmpty(femaDto.CodigoPostal))
+            {
+                return BadRequest("Todos los campos son requeridos.");
             }
 
             // Verificar que todos los campos necesarios estén presentes y no sean null
