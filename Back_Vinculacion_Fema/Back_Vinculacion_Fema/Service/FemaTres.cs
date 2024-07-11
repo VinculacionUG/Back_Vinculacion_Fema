@@ -71,5 +71,6 @@ namespace Back_Vinculacion_Fema.Service
             }).Where(pm => pm.CodSubtipoEdificacion == 1).ToList());
             return values;
         }
+
     }
 }
