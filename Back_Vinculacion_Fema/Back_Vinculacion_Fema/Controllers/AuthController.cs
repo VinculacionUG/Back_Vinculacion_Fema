@@ -20,7 +20,6 @@ namespace Back_Vinculacion_Fema.Controllers
         [HttpPost("login")]
         public IActionResult Authenticate([FromBody] UserLoginRequest credentials)
         {
-
             var encryptedPassword = credentials.Password; //Debe consumir el metodo de cifrado
 
             User usuarioLogic = new User(_contexto);

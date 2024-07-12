@@ -30,7 +30,6 @@ namespace Back_Vinculacion_Fema.Controllers
             return await femaTres.SubtipoEdificacions(idTipoEdificacion);
         }
 
-
         [HttpGet]
         [Route("consultarResultadoBase/{idSubTipoEdificacion}")]
         public async Task<IEnumerable<PuntuacionMatriz>> GetResultadoBase(int idSubTipoEdificacion)

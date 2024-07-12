@@ -30,6 +30,5 @@ namespace Back_Vinculacion_Fema.Controllers
         {
             return await _FemaDosService.ConsultarOcupacion();
         }
-
     }
 }

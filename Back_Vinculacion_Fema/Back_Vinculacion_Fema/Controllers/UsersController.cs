@@ -334,13 +334,6 @@ namespace Back_Vinculacion_Fema.Controllers
 
         }
 
-        /*[HttpGet]
-        [Route("Ocupacion")]
-        public async Task<IActionResult> GetOcupaciones()
-        {
-            var ocupaciones = await _context.Ocupacions.ToListAsync();
-            return Ok(ocupaciones);
-        }*/
 
         [HttpGet]
         [Route("Ocupacion")]
