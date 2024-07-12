@@ -37,7 +37,7 @@ namespace Back_Vinculacion_Fema.Service
                 CodTipoEdificacion = ste.CodTipoEdificacion,
                 Descripcion = ste.Descripcion,
                 Estado = ste.Estado
-            }).Where(ste => ste.CodSubtipoEdificacion == tipoEdificacion).ToListAsync();
+            }).Where(ste => ste.CodTipoEdificacion == tipoEdificacion).ToListAsync();
         }
 
         public Dictionary<string, Object> tipoEdificacions()
