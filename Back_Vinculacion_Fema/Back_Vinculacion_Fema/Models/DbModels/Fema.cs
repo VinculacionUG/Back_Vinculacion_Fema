@@ -44,5 +44,6 @@ namespace Back_Vinculacion_Fema.Models.DbModels
         public virtual ICollection<FemaExtensionRevision> FemaExtensionRevisions { get; set; }
         public virtual ICollection<FemaOcupacion> FemaOcupacions { get; set; }
         public virtual ICollection<FemaPuntuacion> FemaPuntuacions { get; set; }
+        public virtual ICollection<FemaSuelo> FemaSuelos { get; set; }
     }
 }

@@ -490,32 +490,38 @@ namespace Back_Vinculacion_Fema.Controllers
                         FecIngreso = femaDto.FecIngreso,
                         UsuarioAct = femaDto.CodUsuarioAct,
                         FecActualiza = femaDto.FecActualiza,
-                        Estado = femaDto.Estado
+                        Estado = femaDto.Estado,
+                        FemaOcupacions = new List<FemaOcupacion>
+                        {
+                            new FemaOcupacion
+                            {
+                                Estado = true,
+                                CodOcupacion = (short)femaDto.FemaOcupacion.CodOcupacion,
+                                CodTipoOcupacion = (short)femaDto.FemaOcupacion.CodTipoOcupacion
+                            }
+                        },
+
+                        FemaPuntuacions = new List<FemaPuntuacion>
+                        {
+                            new FemaPuntuacion
+                            {
+                                Estado = true,
+                                CodPuntuacionMatriz = femaDto.FemaPuntuacion.CodPuntuacionMatriz,
+                                ResultadoFinal = femaDto.FemaPuntuacion.ResultadoFinal,
+                                EsEst = femaDto.FemaPuntuacion.EsEst,
+                                EsDnk = femaDto.FemaPuntuacion.EsDnk
+                            }
+                        }
+                        
                     };
 
                     _context.Femas.Add(fema);
                     await _context.SaveChangesAsync();
-
-                    var femaOcupacion = new FemaOcupacion
-                    {
-                        CodFema = fema.CodFema,
-                        CodOcupacion = femaDto.CodOcupacion,
-                        CodTipoOcupacion = femaDto.CodTipoOcupacion,
-                        Estado = femaDto.EstadoFemaOcu
-                    };
-
-                    _context.FemaOcupacions.Add(femaOcupacion);
-                    await _context.SaveChangesAsync();
-
+                    
                     var femaSuelo = new FemaSuelo
                     {
                         CodFema = fema.CodFema,
-                        CodTipoSuelo = femaDto.CodTipoSuelo,
-                        //AsumirTipo = femaDto.AsumirTipo, 
-                        //RiesgoGeologico = femaDto.RiesgoGeologico, 
-                        //Adyacencia = femaDto.Adyacencia, 
-                        //Irregularidades = femaDto.Irregularidades, 
-                        //PeligroCaidaExt = femaDto.PeligroCaidaExt 
+                        CodTipoSuelo = femaDto.CodTipoSuelo
                     };
 
                     _context.FemaSuelos.Add(femaSuelo);
@@ -535,20 +541,6 @@ namespace Back_Vinculacion_Fema.Controllers
                     _context.Archivos.Add(archivo);
                     await _context.SaveChangesAsync();
 
-                    var femaPuntuacion = new FemaPuntuacion
-                    {
-                        CodFema = fema.CodFema,
-                        CodPuntuacionMatriz = femaDto.CodPuntuacionMatriz,
-                        ResultadoFinal = femaDto.ResultadoFinal,
-                        EsEst = femaDto.EsEst,
-                        EsDnk = femaDto.EsDnk,
-                        Estado = femaDto.EstadoFemaOcu
-                    };
-
-                    _context.FemaPuntuacions.Add(femaPuntuacion);
-                    await _context.SaveChangesAsync();
-
-
                     var femaedificio = new FemaEdificio
                     {
                         CodFema = fema.CodFema,
@@ -559,8 +551,11 @@ namespace Back_Vinculacion_Fema.Controllers
                         AnioCodigo = femaDto.AnioCodigo,
                         Ampliacion = femaDto.Ampliacion,
                         AmplAnioConstruccion = femaDto.AmplAnioConstruccion,
-                        Estado = femaDto.EstadoFemaOcu
+                        Estado = true
                     };
+
+                    _context.FemaEdificios.Add(femaedificio);
+                    await _context.SaveChangesAsync();
 
                     var femaextensionrevision = new FemaExtensionRevision
                     {
@@ -641,6 +636,304 @@ namespace Back_Vinculacion_Fema.Controllers
                 }
             }
         }
+
+        [HttpGet("FormularioFEMA/{id}")]
+        public async Task<IActionResult> GetFormularioById(int id)
+        {
+            var formulario = await _context.Femas
+                .Include(f => f.FemaOcupacions)
+                .Include(f => f.FemaSuelos)
+                .Include(f => f.Archivos)
+                .Include(f => f.FemaPuntuacions)
+                .Include(f => f.FemaEdificios)
+                .Include(f => f.FemaExtensionRevisions)
+                .Include(f => f.FemaEvaluacions)
+                .Include(f => f.FemaEvalEstructurada)
+                .Include(f => f.FemaEvalNoEstructurada)
+                .FirstOrDefaultAsync(f => f.CodFema == id);
+
+            if (formulario == null)
+            {
+                return NotFound();
+            }
+
+            var femaDto = new FemaDto
+            {
+                Direccion = formulario.Direccion,
+                CodigoPostal = formulario.CodigoPostal,
+                OtrosIdentificaciones = formulario.OtrosIdentificaciones,
+                NomEdificacion = formulario.NomEdificacion,
+                CodTipoUsoEdificacion = formulario.CodTipoUsoEdificacion,
+                Latitud = formulario.Latitud,
+                Longitud = formulario.Longitud,
+                NomEncuestador = formulario.NomEncuestador,
+                FechaEncuesta = formulario.FechaEncuesta,
+                HoraEncuesta = formulario.HoraEncuesta,
+                Comentarios = formulario.Comentarios,
+                CodUsuarioIng = formulario.UsuarioIng,
+                FecIngreso = formulario.FecIngreso,
+                CodUsuarioAct = formulario.UsuarioAct,
+                FecActualiza = formulario.FecActualiza,
+                Estado = formulario.Estado,
+                FemaOcupacion = formulario.FemaOcupacions.Select(o => new FemaOcupacionDto
+                {
+                    CodOcupacion = o.CodOcupacion,
+                    CodTipoOcupacion = o.CodTipoOcupacion
+                }).FirstOrDefault(),
+                CodTipoSuelo = formulario.FemaSuelos.FirstOrDefault()?.CodTipoSuelo ?? 0,
+                Path = formulario.Archivos.FirstOrDefault()?.Path,
+                Data = formulario.Archivos.FirstOrDefault()?.Data,
+                MimeType = formulario.Archivos.FirstOrDefault()?.MimeType,
+                IdTipoArchivo = formulario.Archivos.FirstOrDefault()?.IdTipoArchivo ?? 0,
+                IdEstado = formulario.Archivos.FirstOrDefault()?.IdEstado ?? 0,
+                FemaPuntuacion = formulario.FemaPuntuacions.Select(o => new FemaPuntuacionDto
+                {
+                    CodPuntuacionMatriz = o.CodPuntuacionMatriz,
+                    ResultadoFinal = o.ResultadoFinal,
+                    EsEst = o.EsEst,
+                    EsDnk = o.EsDnk
+                }).FirstOrDefault(),
+                NroPisosSup = formulario.FemaEdificios.FirstOrDefault()?.NroPisosSup ?? 0,
+                NroPisosInf = formulario.FemaEdificios.FirstOrDefault()?.NroPisosInf ?? 0,
+                AnioContruccion = formulario.FemaEdificios.FirstOrDefault()?.AnioConstruccion ?? 0,
+                AreaTotalPiso = formulario.FemaEdificios.FirstOrDefault()?.AreaTotalPiso ?? 0,
+                AnioCodigo = formulario.FemaEdificios.FirstOrDefault()?.AnioCodigo,
+                Ampliacion = formulario.FemaEdificios.FirstOrDefault()?.Ampliacion,
+                AmplAnioConstruccion = formulario.FemaEdificios.FirstOrDefault()?.AmplAnioConstruccion ?? 0,
+                EdifEstado = formulario.FemaEdificios.FirstOrDefault()?.Estado ?? false,
+                CodEvalInterior = formulario.FemaExtensionRevisions.FirstOrDefault()?.CodEvalInterior ?? 0,
+                RevisionPlanos = formulario.FemaExtensionRevisions.FirstOrDefault()?.RevisionPlanos ?? false,
+                FuenteTipoSuelo = formulario.FemaExtensionRevisions.FirstOrDefault()?.FuenteTipoSuelo,
+                FuentePeligroGeologicos = formulario.FemaExtensionRevisions.FirstOrDefault()?.FuentePeligroGeologicos,
+                NombreContacto = formulario.FemaExtensionRevisions.FirstOrDefault()?.NombreContacto,
+                TelefonoContacto = formulario.FemaExtensionRevisions.FirstOrDefault()?.TelefonoContacto ?? 0,
+                Inspeccion_nivel2 = formulario.FemaExtensionRevisions.FirstOrDefault()?.Inspeccion_nivel2 ?? false,
+                ContactoRegistrado = formulario.FemaExtensionRevisions.FirstOrDefault()?.ContactoRegistrado,
+                CodEvalExterior = formulario.FemaEvaluacions.FirstOrDefault()?.CodEvalExterior ?? 0,
+                DisenioRevisado = formulario.FemaEvaluacions.FirstOrDefault()?.DisenioRevisado,
+                Fuente = formulario.FemaEvaluacions.FirstOrDefault()?.Fuente,
+                PeligorsGeologicos = formulario.FemaEvaluacions.FirstOrDefault()?.PeligrosGeologicos,
+                PersonaContacto = formulario.FemaEvaluacions.FirstOrDefault()?.PersonaContacto,
+                Chk1 = formulario.FemaEvalEstructurada.FirstOrDefault()?.Chk1 ?? 0,
+                Chk2 = formulario.FemaEvalEstructurada.FirstOrDefault()?.Chk2 ?? 0,
+                Chk3 = formulario.FemaEvalEstructurada.FirstOrDefault()?.Chk3 ?? 0,
+                Chk4 = formulario.FemaEvalEstructurada.FirstOrDefault()?.Chk4 ?? 0,
+                Chk1N = formulario.FemaEvalNoEstructurada.FirstOrDefault()?.Chk1 ?? 0,
+                Chk2N = formulario.FemaEvalNoEstructurada.FirstOrDefault()?.Chk2 ?? 0,
+                Chk3N = formulario.FemaEvalNoEstructurada.FirstOrDefault()?.Chk3 ?? 0,
+                Chk4N = formulario.FemaEvalNoEstructurada.FirstOrDefault()?.Chk4 ?? 0
+            };
+
+            return Ok(femaDto);
+        }
+
+        [HttpPut("FormularioFEMA/{id}")]
+        public async Task<IActionResult> UpdateFormulario(int id, [FromBody] UpdateFemaDto femaDto)
+        {
+            if (femaDto == null /*|| id != femaDto.CodFema*/)
+            {
+                return BadRequest("Datos inválidos.");
+            }
+
+            var existingFormulario = await _context.Femas
+                .Include(f => f.FemaOcupacions)
+                .Include(f => f.FemaPuntuacions)
+                .Include(f => f.FemaSuelos)
+                .Include(f => f.FemaEdificios)
+                .Include(f => f.FemaExtensionRevisions)
+                .Include(f => f.FemaEvaluacions)
+                .Include(f => f.FemaEvalEstructurada)
+                .Include(f => f.FemaEvalNoEstructurada)
+                .FirstOrDefaultAsync(f => f.CodFema == id);
+
+            if (existingFormulario == null)
+            {
+                return NotFound("El formulario con el ID especificado no existe.");
+            }
+
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    // Actualizar campos del formulario principal
+                    existingFormulario.Direccion = femaDto.Direccion;
+                    existingFormulario.CodigoPostal = femaDto.CodigoPostal;
+                    existingFormulario.OtrosIdentificaciones = femaDto.OtrosIdentificaciones;
+                    existingFormulario.NomEdificacion = femaDto.NomEdificacion;
+                    existingFormulario.CodTipoUsoEdificacion = femaDto.CodTipoUsoEdificacion;
+                    existingFormulario.Latitud = femaDto.Latitud;
+                    existingFormulario.Longitud = femaDto.Longitud;
+                    existingFormulario.NomEncuestador = femaDto.NomEncuestador;
+                    existingFormulario.FechaEncuesta = femaDto.FechaEncuesta;
+                    existingFormulario.HoraEncuesta = femaDto.HoraEncuesta;
+                    existingFormulario.Comentarios = femaDto.Comentarios;
+                    existingFormulario.UsuarioIng = femaDto.CodUsuarioIng;
+                    existingFormulario.FecIngreso = femaDto.FecIngreso;
+                    existingFormulario.UsuarioAct = femaDto.CodUsuarioAct;
+                    existingFormulario.FecActualiza = femaDto.FecActualiza;
+                    existingFormulario.Estado = 1;
+
+                    // Actualizar FemaOcupacion
+                    var existingOcupacion = existingFormulario.FemaOcupacions.FirstOrDefault();
+                    if (existingOcupacion != null)
+                    {
+                        existingOcupacion.CodOcupacion = (short)femaDto.FemaOcupacion.CodOcupacion;
+                        existingOcupacion.CodTipoOcupacion = (short)femaDto.FemaOcupacion.CodTipoOcupacion;
+                    }
+
+                    // Actualizar FemaPuntuacion
+                    var existingPuntuacion = existingFormulario.FemaPuntuacions.FirstOrDefault();
+                    if (existingPuntuacion != null)
+                    {
+                        existingPuntuacion.CodPuntuacionMatriz = femaDto.FemaPuntuacion.CodPuntuacionMatriz;
+                        existingPuntuacion.ResultadoFinal = femaDto.FemaPuntuacion.ResultadoFinal;
+                        existingPuntuacion.EsEst = femaDto.FemaPuntuacion.EsEst;
+                        existingPuntuacion.EsDnk = femaDto.FemaPuntuacion.EsDnk;
+                    }
+
+                    // Actualizar FemaSuelo
+                    var existingSuelo = existingFormulario.FemaSuelos.FirstOrDefault();
+                    if (existingSuelo != null)
+                    {
+                        existingSuelo.CodTipoSuelo = femaDto.CodTipoSuelo;
+                    }
+
+                    // Actualizar FemaEdificio
+                    var existingEdificio = existingFormulario.FemaEdificios.FirstOrDefault();
+                    if (existingEdificio != null)
+                    {
+                        existingEdificio.NroPisosSup = femaDto.NroPisosSup;
+                        existingEdificio.NroPisosInf = femaDto.NroPisosInf;
+                        existingEdificio.AnioConstruccion = femaDto.AnioConstruccion;
+                        existingEdificio.AreaTotalPiso = femaDto.AreaTotalPiso;
+                        existingEdificio.AnioCodigo = femaDto.AnioCodigo;
+                        existingEdificio.Ampliacion = femaDto.Ampliacion;
+                        existingEdificio.AmplAnioConstruccion = femaDto.AmplAnioConstruccion;
+                        existingEdificio.Estado = true;
+                    }
+
+                    // Actualizar FemaExtensionRevision
+                    var existingExtensionRevision = existingFormulario.FemaExtensionRevisions.FirstOrDefault();
+                    if (existingExtensionRevision != null)
+                    {
+                        existingExtensionRevision.CodEvalInterior = femaDto.CodEvalInterior;
+                        existingExtensionRevision.RevisionPlanos = femaDto.RevisionPlanos;
+                        existingExtensionRevision.FuenteTipoSuelo = femaDto.FuenteTipoSuelo;
+                        existingExtensionRevision.FuentePeligroGeologicos = femaDto.FuentePeligroGeologicos;
+                        existingExtensionRevision.NombreContacto = femaDto.NombreContacto;
+                        existingExtensionRevision.TelefonoContacto = femaDto.TelefonoContacto;
+                        existingExtensionRevision.ContactoRegistrado = femaDto.ContactoRegistrado;
+                        existingExtensionRevision.Inspeccion_nivel2 = femaDto.Inspeccion_nivel2;
+                        existingExtensionRevision.Estado = true;
+                    }
+
+                    // Actualizar FemaEvaluacion
+                    var existingEvaluacion = existingFormulario.FemaEvaluacions.FirstOrDefault();
+                    if (existingEvaluacion != null)
+                    {
+                        existingEvaluacion.CodEvalExterior = femaDto.CodEvalExterior;
+                        existingEvaluacion.CodEvalInterior = femaDto.CodEvalInterior;
+                        existingEvaluacion.DisenioRevisado = femaDto.DisenioRevisado;
+                        existingEvaluacion.Fuente = femaDto.Fuente;
+                        existingEvaluacion.PeligrosGeologicos = femaDto.PeligorsGeologicos;
+                        existingEvaluacion.PersonaContacto = femaDto.PersonaContacto;
+                    }
+
+                    // Actualizar FemaEvalEstructuradum
+                    var existingEvalEstructuradum = existingFormulario.FemaEvalEstructurada.FirstOrDefault();
+                    if (existingEvalEstructuradum != null)
+                    {
+                        existingEvalEstructuradum.Chk1 = femaDto.Chk1;
+                        existingEvalEstructuradum.Chk2 = femaDto.Chk2;
+                        existingEvalEstructuradum.Chk3 = femaDto.Chk3;
+                        existingEvalEstructuradum.Chk4 = femaDto.Chk4;
+                    }
+
+                    // Actualizar FemaEvalNoEstructuradum
+                    var existingEvalNoEstructuradum = existingFormulario.FemaEvalNoEstructurada.FirstOrDefault();
+                    if (existingEvalNoEstructuradum != null)
+                    {
+                        existingEvalNoEstructuradum.Chk1 = femaDto.Chk1N;
+                        existingEvalNoEstructuradum.Chk2 = femaDto.Chk2N;
+                        existingEvalNoEstructuradum.Chk3 = femaDto.Chk3N;
+                        existingEvalNoEstructuradum.Chk4 = femaDto.Chk4N;
+                    }
+
+                    _context.Entry(existingFormulario).State = EntityState.Modified;
+                    await _context.SaveChangesAsync();
+
+                    transaction.Commit();
+                    return Ok(new { Id = existingFormulario.CodFema });
+                }
+                catch (DbUpdateException dbEx)
+                {
+                    transaction.Rollback();
+
+                    if (dbEx.InnerException is SqlException sqlEx && sqlEx.Number == 2627)
+                    {
+                        return StatusCode(500, "Error: No se puede insertar una clave duplicada. El valor de 'CodFema' ya existe.");
+                    }
+                    return StatusCode(500, "Error al guardar en la base de datos: " + dbEx.InnerException?.Message);
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    return StatusCode(500, "Error interno del servidor: " + ex.Message);
+                }
+            }
+        }
+
+
+        /*[HttpPut("FormularioFEMA/{id}")]
+        public async Task<IActionResult> UpdateFormulario(int id, [FromBody] UpdateFemaDto femaDto)
+        {
+            if (femaDto == null || id != femaDto.CodFema)
+            {
+                return BadRequest("Datos inválidos.");
+            }
+
+            var formulario = new Fema
+            {
+                CodFema = id,
+                Direccion = femaDto.Direccion,
+                CodigoPostal = femaDto.CodigoPostal,
+                OtrosIdentificaciones = femaDto.OtrosIdentificaciones,
+                NomEdificacion = femaDto.NomEdificacion,
+                CodTipoUsoEdificacion = femaDto.CodTipoUsoEdificacion,
+                Latitud = femaDto.Latitud, 
+                Longitud = femaDto.Longitud, 
+                NomEncuestador = femaDto.NomEncuestador,
+                FechaEncuesta = femaDto.FechaEncuesta,
+                HoraEncuesta = femaDto.HoraEncuesta,
+                Comentarios = femaDto.Comentarios,
+                UsuarioIng = femaDto.CodUsuarioIng,
+                FecIngreso = femaDto.FecIngreso,
+                UsuarioAct = femaDto.CodUsuarioAct,
+                FecActualiza = femaDto.FecActualiza,
+                Estado = 1 
+            };
+
+            _context.Femas.Attach(formulario);
+            _context.Entry(formulario).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                return Ok(new { Id = formulario.CodFema });
+            }
+            catch (DbUpdateException dbEx)
+            {
+                if (dbEx.InnerException is SqlException sqlEx && sqlEx.Number == 2627)
+                {
+                    return StatusCode(500, "Error: No se puede insertar una clave duplicada. El valor de 'CodFema' ya existe.");
+                }
+                return StatusCode(500, "Error al guardar en la base de datos: " + dbEx.InnerException?.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Error interno del servidor: " + ex.Message);
+            }
+        }*/
 
         /*[HttpPost]
         [Route("FormularioFEMA")]
@@ -805,9 +1098,9 @@ namespace Back_Vinculacion_Fema.Controllers
             }
         }*/
 
-        
 
-     
+
+
 
     }
 }
