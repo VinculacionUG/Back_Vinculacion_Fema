@@ -334,6 +334,13 @@ namespace Back_Vinculacion_Fema.Controllers
 
         }
 
+        /*[HttpGet]
+        [Route("Ocupacion")]
+        public async Task<IActionResult> GetOcupaciones()
+        {
+            var ocupaciones = await _context.Ocupacions.ToListAsync();
+            return Ok(ocupaciones);
+        }*/
 
         [HttpGet]
         [Route("Ocupacion")]
@@ -637,8 +644,8 @@ namespace Back_Vinculacion_Fema.Controllers
             }
         }
 
-        [HttpGet("FormularioFEMA/{id}")]
-        public async Task<IActionResult> GetFormularioById(int id)
+        [HttpGet("FormularioFEMAHistAll")]
+        public async Task<IActionResult> GetFormulario()
         {
             var formulario = await _context.Femas
                 .Include(f => f.FemaOcupacions)
@@ -650,14 +657,20 @@ namespace Back_Vinculacion_Fema.Controllers
                 .Include(f => f.FemaEvaluacions)
                 .Include(f => f.FemaEvalEstructurada)
                 .Include(f => f.FemaEvalNoEstructurada)
-                .FirstOrDefaultAsync(f => f.CodFema == id);
+                //.FirstOrDefaultAsync(f => f.CodFema == id);
+                .ToListAsync();
 
-            if (formulario == null)
+            //if (formulario == null)
+            //{
+            //    return NotFound();
+            //}
+            if (formulario == null || !formulario.Any())
             {
                 return NotFound();
             }
 
-            var femaDto = new FemaDto
+            //var femaDto = new FemaDto
+            var femaDtos = formulario.Select(formulario => new FemaDto
             {
                 Direccion = formulario.Direccion,
                 CodigoPostal = formulario.CodigoPostal,
@@ -722,10 +735,103 @@ namespace Back_Vinculacion_Fema.Controllers
                 Chk2N = formulario.FemaEvalNoEstructurada.FirstOrDefault()?.Chk2 ?? 0,
                 Chk3N = formulario.FemaEvalNoEstructurada.FirstOrDefault()?.Chk3 ?? 0,
                 Chk4N = formulario.FemaEvalNoEstructurada.FirstOrDefault()?.Chk4 ?? 0
-            };
+            }).ToList();
 
-            return Ok(femaDto);
+            return Ok(femaDtos);
         }
+        
+        [HttpGet("FormularioFEMAByFecha/{FechaEncuesta}")]
+        public async Task<IActionResult> GetFormularioFechaEncuesta(DateTime FechaEncuesta)
+        {
+            Console.WriteLine($"FechaEncuesta recibida: {FechaEncuesta}");
+            var formularios = await _context.Femas
+                .Include(f => f.FemaOcupacions)
+                .Include(f => f.FemaSuelos)
+                .Include(f => f.Archivos)
+                .Include(f => f.FemaPuntuacions)
+                .Include(f => f.FemaEdificios)
+                .Include(f => f.FemaExtensionRevisions)
+                .Include(f => f.FemaEvaluacions)
+                .Include(f => f.FemaEvalEstructurada)
+                .Include(f => f.FemaEvalNoEstructurada)
+                .Where(f => f.FechaEncuesta == FechaEncuesta)
+                .ToListAsync();
+
+            if (formularios == null || !formularios.Any())
+            {
+                return NotFound();
+            }
+
+            var femaDtos = formularios.Select(formulario => new FemaDto
+            {
+                Direccion = formulario.Direccion,
+                CodigoPostal = formulario.CodigoPostal,
+                OtrosIdentificaciones = formulario.OtrosIdentificaciones,
+                NomEdificacion = formulario.NomEdificacion,
+                CodTipoUsoEdificacion = formulario.CodTipoUsoEdificacion,
+                Latitud = formulario.Latitud,
+                Longitud = formulario.Longitud,
+                NomEncuestador = formulario.NomEncuestador,
+                FechaEncuesta = formulario.FechaEncuesta,
+                HoraEncuesta = formulario.HoraEncuesta,
+                Comentarios = formulario.Comentarios,
+                CodUsuarioIng = formulario.UsuarioIng,
+                FecIngreso = formulario.FecIngreso,
+                CodUsuarioAct = formulario.UsuarioAct,
+                FecActualiza = formulario.FecActualiza,
+                Estado = formulario.Estado,
+                FemaOcupacion = formulario.FemaOcupacions.Select(o => new FemaOcupacionDto
+                {
+                    CodOcupacion = o.CodOcupacion,
+                    CodTipoOcupacion = o.CodTipoOcupacion
+                }).FirstOrDefault(),
+                CodTipoSuelo = formulario.FemaSuelos.FirstOrDefault()?.CodTipoSuelo ?? 0,
+                Path = formulario.Archivos.FirstOrDefault()?.Path,
+                Data = formulario.Archivos.FirstOrDefault()?.Data,
+                MimeType = formulario.Archivos.FirstOrDefault()?.MimeType,
+                IdTipoArchivo = formulario.Archivos.FirstOrDefault()?.IdTipoArchivo ?? 0,
+                IdEstado = formulario.Archivos.FirstOrDefault()?.IdEstado ?? 0,
+                FemaPuntuacion = formulario.FemaPuntuacions.Select(o => new FemaPuntuacionDto
+                {
+                    CodPuntuacionMatriz = o.CodPuntuacionMatriz,
+                    ResultadoFinal = o.ResultadoFinal,
+                    EsEst = o.EsEst,
+                    EsDnk = o.EsDnk
+                }).FirstOrDefault(),
+                NroPisosSup = formulario.FemaEdificios.FirstOrDefault()?.NroPisosSup ?? 0,
+                NroPisosInf = formulario.FemaEdificios.FirstOrDefault()?.NroPisosInf ?? 0,
+                AnioContruccion = formulario.FemaEdificios.FirstOrDefault()?.AnioConstruccion ?? 0,
+                AreaTotalPiso = formulario.FemaEdificios.FirstOrDefault()?.AreaTotalPiso ?? 0,
+                AnioCodigo = formulario.FemaEdificios.FirstOrDefault()?.AnioCodigo,
+                Ampliacion = formulario.FemaEdificios.FirstOrDefault()?.Ampliacion,
+                AmplAnioConstruccion = formulario.FemaEdificios.FirstOrDefault()?.AmplAnioConstruccion ?? 0,
+                EdifEstado = formulario.FemaEdificios.FirstOrDefault()?.Estado ?? false,
+                CodEvalInterior = formulario.FemaExtensionRevisions.FirstOrDefault()?.CodEvalInterior ?? 0,
+                RevisionPlanos = formulario.FemaExtensionRevisions.FirstOrDefault()?.RevisionPlanos ?? false,
+                FuenteTipoSuelo = formulario.FemaExtensionRevisions.FirstOrDefault()?.FuenteTipoSuelo,
+                FuentePeligroGeologicos = formulario.FemaExtensionRevisions.FirstOrDefault()?.FuentePeligroGeologicos,
+                NombreContacto = formulario.FemaExtensionRevisions.FirstOrDefault()?.NombreContacto,
+                TelefonoContacto = formulario.FemaExtensionRevisions.FirstOrDefault()?.TelefonoContacto ?? 0,
+                Inspeccion_nivel2 = formulario.FemaExtensionRevisions.FirstOrDefault()?.Inspeccion_nivel2 ?? false,
+                ContactoRegistrado = formulario.FemaExtensionRevisions.FirstOrDefault()?.ContactoRegistrado,
+                CodEvalExterior = formulario.FemaEvaluacions.FirstOrDefault()?.CodEvalExterior ?? 0,
+                DisenioRevisado = formulario.FemaEvaluacions.FirstOrDefault()?.DisenioRevisado,
+                Fuente = formulario.FemaEvaluacions.FirstOrDefault()?.Fuente,
+                PeligorsGeologicos = formulario.FemaEvaluacions.FirstOrDefault()?.PeligrosGeologicos,
+                PersonaContacto = formulario.FemaEvaluacions.FirstOrDefault()?.PersonaContacto,
+                Chk1 = formulario.FemaEvalEstructurada.FirstOrDefault()?.Chk1 ?? 0,
+                Chk2 = formulario.FemaEvalEstructurada.FirstOrDefault()?.Chk2 ?? 0,
+                Chk3 = formulario.FemaEvalEstructurada.FirstOrDefault()?.Chk3 ?? 0,
+                Chk4 = formulario.FemaEvalEstructurada.FirstOrDefault()?.Chk4 ?? 0,
+                Chk1N = formulario.FemaEvalNoEstructurada.FirstOrDefault()?.Chk1 ?? 0,
+                Chk2N = formulario.FemaEvalNoEstructurada.FirstOrDefault()?.Chk2 ?? 0,
+                Chk3N = formulario.FemaEvalNoEstructurada.FirstOrDefault()?.Chk3 ?? 0,
+                Chk4N = formulario.FemaEvalNoEstructurada.FirstOrDefault()?.Chk4 ?? 0
+            }).ToList();
+
+            return Ok(femaDtos);
+        }
+
 
         [HttpPut("FormularioFEMA/{id}")]
         public async Task<IActionResult> UpdateFormulario(int id, [FromBody] UpdateFemaDto femaDto)
