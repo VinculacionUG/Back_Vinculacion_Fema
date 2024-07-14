@@ -4,7 +4,7 @@ namespace Back_Vinculacion_Fema.Models.DTOs
 {
     public class FemaDto
     {
-        
+        public int CodFema {  get; set; }
         public string Direccion { get; set; }
         public string CodigoPostal { get; set; }
         public string OtrosIdentificaciones { get; set; }
