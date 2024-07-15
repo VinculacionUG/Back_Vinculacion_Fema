@@ -670,8 +670,9 @@ namespace Back_Vinculacion_Fema.Controllers
             }
 
             //var femaDto = new FemaDto
-            var femaDtos = formulario.Select(formulario => new FemaDto
+            var femaDtos = formulario.Select(formulario => new FeemaUVM
             {
+                IdFema = formulario.CodFema,
                 Direccion = formulario.Direccion,
                 CodigoPostal = formulario.CodigoPostal,
                 OtrosIdentificaciones = formulario.OtrosIdentificaciones,
@@ -762,8 +763,9 @@ namespace Back_Vinculacion_Fema.Controllers
                 return NotFound();
             }
 
-            var femaDtos = formularios.Select(formulario => new FemaDto
+            var femaDtos = formularios.Select(formulario => new FeemaUVM
             {
+                IdFema = formulario.CodFema,
                 Direccion = formulario.Direccion,
                 CodigoPostal = formulario.CodigoPostal,
                 OtrosIdentificaciones = formulario.OtrosIdentificaciones,
