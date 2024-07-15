@@ -4,6 +4,7 @@ using Back_Vinculacion_Fema.Models.DbModels;
 using Back_Vinculacion_Fema.Models.Utilidades;
 using Back_Vinculacion_Fema.Service;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
 
 var builder = WebApplication.CreateBuilder(args);

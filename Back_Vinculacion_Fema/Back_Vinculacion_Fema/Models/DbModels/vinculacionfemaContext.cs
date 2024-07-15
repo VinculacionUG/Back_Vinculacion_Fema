@@ -323,6 +323,11 @@ namespace Back_Vinculacion_Fema.Models.DbModels
                     .HasForeignKey(d => d.CodTipoUsoEdificacion)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_FEMA_TIPO_USO");
+
+                entity.HasMany(e => e.FemaSuelos)
+                    .WithOne(d => d.CodFemaNavigation)
+                    .HasForeignKey(d => d.CodFema);
+
             });
 
             modelBuilder.Entity<FemaEdificio>(entity =>
@@ -614,8 +619,10 @@ namespace Back_Vinculacion_Fema.Models.DbModels
 
                 entity.Property(e => e.Estado).HasColumnName("estado");
 
+               
+
                 entity.HasOne(d => d.CodFemaNavigation)
-                    .WithMany()
+                    .WithMany(p => p.FemaSuelos)
                     .HasForeignKey(d => d.CodFema)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_FEMA_SUELO_FEMA");
