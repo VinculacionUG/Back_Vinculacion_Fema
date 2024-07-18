@@ -689,25 +689,30 @@ namespace Back_Vinculacion_Fema.Controllers
                 CodUsuarioAct = formulario.UsuarioAct,
                 FecActualiza = formulario.FecActualiza,
                 Estado = formulario.Estado,
-                FemaOcupacions = formulario.FemaOcupacions.Select(o => new FemaOcupacionDto
+                FemaOcupacion = formulario.FemaOcupacions.Select(o => new FemaOcupacionDto
                 {
-                    //Estado = true,
                     CodOcupacion = o.CodOcupacion,
                     CodTipoOcupacion = o.CodTipoOcupacion
-                }).ToList(),
-                /*FemaPuntuacion = formulario.FemaPuntuacions.Select(o => new FemaPuntuacionDto
-                {
-                    CodPuntuacionMatriz = o.CodPuntuacionMatriz,
-                    ResultadoFinal = o.ResultadoFinal,
-                    EsEst = o.EsEst,
-                    EsDnk = o.EsDnk
-                }).ToList(),*/
+                }).FirstOrDefault(),
                 CodTipoSuelo = formulario.FemaSuelos.FirstOrDefault()?.CodTipoSuelo ?? 0,
                 Path = formulario.Archivos.FirstOrDefault()?.Path,
                 Data = formulario.Archivos.FirstOrDefault()?.Data,
                 MimeType = formulario.Archivos.FirstOrDefault()?.MimeType,
                 IdTipoArchivo = formulario.Archivos.FirstOrDefault()?.IdTipoArchivo ?? 0,
                 IdEstado = formulario.Archivos.FirstOrDefault()?.IdEstado ?? 0,
+                FemaPuntuacion = formulario.FemaPuntuacions.Select(o => new FemaPuntuacionDto
+                {
+                    CodPuntuacionMatriz = o.CodPuntuacionMatriz,
+                    ResultadoFinal = o.ResultadoFinal,
+                    EsEst = o.EsEst,
+                    EsDnk = o.EsDnk
+                }).FirstOrDefault(),
+                //CodTipoSuelo = formulario.FemaSuelos.FirstOrDefault()?.CodTipoSuelo ?? 0,
+                //Path = formulario.Archivos.FirstOrDefault()?.Path,
+                //Data = formulario.Archivos.FirstOrDefault()?.Data,
+                //MimeType = formulario.Archivos.FirstOrDefault()?.MimeType,
+                //IdTipoArchivo = formulario.Archivos.FirstOrDefault()?.IdTipoArchivo ?? 0,
+                //IdEstado = formulario.Archivos.FirstOrDefault()?.IdEstado ?? 0,
                 NroPisosSup = formulario.FemaEdificios.FirstOrDefault()?.NroPisosSup ?? 0,
                 NroPisosInf = formulario.FemaEdificios.FirstOrDefault()?.NroPisosInf ?? 0,
                 AnioContruccion = formulario.FemaEdificios.FirstOrDefault()?.AnioConstruccion ?? 0,
