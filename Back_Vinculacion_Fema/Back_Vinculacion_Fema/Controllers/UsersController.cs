@@ -12,6 +12,8 @@ using System.Net.WebSockets;
 using System.Text;
 using Back_Vinculacion_Fema.Interface;
 using Back_Vinculacion_Fema.Viewmodel;
+using Newtonsoft.Json;
+
 
 namespace Back_Vinculacion_Fema.Controllers
 {
@@ -489,37 +491,35 @@ namespace Back_Vinculacion_Fema.Controllers
                         NomEncuestador = femaDto.NomEncuestador,
                         FechaEncuesta = femaDto.FechaEncuesta,
                         HoraEncuesta = femaDto.HoraEncuesta,
-                        //RutaImagenEdif = femaDto.RutaImagenEdif,
-                        //RutaImagenCroquis = femaDto.RutaImagenCroquis,
                         Comentarios = femaDto.Comentarios,
-                        //RequiereNivel2 = femaDto.RequiereNivel2,
                         UsuarioIng = femaDto.CodUsuarioIng,
                         FecIngreso = femaDto.FecIngreso,
                         UsuarioAct = femaDto.CodUsuarioAct,
                         FecActualiza = femaDto.FecActualiza,
                         Estado = femaDto.Estado,
-                        FemaOcupacions = new List<FemaOcupacion>
+                        FemaOcupacions = femaDto.FemaOcupacions.Select(o => new FemaOcupacion
                         {
-                            new FemaOcupacion
-                            {
-                                Estado = true,
-                                CodOcupacion = (short)femaDto.FemaOcupacion.CodOcupacion,
-                                CodTipoOcupacion = (short)femaDto.FemaOcupacion.CodTipoOcupacion
-                            }
-                        },
+                            Estado = true,
+                            CodOcupacion = o.CodOcupacion,
+                            CodTipoOcupacion = o.CodTipoOcupacion
+                        }).ToList(),
 
-                        FemaPuntuacions = new List<FemaPuntuacion>
+                        FemaPuntuacions = femaDto.FemaPuntuacions.Select(p => new FemaPuntuacion
                         {
-                            new FemaPuntuacion
-                            {
-                                Estado = true,
-                                CodPuntuacionMatriz = femaDto.FemaPuntuacion.CodPuntuacionMatriz,
-                                ResultadoFinal = femaDto.FemaPuntuacion.ResultadoFinal,
-                                EsEst = femaDto.FemaPuntuacion.EsEst,
-                                EsDnk = femaDto.FemaPuntuacion.EsDnk
-                            }
-                        }
-                        
+                            CodPuntuacionMatriz = p.CodPuntuacionMatriz,
+                            ResultadoFinal = p.ResultadoFinal,
+                            EsEst = p.EsEst,
+                            EsDnk = p.EsDnk,
+                            Estado = true
+                        }).ToList()
+                        /*FemaPuntuacions = femaDto.FemaPuntuacion.Select(puntuacionDto => new FemaPuntuacion
+                        {
+                            CodPuntuacionMatriz = puntuacionDto.CodPuntuacionMatriz,
+                            ResultadoFinal = puntuacionDto.ResultadoFinal,
+                            EsEst = puntuacionDto.EsEst,
+                            EsDnk = puntuacionDto.EsDnk
+                        }).ToList()*/
+
                     };
 
                     _context.Femas.Add(fema);
@@ -682,24 +682,25 @@ namespace Back_Vinculacion_Fema.Controllers
                 CodUsuarioAct = formulario.UsuarioAct,
                 FecActualiza = formulario.FecActualiza,
                 Estado = formulario.Estado,
-                FemaOcupacion = formulario.FemaOcupacions.Select(o => new FemaOcupacionDto
+                FemaOcupacions = formulario.FemaOcupacions.Select(o => new FemaOcupacionDto
                 {
+                    //Estado = true,
                     CodOcupacion = o.CodOcupacion,
                     CodTipoOcupacion = o.CodTipoOcupacion
-                }).FirstOrDefault(),
+                }).ToList(),
+                /*FemaPuntuacion = formulario.FemaPuntuacions.Select(o => new FemaPuntuacionDto
+                {
+                    CodPuntuacionMatriz = o.CodPuntuacionMatriz,
+                    ResultadoFinal = o.ResultadoFinal,
+                    EsEst = o.EsEst,
+                    EsDnk = o.EsDnk
+                }).ToList(),*/
                 CodTipoSuelo = formulario.FemaSuelos.FirstOrDefault()?.CodTipoSuelo ?? 0,
                 Path = formulario.Archivos.FirstOrDefault()?.Path,
                 Data = formulario.Archivos.FirstOrDefault()?.Data,
                 MimeType = formulario.Archivos.FirstOrDefault()?.MimeType,
                 IdTipoArchivo = formulario.Archivos.FirstOrDefault()?.IdTipoArchivo ?? 0,
                 IdEstado = formulario.Archivos.FirstOrDefault()?.IdEstado ?? 0,
-                FemaPuntuacion = formulario.FemaPuntuacions.Select(o => new FemaPuntuacionDto
-                {
-                    CodPuntuacionMatriz = o.CodPuntuacionMatriz,
-                    ResultadoFinal = o.ResultadoFinal,
-                    EsEst = o.EsEst,
-                    EsDnk = o.EsDnk
-                }).FirstOrDefault(),
                 NroPisosSup = formulario.FemaEdificios.FirstOrDefault()?.NroPisosSup ?? 0,
                 NroPisosInf = formulario.FemaEdificios.FirstOrDefault()?.NroPisosInf ?? 0,
                 AnioContruccion = formulario.FemaEdificios.FirstOrDefault()?.AnioConstruccion ?? 0,
@@ -781,18 +782,29 @@ namespace Back_Vinculacion_Fema.Controllers
                     existingFormulario.Estado = 1;
 
                     // Actualizar FemaOcupacion
-                    var existingOcupacion = existingFormulario.FemaOcupacions.FirstOrDefault();
-                    if (existingOcupacion != null)
+                    var existingOcupacions = existingFormulario.FemaOcupacions.ToList();
+                    foreach (var ocupacion in existingOcupacions)
                     {
-                        existingOcupacion.CodOcupacion = (short)femaDto.FemaOcupacion.CodOcupacion;
-                        existingOcupacion.CodTipoOcupacion = (short)femaDto.FemaOcupacion.CodTipoOcupacion;
+                        _context.FemaOcupacions.Remove(ocupacion);
                     }
+
+                    foreach (var ocupacioDto in femaDto.FemaOcupacion)
+                    {
+                        existingFormulario.FemaOcupacions.Add(new FemaOcupacion
+                        {
+                            Estado = true,
+                            CodOcupacion = ocupacioDto.CodOcupacion,
+                            CodTipoOcupacion = ocupacioDto.CodTipoOcupacion,
+                            CodFema = id
+                        });
+                    }
+
 
                     // Actualizar FemaPuntuacion
                     var existingPuntuacion = existingFormulario.FemaPuntuacions.FirstOrDefault();
                     if (existingPuntuacion != null)
                     {
-                        existingPuntuacion.CodPuntuacionMatriz = femaDto.FemaPuntuacion.CodPuntuacionMatriz;
+                        //existingPuntuacion.CodPuntuacionMatriz = femaDto.FemaPuntuacion.CodPuntuacionMatriz;
                         existingPuntuacion.ResultadoFinal = femaDto.FemaPuntuacion.ResultadoFinal;
                         existingPuntuacion.EsEst = femaDto.FemaPuntuacion.EsEst;
                         existingPuntuacion.EsDnk = femaDto.FemaPuntuacion.EsDnk;
