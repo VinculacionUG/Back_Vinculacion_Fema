@@ -1,5 +1,8 @@
-﻿using System;
+﻿
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Back_Vinculacion_Fema.Models.DbModels
 {
@@ -8,6 +11,9 @@ namespace Back_Vinculacion_Fema.Models.DbModels
         public long CodPuntuacionSec { get; set; }
         public int CodFema { get; set; }
         public short CodPuntuacionMatriz { get; set; }
+        //public List<short> CodPuntuacionMatriz { get; set; }
+
+        
         public decimal ResultadoFinal { get; set; }
         public bool EsEst { get; set; }
         public bool Estado { get; set; }
