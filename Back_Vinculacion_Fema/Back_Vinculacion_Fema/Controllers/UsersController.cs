@@ -841,7 +841,7 @@ namespace Back_Vinculacion_Fema.Controllers
         }
 
 
-        [HttpPut("FormularioFEMA/{id}")]
+        [HttpPut("UpdateFormularioFEMA/{id}")]
         public async Task<IActionResult> UpdateFormulario(int id, [FromBody] UpdateFemaDto femaDto)
         {
             if (femaDto == null /*|| id != femaDto.CodFema*/)
