@@ -497,7 +497,7 @@ namespace Back_Vinculacion_Fema.Controllers
                         UsuarioAct = femaDto.CodUsuarioAct,
                         FecActualiza = femaDto.FecActualiza,
                         Estado = femaDto.Estado,
-                        FemaOcupacions = femaDto.FemaOcupacions.Select(o => new FemaOcupacion
+                        FemaOcupacions = femaDto.FemaOcupacion.Select(o => new FemaOcupacion
                         {
                             Estado = true,
                             CodOcupacion = o.CodOcupacion,

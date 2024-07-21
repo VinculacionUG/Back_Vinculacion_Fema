@@ -21,7 +21,7 @@ namespace Back_Vinculacion_Fema.Models.DTOs
         public string CodUsuarioAct { get; set; }
         public DateTime FecActualiza { get; set; }
         public short Estado { get; set; }
-        public List<FemaOcupacionDto> FemaOcupacions { get; set; }
+        public List<FemaOcupacionDto> FemaOcupacion { get; set; }
         //public FemaPuntuacionDto FemaPuntuacion { get; set; }
         public List<FemaPuntuacionDto> FemaPuntuacions { get; set; }
         public short CodTipoSuelo { get; set; }
