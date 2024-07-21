@@ -486,9 +486,9 @@ namespace Back_Vinculacion_Fema.Controllers
                         return BadRequest("Fecha inválida.");
                     }
 
-                    if (!TimeSpan.TryParse(femaDto.HoraEncuesta, out TimeSpan horaEncuesta))
+                    if (!TimeSpan.TryParseExact(femaDto.HoraEncuesta, "hh\\:mm\\:ss", CultureInfo.InvariantCulture, out TimeSpan horaEncuesta))
                     {
-                        return BadRequest("Hora inválida.");
+                        return BadRequest("Hora de encuesta inválida. Debe estar en formato de 24 horas (HH:mm:ss).");
                     }
 
 
