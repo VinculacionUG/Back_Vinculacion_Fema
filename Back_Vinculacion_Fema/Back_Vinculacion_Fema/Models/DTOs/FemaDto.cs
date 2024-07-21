@@ -13,8 +13,12 @@ namespace Back_Vinculacion_Fema.Models.DTOs
         public string Latitud { get; set; }
         public string Longitud { get; set; }
         public string NomEncuestador { get; set; }
+        public string Anio { get; set; }
+        public string Mes { get; set; }
+        public string Dia { get; set; }
         public DateTime FechaEncuesta { get; set; }
-        public TimeSpan HoraEncuesta { get; set; }
+        public string HoraEncuesta { get; set; }
+        //public TimeSpan HoraEncuesta { get; set; }
         public string Comentarios { get; set; }
         public string CodUsuarioIng { get; set; }
         public DateTime FecIngreso { get; set; }

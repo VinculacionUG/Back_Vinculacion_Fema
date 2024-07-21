@@ -13,6 +13,7 @@ using System.Text;
 using Back_Vinculacion_Fema.Interface;
 using Back_Vinculacion_Fema.Viewmodel;
 using Newtonsoft.Json;
+using System.Globalization;
 
 
 namespace Back_Vinculacion_Fema.Controllers
@@ -479,6 +480,18 @@ namespace Back_Vinculacion_Fema.Controllers
             {
                 try
                 {
+                    DateTime fechaEncuesta;
+                    if (!DateTime.TryParseExact($"{femaDto.Anio}-{femaDto.Mes}-{femaDto.Dia}", "yyyy-MM-dd", null, DateTimeStyles.None, out fechaEncuesta))
+                    {
+                        return BadRequest("Fecha inválida.");
+                    }
+
+                    if (!TimeSpan.TryParse(femaDto.HoraEncuesta, out TimeSpan horaEncuesta))
+                    {
+                        return BadRequest("Hora inválida.");
+                    }
+
+
                     var fema = new Fema
                     {
                         Direccion = femaDto.Direccion,
@@ -489,8 +502,8 @@ namespace Back_Vinculacion_Fema.Controllers
                         Latitud = femaDto.Latitud,
                         Longitud = femaDto.Longitud,
                         NomEncuestador = femaDto.NomEncuestador,
-                        FechaEncuesta = femaDto.FechaEncuesta,
-                        HoraEncuesta = femaDto.HoraEncuesta,
+                        FechaEncuesta = fechaEncuesta,
+                        HoraEncuesta = horaEncuesta,
                         Comentarios = femaDto.Comentarios,
                         UsuarioIng = femaDto.CodUsuarioIng,
                         FecIngreso = femaDto.FecIngreso,
@@ -644,7 +657,7 @@ namespace Back_Vinculacion_Fema.Controllers
             }
         }
 
-        [HttpGet("FormularioFEMAHistAll")]
+        /*[HttpGet("FormularioFEMAHistAll")]
         public async Task<IActionResult> GetFormulario()
         {
             var formulario = await _context.Femas
@@ -745,7 +758,7 @@ namespace Back_Vinculacion_Fema.Controllers
             }).ToList();
 
             return Ok(femaDtos);
-        }
+        }*/
         
         [HttpGet("FormularioFEMAByFecha/{FechaEncuesta}")]
         public async Task<IActionResult> GetFormularioFechaEncuesta(DateTime FechaEncuesta)
@@ -907,13 +920,23 @@ namespace Back_Vinculacion_Fema.Controllers
 
 
                     // Actualizar FemaPuntuacion
-                    var existingPuntuacion = existingFormulario.FemaPuntuacions.FirstOrDefault();
-                    if (existingPuntuacion != null)
+                    var existingPuntuacions = existingFormulario.FemaPuntuacions.ToList();
+                    foreach (var puntuacion in existingPuntuacions)
                     {
-                        //existingPuntuacion.CodPuntuacionMatriz = femaDto.FemaPuntuacion.CodPuntuacionMatriz;
-                        existingPuntuacion.ResultadoFinal = femaDto.FemaPuntuacion.ResultadoFinal;
-                        existingPuntuacion.EsEst = femaDto.FemaPuntuacion.EsEst;
-                        existingPuntuacion.EsDnk = femaDto.FemaPuntuacion.EsDnk;
+                        _context.FemaPuntuacions.Remove(puntuacion);
+                    }
+
+                    foreach (var puntuacionDto in femaDto.FemaPuntuacions)
+                    {
+                        existingFormulario.FemaPuntuacions.Add(new FemaPuntuacion
+                        {
+                            CodPuntuacionMatriz = puntuacionDto.CodPuntuacionMatriz,
+                            ResultadoFinal = puntuacionDto.ResultadoFinal,
+                            EsEst = puntuacionDto.EsEst,
+                            EsDnk = puntuacionDto.EsDnk,
+                            Estado = true,
+                            CodFema = id
+                        });
                     }
 
                     // Actualizar FemaSuelo
