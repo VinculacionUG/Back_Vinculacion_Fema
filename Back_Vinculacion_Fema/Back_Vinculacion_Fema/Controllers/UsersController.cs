@@ -309,8 +309,8 @@ namespace Back_Vinculacion_Fema.Controllers
                 //Se cambio la intercalación de la columna NombreUsuario de la tabla Tbl_Fema_Usuarios
                 //Debido a que no era sencible a mayusculas y minisculas, se cambio de Modern_Spanish_CI_AS a Modern_Spanish_CS_AS
                 var usuarioEncontrado = await _context.TblFemaUsuarios.FirstOrDefaultAsync(u => u.NombreUsuario == usuario);
-                
-                if(usuarioEncontrado != null)
+
+                if (usuarioEncontrado != null)
                 {
                     //Se comprueba que la contraseña actual sea correcta
                     if (usuarioEncontrado.Clave != contraseñaActual)
@@ -330,7 +330,7 @@ namespace Back_Vinculacion_Fema.Controllers
                     return NotFound("Usuario no encontrado");
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return StatusCode(500, $"Error interno del servidor: {ex.Message}");
             }
@@ -481,7 +481,7 @@ namespace Back_Vinculacion_Fema.Controllers
                 try
                 {
                     DateTime fechaEncuesta;
-                    if (!DateTime.TryParseExact($"{femaDto.Anio}-{femaDto.Mes}-{femaDto.Dia}", "yyyy-MM-dd", null, DateTimeStyles.None, out fechaEncuesta))
+                    if (!DateTime.TryParseExact($"{femaDto.FechaEncuesta.year}-{femaDto.FechaEncuesta.month}-{femaDto.FechaEncuesta.day}", "yyyy-MM-dd", null, DateTimeStyles.None, out fechaEncuesta))
                     {
                         return BadRequest("Fecha inválida.");
                     }
@@ -517,14 +517,17 @@ namespace Back_Vinculacion_Fema.Controllers
                             CodTipoOcupacion = o.CodTipoOcupacion
                         }).ToList(),
 
-                        FemaPuntuacions = femaDto.FemaPuntuacions.Select(p => new FemaPuntuacion
+                        FemaPuntuacions = femaDto.FemaPuntuacions
+                    .SelectMany(pList => pList
+                        .Select(p => new FemaPuntuacion
                         {
-                            CodPuntuacionMatriz = p.CodPuntuacionMatriz,
-                            ResultadoFinal = p.ResultadoFinal,
+                            CodPuntuacionMatriz = p.CodPuntuacionMatriz, // Conversión no necesaria ya que es de tipo short
+                            ResultadoFinal = decimal.Parse(p.ResultadoFinal), // Conversión a decimal
                             EsEst = p.EsEst,
                             EsDnk = p.EsDnk,
                             Estado = true
-                        }).ToList()
+                        }))
+                    .ToList()
                         /*FemaPuntuacions = femaDto.FemaPuntuacion.Select(puntuacionDto => new FemaPuntuacion
                         {
                             CodPuntuacionMatriz = puntuacionDto.CodPuntuacionMatriz,
@@ -537,7 +540,7 @@ namespace Back_Vinculacion_Fema.Controllers
 
                     _context.Femas.Add(fema);
                     await _context.SaveChangesAsync();
-                    
+
                     var femaSuelo = new FemaSuelo
                     {
                         CodFema = fema.CodFema,
@@ -581,7 +584,7 @@ namespace Back_Vinculacion_Fema.Controllers
                     {
                         CodFema = fema.CodFema,
                         CodEvalInterior = femaDto.CodEvalInterior,
-                        RevisionPlanos = femaDto.RevisionPlanos,
+                        RevisionPlanos = femaDto.RevisionPlanos?.ToLower() == "si",
                         FuenteTipoSuelo = femaDto.FuenteTipoSuelo,
                         FuentePeligroGeologicos = femaDto.FuentePeligroGeologicos,
                         NombreContacto = femaDto.NombreContacto,
@@ -759,7 +762,7 @@ namespace Back_Vinculacion_Fema.Controllers
 
             return Ok(femaDtos);
         }*/
-        
+
         [HttpGet("FormularioFEMAByFecha/{FechaEncuesta}")]
         public async Task<IActionResult> GetFormularioFechaEncuesta(DateTime FechaEncuesta)
         {
@@ -815,7 +818,7 @@ namespace Back_Vinculacion_Fema.Controllers
                 FemaPuntuacion = formulario.FemaPuntuacions.Select(o => new FemaPuntuacionDto
                 {
                     CodPuntuacionMatriz = o.CodPuntuacionMatriz,
-                    ResultadoFinal = o.ResultadoFinal,
+                    ResultadoFinal = o.ResultadoFinal.ToString(),
                     EsEst = o.EsEst,
                     EsDnk = o.EsDnk
                 }).FirstOrDefault(),
@@ -854,7 +857,7 @@ namespace Back_Vinculacion_Fema.Controllers
         }
 
 
-        [HttpPut("FormularioFEMA/{id}")]
+        [HttpPut("UpdateFormularioFEMA/{id}")]
         public async Task<IActionResult> UpdateFormulario(int id, [FromBody] UpdateFemaDto femaDto)
         {
             if (femaDto == null /*|| id != femaDto.CodFema*/)
@@ -931,7 +934,7 @@ namespace Back_Vinculacion_Fema.Controllers
                         existingFormulario.FemaPuntuacions.Add(new FemaPuntuacion
                         {
                             CodPuntuacionMatriz = puntuacionDto.CodPuntuacionMatriz,
-                            ResultadoFinal = puntuacionDto.ResultadoFinal,
+                            ResultadoFinal = decimal.Parse(puntuacionDto.ResultadoFinal),
                             EsEst = puntuacionDto.EsEst,
                             EsDnk = puntuacionDto.EsDnk,
                             Estado = true,
