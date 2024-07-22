@@ -27,7 +27,8 @@
         public string MimeType { get; set; }
         public short IdTipoArchivo { get; set; }
         public short IdEstado { get; set; }
-        public FemaPuntuacionDto FemaPuntuacion { get; set; }
+        //public FemaPuntuacionDto FemaPuntuacion { get; set; }
+        public List<FemaPuntuacionDto> FemaPuntuacions { get; set; }
         public short NroPisosSup { get; set; }
         public short NroPisosInf { get; set; }
         public int AnioConstruccion { get; set; }

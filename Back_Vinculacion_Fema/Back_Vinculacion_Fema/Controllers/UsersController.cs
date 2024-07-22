@@ -13,6 +13,7 @@ using System.Text;
 using Back_Vinculacion_Fema.Interface;
 using Back_Vinculacion_Fema.Viewmodel;
 using Newtonsoft.Json;
+using System.Globalization;
 
 
 namespace Back_Vinculacion_Fema.Controllers
@@ -308,8 +309,8 @@ namespace Back_Vinculacion_Fema.Controllers
                 //Se cambio la intercalación de la columna NombreUsuario de la tabla Tbl_Fema_Usuarios
                 //Debido a que no era sencible a mayusculas y minisculas, se cambio de Modern_Spanish_CI_AS a Modern_Spanish_CS_AS
                 var usuarioEncontrado = await _context.TblFemaUsuarios.FirstOrDefaultAsync(u => u.NombreUsuario == usuario);
-                
-                if(usuarioEncontrado != null)
+
+                if (usuarioEncontrado != null)
                 {
                     //Se comprueba que la contraseña actual sea correcta
                     if (usuarioEncontrado.Clave != contraseñaActual)
@@ -329,7 +330,7 @@ namespace Back_Vinculacion_Fema.Controllers
                     return NotFound("Usuario no encontrado");
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return StatusCode(500, $"Error interno del servidor: {ex.Message}");
             }
@@ -463,7 +464,7 @@ namespace Back_Vinculacion_Fema.Controllers
 
         [HttpPost]
         [Route("FormularioFEMA")]
-        public async Task<IActionResult> FormularioFEMA([FromBody] FemaDto femaDto)
+        public IActionResult FormularioFEMA([FromBody] FemaDto femaDto)
         {
             if (femaDto == null)
             {
@@ -479,39 +480,65 @@ namespace Back_Vinculacion_Fema.Controllers
             {
                 try
                 {
+                    DateTime fechaEncuesta;
+                    if (!DateTime.TryParseExact($"{femaDto.FechaEncuesta.year}-{femaDto.FechaEncuesta.month}-{femaDto.FechaEncuesta.day}", "yyyy-MM-dd", null, DateTimeStyles.None, out fechaEncuesta))
+                    {
+                        return BadRequest("Fecha inválida.");
+                    }
+
+                    if (fechaEncuesta < new DateTime(1753, 1, 1) || fechaEncuesta > new DateTime(9999, 12, 31))
+                    {
+                        return BadRequest("Fecha fuera del rango permitido (1/1/1753 - 12/31/9999).");
+                    }
+
+                    DateTime horaEncuesta;
+                    if (!DateTime.TryParseExact(femaDto.HoraEncuesta, "HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out horaEncuesta))
+                    {
+                        return BadRequest("Hora de encuesta inválida. Debe estar en formato de 24 horas (HH:mm:ss).");
+                    }
+
+
                     var fema = new Fema
                     {
                         Direccion = femaDto.Direccion,
                         CodigoPostal = femaDto.CodigoPostal,
                         OtrosIdentificaciones = femaDto.OtrosIdentificaciones,
                         NomEdificacion = femaDto.NomEdificacion,
-                        CodTipoUsoEdificacion = femaDto.CodTipoUsoEdificacion,
+                        CodTipoUsoEdificacion = short.Parse(femaDto.CodTipoUsoEdificacion),
                         Latitud = femaDto.Latitud,
                         Longitud = femaDto.Longitud,
-                        NomEncuestador = femaDto.NomEncuestador,
-                        FechaEncuesta = femaDto.FechaEncuesta,
-                        HoraEncuesta = femaDto.HoraEncuesta,
+                        //NomEncuestador = femaDto.NomEncuestador,
+                        NomEncuestador = femaDto.NombreContacto,
+                        FechaEncuesta = fechaEncuesta,
+                        HoraEncuesta = horaEncuesta.TimeOfDay,
                         Comentarios = femaDto.Comentarios,
-                        UsuarioIng = femaDto.CodUsuarioIng,
-                        FecIngreso = femaDto.FecIngreso,
+                        //UsuarioIng = femaDto.CodUsuarioIng,
+                        UsuarioIng = "256",
+                        //FecIngreso = femaDto.FecIngreso,
+                        FecIngreso = fechaEncuesta,
                         UsuarioAct = femaDto.CodUsuarioAct,
-                        FecActualiza = femaDto.FecActualiza,
-                        Estado = femaDto.Estado,
-                        FemaOcupacions = femaDto.FemaOcupacion.Select(o => new FemaOcupacion
+                        //FecActualiza = femaDto.FecActualiza,
+                        FecActualiza = fechaEncuesta,
+                        //Estado = femaDto.Estado,
+                        Estado = 1,
+                        FemaOcupacions = femaDto.FemaOcupacions.Select(o => new FemaOcupacion
                         {
                             Estado = true,
                             CodOcupacion = o.CodOcupacion,
                             CodTipoOcupacion = o.CodTipoOcupacion
                         }).ToList(),
 
-                        FemaPuntuacions = femaDto.FemaPuntuacions.Select(p => new FemaPuntuacion
+                        FemaPuntuacions = femaDto.FemaPuntuacions
+                    .SelectMany(pList => pList
+                        .Select(p => new FemaPuntuacion
                         {
-                            CodPuntuacionMatriz = p.CodPuntuacionMatriz,
-                            ResultadoFinal = p.ResultadoFinal,
+                            CodPuntuacionMatriz = p.CodPuntuacionMatriz, // Conversión no necesaria ya que es de tipo short
+                            ResultadoFinal = decimal.Parse(p.ResultadoFinal), // Conversión a decimal
                             EsEst = p.EsEst,
                             EsDnk = p.EsDnk,
                             Estado = true
-                        }).ToList()
+                        }))
+                    .ToList()
                         /*FemaPuntuacions = femaDto.FemaPuntuacion.Select(puntuacionDto => new FemaPuntuacion
                         {
                             CodPuntuacionMatriz = puntuacionDto.CodPuntuacionMatriz,
@@ -523,8 +550,8 @@ namespace Back_Vinculacion_Fema.Controllers
                     };
 
                     _context.Femas.Add(fema);
-                    await _context.SaveChangesAsync();
-                    
+                    _context.SaveChanges();
+
                     var femaSuelo = new FemaSuelo
                     {
                         CodFema = fema.CodFema,
@@ -532,21 +559,22 @@ namespace Back_Vinculacion_Fema.Controllers
                     };
 
                     _context.FemaSuelos.Add(femaSuelo);
-                    await _context.SaveChangesAsync();
+                     _context.SaveChanges();
 
 
                     var archivo = new Archivo
                     {
-                        Path = femaDto.Path,
+                        Path = femaDto.MimeType,
                         Data = femaDto.Data,
                         MimeType = femaDto.MimeType,
-                        IdTipoArchivo = femaDto.IdTipoArchivo,
+                        //IdTipoArchivo = femaDto.IdTipoArchivo,
+                        IdTipoArchivo = 1,
                         IdEstado = femaDto.IdEstado,
                         CodFema = fema.CodFema
                     };
 
                     _context.Archivos.Add(archivo);
-                    await _context.SaveChangesAsync();
+                     _context.SaveChanges();
 
                     var femaedificio = new FemaEdificio
                     {
@@ -562,13 +590,13 @@ namespace Back_Vinculacion_Fema.Controllers
                     };
 
                     _context.FemaEdificios.Add(femaedificio);
-                    await _context.SaveChangesAsync();
+                     _context.SaveChanges();
 
                     var femaextensionrevision = new FemaExtensionRevision
                     {
                         CodFema = fema.CodFema,
                         CodEvalInterior = femaDto.CodEvalInterior,
-                        RevisionPlanos = femaDto.RevisionPlanos,
+                        RevisionPlanos = femaDto.RevisionPlanos?.ToLower() == "si",
                         FuenteTipoSuelo = femaDto.FuenteTipoSuelo,
                         FuentePeligroGeologicos = femaDto.FuentePeligroGeologicos,
                         NombreContacto = femaDto.NombreContacto,
@@ -579,7 +607,7 @@ namespace Back_Vinculacion_Fema.Controllers
                     };
 
                     _context.FemaExtensionRevisions.Add(femaextensionrevision);
-                    await _context.SaveChangesAsync();
+                     _context.SaveChanges();
 
 
                     var femaevaluacion = new FemaEvaluacion
@@ -587,14 +615,17 @@ namespace Back_Vinculacion_Fema.Controllers
                         CodFema = fema.CodFema,
                         CodEvalExterior = femaDto.CodEvalExterior,
                         CodEvalInterior = femaDto.CodEvalInterior,
-                        DisenioRevisado = femaDto.DisenioRevisado,
-                        Fuente = femaDto.Fuente,
-                        PeligrosGeologicos = femaDto.PeligorsGeologicos,
-                        PersonaContacto = femaDto.PersonaContacto
+                        //DisenioRevisado = femaDto.DisenioRevisado,
+                        DisenioRevisado = femaDto.RevisionPlanos,
+                        //Fuente = femaDto.Fuente,
+                        Fuente = "Admin",
+                        PeligrosGeologicos = femaDto.PeligorsGeologicos.ToString(),
+                        //PersonaContacto = femaDto.PersonaContacto
+                        PersonaContacto = femaDto.ContactoRegistrado
                     };
 
                     _context.FemaEvaluacions.Add(femaevaluacion);
-                    await _context.SaveChangesAsync();
+                     _context.SaveChanges();
 
 
                     var femaevalestructuradum = new FemaEvalEstructuradum
@@ -607,7 +638,7 @@ namespace Back_Vinculacion_Fema.Controllers
                     };
 
                     _context.FemaEvalEstructurada.Add(femaevalestructuradum);
-                    await _context.SaveChangesAsync();
+                     _context.SaveChanges();
 
 
                     var femaevalnoestructuradum = new FemaEvalNoEstructuradum
@@ -620,7 +651,7 @@ namespace Back_Vinculacion_Fema.Controllers
                     };
 
                     _context.FemaEvalNoEstructurada.Add(femaevalnoestructuradum);
-                    await _context.SaveChangesAsync();
+                     _context.SaveChanges();
 
                     transaction.Commit();
 
@@ -644,7 +675,7 @@ namespace Back_Vinculacion_Fema.Controllers
             }
         }
 
-        [HttpGet("FormularioFEMAHistAll")]
+        /*[HttpGet("FormularioFEMAHistAll")]
         public async Task<IActionResult> GetFormulario()
         {
             var formulario = await _context.Femas
@@ -745,8 +776,8 @@ namespace Back_Vinculacion_Fema.Controllers
             }).ToList();
 
             return Ok(femaDtos);
-        }
-        
+        }*/
+
         [HttpGet("FormularioFEMAByFecha/{FechaEncuesta}")]
         public async Task<IActionResult> GetFormularioFechaEncuesta(DateTime FechaEncuesta)
         {
@@ -802,7 +833,7 @@ namespace Back_Vinculacion_Fema.Controllers
                 FemaPuntuacion = formulario.FemaPuntuacions.Select(o => new FemaPuntuacionDto
                 {
                     CodPuntuacionMatriz = o.CodPuntuacionMatriz,
-                    ResultadoFinal = o.ResultadoFinal,
+                    ResultadoFinal = o.ResultadoFinal.ToString(),
                     EsEst = o.EsEst,
                     EsDnk = o.EsDnk
                 }).FirstOrDefault(),
@@ -907,13 +938,23 @@ namespace Back_Vinculacion_Fema.Controllers
 
 
                     // Actualizar FemaPuntuacion
-                    var existingPuntuacion = existingFormulario.FemaPuntuacions.FirstOrDefault();
-                    if (existingPuntuacion != null)
+                    var existingPuntuacions = existingFormulario.FemaPuntuacions.ToList();
+                    foreach (var puntuacion in existingPuntuacions)
                     {
-                        //existingPuntuacion.CodPuntuacionMatriz = femaDto.FemaPuntuacion.CodPuntuacionMatriz;
-                        existingPuntuacion.ResultadoFinal = femaDto.FemaPuntuacion.ResultadoFinal;
-                        existingPuntuacion.EsEst = femaDto.FemaPuntuacion.EsEst;
-                        existingPuntuacion.EsDnk = femaDto.FemaPuntuacion.EsDnk;
+                        _context.FemaPuntuacions.Remove(puntuacion);
+                    }
+
+                    foreach (var puntuacionDto in femaDto.FemaPuntuacions)
+                    {
+                        existingFormulario.FemaPuntuacions.Add(new FemaPuntuacion
+                        {
+                            CodPuntuacionMatriz = puntuacionDto.CodPuntuacionMatriz,
+                            ResultadoFinal = decimal.Parse(puntuacionDto.ResultadoFinal),
+                            EsEst = puntuacionDto.EsEst,
+                            EsDnk = puntuacionDto.EsDnk,
+                            Estado = true,
+                            CodFema = id
+                        });
                     }
 
                     // Actualizar FemaSuelo
@@ -985,7 +1026,7 @@ namespace Back_Vinculacion_Fema.Controllers
                     }
 
                     _context.Entry(existingFormulario).State = EntityState.Modified;
-                    await _context.SaveChangesAsync();
+                    _context.SaveChanges();
 
                     transaction.Commit();
                     return Ok(new { Id = existingFormulario.CodFema });
