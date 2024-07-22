@@ -1,6 +1,7 @@
 ﻿using Back_Vinculacion_Fema.Interface;
 using Back_Vinculacion_Fema.Models.DbModels;
 using Back_Vinculacion_Fema.Models.DTOs;
+using Back_Vinculacion_Fema.Viewmodel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -45,36 +46,34 @@ namespace Back_Vinculacion_Fema.Service
                         NomEncuestador = femaDto.NomEncuestador,
                         FechaEncuesta = femaDto.FechaEncuesta,
                         HoraEncuesta = femaDto.HoraEncuesta,
-                        //RutaImagenEdif = femaDto.RutaImagenEdif,
-                        //RutaImagenCroquis = femaDto.RutaImagenCroquis,
                         Comentarios = femaDto.Comentarios,
-                        //RequiereNivel2 = femaDto.RequiereNivel2,
                         UsuarioIng = femaDto.CodUsuarioIng,
                         FecIngreso = femaDto.FecIngreso,
                         UsuarioAct = femaDto.CodUsuarioAct,
                         FecActualiza = femaDto.FecActualiza,
                         Estado = femaDto.Estado,
-                        FemaOcupacions = new List<FemaOcupacion>
+                        FemaOcupacions = femaDto.FemaOcupacion.Select(o => new FemaOcupacion
                         {
-                            new FemaOcupacion
-                            {
-                                Estado = true,
-                                CodOcupacion = (short)femaDto.FemaOcupacion.CodOcupacion,
-                                CodTipoOcupacion = (short)femaDto.FemaOcupacion.CodTipoOcupacion
-                            }
-                        },
+                            Estado = true,
+                            CodOcupacion = o.CodOcupacion,
+                            CodTipoOcupacion = o.CodTipoOcupacion
+                        }).ToList(),
 
-                        FemaPuntuacions = new List<FemaPuntuacion>
+                        FemaPuntuacions = femaDto.FemaPuntuacions.Select(p => new FemaPuntuacion
                         {
-                            new FemaPuntuacion
-                            {
-                                Estado = true,
-                                CodPuntuacionMatriz = femaDto.FemaPuntuacion.CodPuntuacionMatriz,
-                                ResultadoFinal = femaDto.FemaPuntuacion.ResultadoFinal,
-                                EsEst = femaDto.FemaPuntuacion.EsEst,
-                                EsDnk = femaDto.FemaPuntuacion.EsDnk
-                            }
-                        }
+                            CodPuntuacionMatriz = p.CodPuntuacionMatriz,
+                            ResultadoFinal = p.ResultadoFinal,
+                            EsEst = p.EsEst,
+                            EsDnk = p.EsDnk,
+                            Estado = true
+                        }).ToList()
+                        /*FemaPuntuacions = femaDto.FemaPuntuacion.Select(puntuacionDto => new FemaPuntuacion
+                        {
+                            CodPuntuacionMatriz = puntuacionDto.CodPuntuacionMatriz,
+                            ResultadoFinal = puntuacionDto.ResultadoFinal,
+                            EsEst = puntuacionDto.EsEst,
+                            EsDnk = puntuacionDto.EsDnk
+                        }).ToList()*/
 
                     };
 
@@ -219,9 +218,106 @@ namespace Back_Vinculacion_Fema.Service
             }
 
             //var femaDto = new FemaDto
-            var femaDtos = formulario.Select(formulario => new FemaDto
+            var femaDtos = formulario.Select(formulario => new FeemaUVM
             {
-                CodFema = formulario.CodFema,
+                IdFema = formulario.CodFema,
+                Direccion = formulario.Direccion,
+                CodigoPostal = formulario.CodigoPostal,
+                OtrosIdentificaciones = formulario.OtrosIdentificaciones,
+                NomEdificacion = formulario.NomEdificacion,
+                CodTipoUsoEdificacion = formulario.CodTipoUsoEdificacion,
+                Latitud = formulario.Latitud,
+                Longitud = formulario.Longitud,
+                NomEncuestador = formulario.NomEncuestador,
+                FechaEncuesta = formulario.FechaEncuesta,
+                HoraEncuesta = formulario.HoraEncuesta,
+                Comentarios = formulario.Comentarios,
+                CodUsuarioIng = formulario.UsuarioIng,
+                FecIngreso = formulario.FecIngreso,
+                CodUsuarioAct = formulario.UsuarioAct,
+                FecActualiza = formulario.FecActualiza,
+                Estado = formulario.Estado,
+                FemaOcupacion = formulario.FemaOcupacions.Select(o => new FemaOcupacionDto
+                {
+                    CodOcupacion = o.CodOcupacion,
+                    CodTipoOcupacion = o.CodTipoOcupacion
+                }).FirstOrDefault(),
+                CodTipoSuelo = formulario.FemaSuelos.FirstOrDefault()?.CodTipoSuelo ?? 0,
+                Path = formulario.Archivos.FirstOrDefault()?.Path,
+                Data = formulario.Archivos.FirstOrDefault()?.Data,
+                MimeType = formulario.Archivos.FirstOrDefault()?.MimeType,
+                IdTipoArchivo = formulario.Archivos.FirstOrDefault()?.IdTipoArchivo ?? 0,
+                IdEstado = formulario.Archivos.FirstOrDefault()?.IdEstado ?? 0,
+                FemaPuntuacion = formulario.FemaPuntuacions.Select(o => new FemaPuntuacionDto
+                {
+                    CodPuntuacionMatriz = o.CodPuntuacionMatriz,
+                    ResultadoFinal = o.ResultadoFinal,
+                    EsEst = o.EsEst,
+                    EsDnk = o.EsDnk
+                }).FirstOrDefault(),
+                //CodTipoSuelo = formulario.FemaSuelos.FirstOrDefault()?.CodTipoSuelo ?? 0,
+                //Path = formulario.Archivos.FirstOrDefault()?.Path,
+                //Data = formulario.Archivos.FirstOrDefault()?.Data,
+                //MimeType = formulario.Archivos.FirstOrDefault()?.MimeType,
+                //IdTipoArchivo = formulario.Archivos.FirstOrDefault()?.IdTipoArchivo ?? 0,
+                //IdEstado = formulario.Archivos.FirstOrDefault()?.IdEstado ?? 0,
+                NroPisosSup = formulario.FemaEdificios.FirstOrDefault()?.NroPisosSup ?? 0,
+                NroPisosInf = formulario.FemaEdificios.FirstOrDefault()?.NroPisosInf ?? 0,
+                AnioContruccion = formulario.FemaEdificios.FirstOrDefault()?.AnioConstruccion ?? 0,
+                AreaTotalPiso = formulario.FemaEdificios.FirstOrDefault()?.AreaTotalPiso ?? 0,
+                AnioCodigo = formulario.FemaEdificios.FirstOrDefault()?.AnioCodigo,
+                Ampliacion = formulario.FemaEdificios.FirstOrDefault()?.Ampliacion,
+                AmplAnioConstruccion = formulario.FemaEdificios.FirstOrDefault()?.AmplAnioConstruccion ?? 0,
+                EdifEstado = formulario.FemaEdificios.FirstOrDefault()?.Estado ?? false,
+                CodEvalInterior = formulario.FemaExtensionRevisions.FirstOrDefault()?.CodEvalInterior ?? 0,
+                RevisionPlanos = formulario.FemaExtensionRevisions.FirstOrDefault()?.RevisionPlanos ?? false,
+                FuenteTipoSuelo = formulario.FemaExtensionRevisions.FirstOrDefault()?.FuenteTipoSuelo,
+                FuentePeligroGeologicos = formulario.FemaExtensionRevisions.FirstOrDefault()?.FuentePeligroGeologicos,
+                NombreContacto = formulario.FemaExtensionRevisions.FirstOrDefault()?.NombreContacto,
+                TelefonoContacto = formulario.FemaExtensionRevisions.FirstOrDefault()?.TelefonoContacto ?? 0,
+                Inspeccion_nivel2 = formulario.FemaExtensionRevisions.FirstOrDefault()?.Inspeccion_nivel2 ?? false,
+                ContactoRegistrado = formulario.FemaExtensionRevisions.FirstOrDefault()?.ContactoRegistrado,
+                CodEvalExterior = formulario.FemaEvaluacions.FirstOrDefault()?.CodEvalExterior ?? 0,
+                DisenioRevisado = formulario.FemaEvaluacions.FirstOrDefault()?.DisenioRevisado,
+                Fuente = formulario.FemaEvaluacions.FirstOrDefault()?.Fuente,
+                PeligorsGeologicos = formulario.FemaEvaluacions.FirstOrDefault()?.PeligrosGeologicos,
+                PersonaContacto = formulario.FemaEvaluacions.FirstOrDefault()?.PersonaContacto,
+                Chk1 = formulario.FemaEvalEstructurada.FirstOrDefault()?.Chk1 ?? 0,
+                Chk2 = formulario.FemaEvalEstructurada.FirstOrDefault()?.Chk2 ?? 0,
+                Chk3 = formulario.FemaEvalEstructurada.FirstOrDefault()?.Chk3 ?? 0,
+                Chk4 = formulario.FemaEvalEstructurada.FirstOrDefault()?.Chk4 ?? 0,
+                Chk1N = formulario.FemaEvalNoEstructurada.FirstOrDefault()?.Chk1 ?? 0,
+                Chk2N = formulario.FemaEvalNoEstructurada.FirstOrDefault()?.Chk2 ?? 0,
+                Chk3N = formulario.FemaEvalNoEstructurada.FirstOrDefault()?.Chk3 ?? 0,
+                Chk4N = formulario.FemaEvalNoEstructurada.FirstOrDefault()?.Chk4 ?? 0
+            }).ToList();
+
+            return new { Status = 200, femas = femaDtos };
+        }
+
+        public async Task<Object> GetFormularioFemaById(int Id)
+        {
+            var formularios = await _context.Femas
+                .Include(f => f.FemaOcupacions)
+                .Include(f => f.FemaSuelos)
+                .Include(f => f.Archivos)
+                .Include(f => f.FemaPuntuacions)
+                .Include(f => f.FemaEdificios)
+                .Include(f => f.FemaExtensionRevisions)
+                .Include(f => f.FemaEvaluacions)
+                .Include(f => f.FemaEvalEstructurada)
+                .Include(f => f.FemaEvalNoEstructurada)
+                .Where(f => f.CodFema == Id)
+                .ToListAsync();
+
+            if (formularios == null || !formularios.Any())
+            {
+                return new { Status = 404, mensaje = "" };
+            }
+
+            var femaDtos = formularios.Select(formulario => new FeemaUVM
+            {
+                IdFema = formulario.CodFema,
                 Direccion = formulario.Direccion,
                 CodigoPostal = formulario.CodigoPostal,
                 OtrosIdentificaciones = formulario.OtrosIdentificaciones,
@@ -310,8 +406,9 @@ namespace Back_Vinculacion_Fema.Service
                 return new { Status = 404, mensaje = "" };
             }
 
-            var femaDtos = formularios.Select(formulario => new FemaDto
+            var femaDtos = formularios.Select(formulario => new FeemaUVM
             {
+                IdFema = formulario.CodFema,
                 Direccion = formulario.Direccion,
                 CodigoPostal = formulario.CodigoPostal,
                 OtrosIdentificaciones = formulario.OtrosIdentificaciones,
@@ -426,18 +523,29 @@ namespace Back_Vinculacion_Fema.Service
                     existingFormulario.Estado = 1;
 
                     // Actualizar FemaOcupacion
-                    var existingOcupacion = existingFormulario.FemaOcupacions.FirstOrDefault();
-                    if (existingOcupacion != null)
+                    var existingOcupacions = existingFormulario.FemaOcupacions.ToList();
+                    foreach (var ocupacion in existingOcupacions)
                     {
-                        existingOcupacion.CodOcupacion = (short)femaDto.FemaOcupacion.CodOcupacion;
-                        existingOcupacion.CodTipoOcupacion = (short)femaDto.FemaOcupacion.CodTipoOcupacion;
+                        _context.FemaOcupacions.Remove(ocupacion);
                     }
+
+                    foreach (var ocupacioDto in femaDto.FemaOcupacion)
+                    {
+                        existingFormulario.FemaOcupacions.Add(new FemaOcupacion
+                        {
+                            Estado = true,
+                            CodOcupacion = ocupacioDto.CodOcupacion,
+                            CodTipoOcupacion = ocupacioDto.CodTipoOcupacion,
+                            CodFema = id
+                        });
+                    }
+
 
                     // Actualizar FemaPuntuacion
                     var existingPuntuacion = existingFormulario.FemaPuntuacions.FirstOrDefault();
                     if (existingPuntuacion != null)
                     {
-                        existingPuntuacion.CodPuntuacionMatriz = femaDto.FemaPuntuacion.CodPuntuacionMatriz;
+                        //existingPuntuacion.CodPuntuacionMatriz = femaDto.FemaPuntuacion.CodPuntuacionMatriz;
                         existingPuntuacion.ResultadoFinal = femaDto.FemaPuntuacion.ResultadoFinal;
                         existingPuntuacion.EsEst = femaDto.FemaPuntuacion.EsEst;
                         existingPuntuacion.EsDnk = femaDto.FemaPuntuacion.EsDnk;

@@ -602,7 +602,50 @@ namespace Back_Vinculacion_Fema.Models.DbModels
                     .HasForeignKey(d => d.CodPuntuacionMatriz)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_FEMA_PUNTUACION_FEMA_PUNTUACION_MATRIZ");
+
+                //entity.Ignore(e => e.CodPuntuacionMatriz);
             });
+
+
+            /*modelBuilder.Entity<FemaPuntuacion>(entity =>
+            {
+                entity.HasKey(e => e.CodPuntuacionSec)
+                    .HasName("PK_FEMA_PUNTUACION_CABECERA");
+
+                entity.ToTable("FEMA_PUNTUACION");
+
+                entity.Property(e => e.CodPuntuacionSec).HasColumnName("cod_puntuacion_sec");
+
+                entity.Property(e => e.CodFema).HasColumnName("cod_fema");
+
+                //entity.Property(e => e.CodPuntuacionMatriz).HasColumnName("cod_puntuacion_matriz");
+
+                entity.Property(e => e.CodPuntuacionMatrizJson).HasColumnName("cod_puntuacion_matriz");
+
+                entity.Property(e => e.EsDnk).HasColumnName("es_dnk");
+
+                entity.Property(e => e.EsEst).HasColumnName("es_est");
+
+                entity.Property(e => e.Estado).HasColumnName("estado");
+
+                entity.Property(e => e.ResultadoFinal)
+                    .HasColumnType("decimal(18, 2)")
+                    .HasColumnName("resultado_final");
+
+                entity.HasOne(d => d.CodFemaNavigation)
+                    .WithMany(p => p.FemaPuntuacions)
+                    .HasForeignKey(d => d.CodFema)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_FEMA_PUNTUACION_CABECERA_FEMA_PUNTUACION_CABECERA");
+
+                entity.HasOne(d => d.CodPuntuacionMatrizNavigation)
+                    .WithMany(p => p.FemaPuntuacions)
+                    .HasForeignKey(d => d.CodPuntuacionMatriz)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_FEMA_PUNTUACION_FEMA_PUNTUACION_MATRIZ");
+                    entity.Ignore(e => e.CodPuntuacionMatriz);
+
+            });*/
 
             modelBuilder.Entity<FemaSuelo>(entity =>
             {

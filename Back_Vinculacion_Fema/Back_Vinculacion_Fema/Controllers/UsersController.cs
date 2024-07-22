@@ -12,6 +12,8 @@ using System.Net.WebSockets;
 using System.Text;
 using Back_Vinculacion_Fema.Interface;
 using Back_Vinculacion_Fema.Viewmodel;
+using Newtonsoft.Json;
+
 
 namespace Back_Vinculacion_Fema.Controllers
 {
@@ -489,37 +491,35 @@ namespace Back_Vinculacion_Fema.Controllers
                         NomEncuestador = femaDto.NomEncuestador,
                         FechaEncuesta = femaDto.FechaEncuesta,
                         HoraEncuesta = femaDto.HoraEncuesta,
-                        //RutaImagenEdif = femaDto.RutaImagenEdif,
-                        //RutaImagenCroquis = femaDto.RutaImagenCroquis,
                         Comentarios = femaDto.Comentarios,
-                        //RequiereNivel2 = femaDto.RequiereNivel2,
                         UsuarioIng = femaDto.CodUsuarioIng,
                         FecIngreso = femaDto.FecIngreso,
                         UsuarioAct = femaDto.CodUsuarioAct,
                         FecActualiza = femaDto.FecActualiza,
                         Estado = femaDto.Estado,
-                        FemaOcupacions = new List<FemaOcupacion>
+                        FemaOcupacions = femaDto.FemaOcupacion.Select(o => new FemaOcupacion
                         {
-                            new FemaOcupacion
-                            {
-                                Estado = true,
-                                CodOcupacion = (short)femaDto.FemaOcupacion.CodOcupacion,
-                                CodTipoOcupacion = (short)femaDto.FemaOcupacion.CodTipoOcupacion
-                            }
-                        },
+                            Estado = true,
+                            CodOcupacion = o.CodOcupacion,
+                            CodTipoOcupacion = o.CodTipoOcupacion
+                        }).ToList(),
 
-                        FemaPuntuacions = new List<FemaPuntuacion>
+                        FemaPuntuacions = femaDto.FemaPuntuacions.Select(p => new FemaPuntuacion
                         {
-                            new FemaPuntuacion
-                            {
-                                Estado = true,
-                                CodPuntuacionMatriz = femaDto.FemaPuntuacion.CodPuntuacionMatriz,
-                                ResultadoFinal = femaDto.FemaPuntuacion.ResultadoFinal,
-                                EsEst = femaDto.FemaPuntuacion.EsEst,
-                                EsDnk = femaDto.FemaPuntuacion.EsDnk
-                            }
-                        }
-                        
+                            CodPuntuacionMatriz = p.CodPuntuacionMatriz,
+                            ResultadoFinal = p.ResultadoFinal,
+                            EsEst = p.EsEst,
+                            EsDnk = p.EsDnk,
+                            Estado = true
+                        }).ToList()
+                        /*FemaPuntuacions = femaDto.FemaPuntuacion.Select(puntuacionDto => new FemaPuntuacion
+                        {
+                            CodPuntuacionMatriz = puntuacionDto.CodPuntuacionMatriz,
+                            ResultadoFinal = puntuacionDto.ResultadoFinal,
+                            EsEst = puntuacionDto.EsEst,
+                            EsDnk = puntuacionDto.EsDnk
+                        }).ToList()*/
+
                     };
 
                     _context.Femas.Add(fema);
@@ -670,8 +670,9 @@ namespace Back_Vinculacion_Fema.Controllers
             }
 
             //var femaDto = new FemaDto
-            var femaDtos = formulario.Select(formulario => new FemaDto
+            var femaDtos = formulario.Select(formulario => new FeemaUVM
             {
+                IdFema = formulario.CodFema,
                 Direccion = formulario.Direccion,
                 CodigoPostal = formulario.CodigoPostal,
                 OtrosIdentificaciones = formulario.OtrosIdentificaciones,
@@ -706,6 +707,12 @@ namespace Back_Vinculacion_Fema.Controllers
                     EsEst = o.EsEst,
                     EsDnk = o.EsDnk
                 }).FirstOrDefault(),
+                //CodTipoSuelo = formulario.FemaSuelos.FirstOrDefault()?.CodTipoSuelo ?? 0,
+                //Path = formulario.Archivos.FirstOrDefault()?.Path,
+                //Data = formulario.Archivos.FirstOrDefault()?.Data,
+                //MimeType = formulario.Archivos.FirstOrDefault()?.MimeType,
+                //IdTipoArchivo = formulario.Archivos.FirstOrDefault()?.IdTipoArchivo ?? 0,
+                //IdEstado = formulario.Archivos.FirstOrDefault()?.IdEstado ?? 0,
                 NroPisosSup = formulario.FemaEdificios.FirstOrDefault()?.NroPisosSup ?? 0,
                 NroPisosInf = formulario.FemaEdificios.FirstOrDefault()?.NroPisosInf ?? 0,
                 AnioContruccion = formulario.FemaEdificios.FirstOrDefault()?.AnioConstruccion ?? 0,
@@ -762,8 +769,9 @@ namespace Back_Vinculacion_Fema.Controllers
                 return NotFound();
             }
 
-            var femaDtos = formularios.Select(formulario => new FemaDto
+            var femaDtos = formularios.Select(formulario => new FeemaUVM
             {
+                IdFema = formulario.CodFema,
                 Direccion = formulario.Direccion,
                 CodigoPostal = formulario.CodigoPostal,
                 OtrosIdentificaciones = formulario.OtrosIdentificaciones,
@@ -833,7 +841,7 @@ namespace Back_Vinculacion_Fema.Controllers
         }
 
 
-        [HttpPut("FormularioFEMA/{id}")]
+        [HttpPut("UpdateFormularioFEMA/{id}")]
         public async Task<IActionResult> UpdateFormulario(int id, [FromBody] UpdateFemaDto femaDto)
         {
             if (femaDto == null /*|| id != femaDto.CodFema*/)
@@ -880,18 +888,29 @@ namespace Back_Vinculacion_Fema.Controllers
                     existingFormulario.Estado = 1;
 
                     // Actualizar FemaOcupacion
-                    var existingOcupacion = existingFormulario.FemaOcupacions.FirstOrDefault();
-                    if (existingOcupacion != null)
+                    var existingOcupacions = existingFormulario.FemaOcupacions.ToList();
+                    foreach (var ocupacion in existingOcupacions)
                     {
-                        existingOcupacion.CodOcupacion = (short)femaDto.FemaOcupacion.CodOcupacion;
-                        existingOcupacion.CodTipoOcupacion = (short)femaDto.FemaOcupacion.CodTipoOcupacion;
+                        _context.FemaOcupacions.Remove(ocupacion);
                     }
+
+                    foreach (var ocupacioDto in femaDto.FemaOcupacion)
+                    {
+                        existingFormulario.FemaOcupacions.Add(new FemaOcupacion
+                        {
+                            Estado = true,
+                            CodOcupacion = ocupacioDto.CodOcupacion,
+                            CodTipoOcupacion = ocupacioDto.CodTipoOcupacion,
+                            CodFema = id
+                        });
+                    }
+
 
                     // Actualizar FemaPuntuacion
                     var existingPuntuacion = existingFormulario.FemaPuntuacions.FirstOrDefault();
                     if (existingPuntuacion != null)
                     {
-                        existingPuntuacion.CodPuntuacionMatriz = femaDto.FemaPuntuacion.CodPuntuacionMatriz;
+                        //existingPuntuacion.CodPuntuacionMatriz = femaDto.FemaPuntuacion.CodPuntuacionMatriz;
                         existingPuntuacion.ResultadoFinal = femaDto.FemaPuntuacion.ResultadoFinal;
                         existingPuntuacion.EsEst = femaDto.FemaPuntuacion.EsEst;
                         existingPuntuacion.EsDnk = femaDto.FemaPuntuacion.EsDnk;
@@ -1132,6 +1151,12 @@ namespace Back_Vinculacion_Fema.Controllers
             if (femaDto == null)
             {
                 return BadRequest("El objeto FemaDto es nulo.");
+            }
+
+            // Verificar que todos los campos necesarios estén presentes y no sean null
+            if (string.IsNullOrEmpty(femaDto.Direccion) || string.IsNullOrEmpty(femaDto.CodigoPostal))
+            {
+                return BadRequest("Todos los campos son requeridos.");
             }
 
             // Verificar que todos los campos necesarios estén presentes y no sean null

@@ -19,7 +19,8 @@
         public string CodUsuarioAct { get; set; }
         public DateTime FecActualiza { get; set; }
         public short Estado { get; set; }
-        public FemaOcupacionDto FemaOcupacion { get; set; }
+        //public FemaOcupacionDto FemaOcupacion { get; set; }
+        public List<FemaOcupacionDto> FemaOcupacion { get; set; }
         public short CodTipoSuelo { get; set; }
         public string Path { get; set; }
         public string Data { get; set; } 
@@ -56,6 +57,8 @@
         public int Chk2N { get; set; }
         public int Chk3N { get; set; }
         public int Chk4N { get; set; }
+
+        
     }
 
 

@@ -95,6 +95,28 @@ namespace Back_Vinculacion_Fema.Controllers
             return BadRequest("Error al consultar");
         }
 
+        [HttpGet("FormFema/FormularioFEMAById/{Id}")]
+        public async Task<IActionResult> GetFormularioId(int Id)
+        {
+            var datos = await formularioFema.GetFormularioFemaById(Id);
+            PropertyInfo? property = datos.GetType().GetProperty("Status");
+            if (property != null)
+            {
+                var estado = property.GetValue(datos, null);
+                if (estado.Equals(200))
+                {
+                    property = datos.GetType().GetProperty("femas");
+                    if (property != null)
+                        return Ok(property.GetValue(datos, null));
+                }
+                if (estado.Equals(404))
+                {
+                    return NotFound();
+                }
+            }
+            return BadRequest("Error al consultar");
+        }
+
         [HttpPut("FormFema/FormularioFEMA/{id}")]
         public async Task<IActionResult> UpdateFormulario(int id, [FromBody] UpdateFemaDto femaDto)
         {
