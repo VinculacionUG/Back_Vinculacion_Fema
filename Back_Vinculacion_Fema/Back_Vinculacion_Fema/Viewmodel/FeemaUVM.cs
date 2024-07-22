@@ -26,9 +26,9 @@ namespace Back_Vinculacion_Fema.Viewmodel
 
         public short Estado { get; set; }
 
-        public FemaOcupacionDto FemaOcupacion { get; set; }
+        public List<FemaOcupacionDto> FemaOcupacion { get; set; }
 
-        public FemaPuntuacionDto FemaPuntuacion { get; set; }
+        public List<FemaPuntuacionDto> FemaPuntuacion { get; set; }
 
         /*FEMA OCUPACION
         public bool EstadoFemaOcu { get; set; }

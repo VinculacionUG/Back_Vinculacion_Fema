@@ -693,7 +693,7 @@ namespace Back_Vinculacion_Fema.Controllers
                 {
                     CodOcupacion = o.CodOcupacion,
                     CodTipoOcupacion = o.CodTipoOcupacion
-                }).FirstOrDefault(),
+                }).ToList(),
                 CodTipoSuelo = formulario.FemaSuelos.FirstOrDefault()?.CodTipoSuelo ?? 0,
                 Path = formulario.Archivos.FirstOrDefault()?.Path,
                 Data = formulario.Archivos.FirstOrDefault()?.Data,
@@ -706,7 +706,7 @@ namespace Back_Vinculacion_Fema.Controllers
                     ResultadoFinal = o.ResultadoFinal,
                     EsEst = o.EsEst,
                     EsDnk = o.EsDnk
-                }).FirstOrDefault(),
+                }).ToList(),
                 //CodTipoSuelo = formulario.FemaSuelos.FirstOrDefault()?.CodTipoSuelo ?? 0,
                 //Path = formulario.Archivos.FirstOrDefault()?.Path,
                 //Data = formulario.Archivos.FirstOrDefault()?.Data,
@@ -792,7 +792,7 @@ namespace Back_Vinculacion_Fema.Controllers
                 {
                     CodOcupacion = o.CodOcupacion,
                     CodTipoOcupacion = o.CodTipoOcupacion
-                }).FirstOrDefault(),
+                }).ToList(),
                 CodTipoSuelo = formulario.FemaSuelos.FirstOrDefault()?.CodTipoSuelo ?? 0,
                 Path = formulario.Archivos.FirstOrDefault()?.Path,
                 Data = formulario.Archivos.FirstOrDefault()?.Data,
@@ -805,7 +805,7 @@ namespace Back_Vinculacion_Fema.Controllers
                     ResultadoFinal = o.ResultadoFinal,
                     EsEst = o.EsEst,
                     EsDnk = o.EsDnk
-                }).FirstOrDefault(),
+                }).ToList(),
                 NroPisosSup = formulario.FemaEdificios.FirstOrDefault()?.NroPisosSup ?? 0,
                 NroPisosInf = formulario.FemaEdificios.FirstOrDefault()?.NroPisosInf ?? 0,
                 AnioContruccion = formulario.FemaEdificios.FirstOrDefault()?.AnioConstruccion ?? 0,
