@@ -481,7 +481,8 @@ namespace Back_Vinculacion_Fema.Controllers
                 try
                 {
                     DateTime fechaEncuesta;
-                    if (!DateTime.TryParseExact($"{femaDto.FechaEncuesta.year}-{femaDto.FechaEncuesta.month}-{femaDto.FechaEncuesta.day}", "yyyy-MM-dd", null, DateTimeStyles.None, out fechaEncuesta))
+                    string fechaString = $"{femaDto.FechaEncuesta.year}-{femaDto.FechaEncuesta.month.PadLeft(2, '0')}-{femaDto.FechaEncuesta.day.PadLeft(2, '0')}";
+                    if (!DateTime.TryParseExact(fechaString, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaEncuesta))
                     {
                         return BadRequest("Fecha inválida.");
                     }
@@ -494,7 +495,7 @@ namespace Back_Vinculacion_Fema.Controllers
                     DateTime horaEncuesta;
                     if (!DateTime.TryParseExact(femaDto.HoraEncuesta, "HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out horaEncuesta))
                     {
-                        return BadRequest("Hora de encuesta inválida. Debe estar en formato de 24 horas (HH:mm:ss).");
+                        return BadRequest("Hora de encuesta inválida. Debe estar en formato de 24 horas (HH:mm).");
                     }
 
 
