@@ -464,7 +464,7 @@ namespace Back_Vinculacion_Fema.Controllers
 
         [HttpPost]
         [Route("FormularioFEMA")]
-        public async Task<IActionResult> FormularioFEMA([FromBody] FemaDto femaDto)
+        public IActionResult FormularioFEMA([FromBody] FemaDto femaDto)
         {
             if (femaDto == null)
             {
@@ -486,7 +486,13 @@ namespace Back_Vinculacion_Fema.Controllers
                         return BadRequest("Fecha inválida.");
                     }
 
-                    if (!TimeSpan.TryParseExact(femaDto.HoraEncuesta, "hh\\:mm\\:ss", CultureInfo.InvariantCulture, out TimeSpan horaEncuesta))
+                    if (fechaEncuesta < new DateTime(1753, 1, 1) || fechaEncuesta > new DateTime(9999, 12, 31))
+                    {
+                        return BadRequest("Fecha fuera del rango permitido (1/1/1753 - 12/31/9999).");
+                    }
+
+                    DateTime horaEncuesta;
+                    if (!DateTime.TryParseExact(femaDto.HoraEncuesta, "HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out horaEncuesta))
                     {
                         return BadRequest("Hora de encuesta inválida. Debe estar en formato de 24 horas (HH:mm:ss).");
                     }
@@ -498,18 +504,23 @@ namespace Back_Vinculacion_Fema.Controllers
                         CodigoPostal = femaDto.CodigoPostal,
                         OtrosIdentificaciones = femaDto.OtrosIdentificaciones,
                         NomEdificacion = femaDto.NomEdificacion,
-                        CodTipoUsoEdificacion = femaDto.CodTipoUsoEdificacion,
+                        CodTipoUsoEdificacion = short.Parse(femaDto.CodTipoUsoEdificacion),
                         Latitud = femaDto.Latitud,
                         Longitud = femaDto.Longitud,
-                        NomEncuestador = femaDto.NomEncuestador,
+                        //NomEncuestador = femaDto.NomEncuestador,
+                        NomEncuestador = femaDto.NombreContacto,
                         FechaEncuesta = fechaEncuesta,
-                        HoraEncuesta = horaEncuesta,
+                        HoraEncuesta = horaEncuesta.TimeOfDay,
                         Comentarios = femaDto.Comentarios,
-                        UsuarioIng = femaDto.CodUsuarioIng,
-                        FecIngreso = femaDto.FecIngreso,
+                        //UsuarioIng = femaDto.CodUsuarioIng,
+                        UsuarioIng = "256",
+                        //FecIngreso = femaDto.FecIngreso,
+                        FecIngreso = fechaEncuesta,
                         UsuarioAct = femaDto.CodUsuarioAct,
-                        FecActualiza = femaDto.FecActualiza,
-                        Estado = femaDto.Estado,
+                        //FecActualiza = femaDto.FecActualiza,
+                        FecActualiza = fechaEncuesta,
+                        //Estado = femaDto.Estado,
+                        Estado = 1,
                         FemaOcupacions = femaDto.FemaOcupacions.Select(o => new FemaOcupacion
                         {
                             Estado = true,
@@ -539,7 +550,7 @@ namespace Back_Vinculacion_Fema.Controllers
                     };
 
                     _context.Femas.Add(fema);
-                    await _context.SaveChangesAsync();
+                    _context.SaveChanges();
 
                     var femaSuelo = new FemaSuelo
                     {
@@ -548,21 +559,22 @@ namespace Back_Vinculacion_Fema.Controllers
                     };
 
                     _context.FemaSuelos.Add(femaSuelo);
-                    await _context.SaveChangesAsync();
+                     _context.SaveChanges();
 
 
                     var archivo = new Archivo
                     {
-                        Path = femaDto.Path,
+                        Path = femaDto.MimeType,
                         Data = femaDto.Data,
                         MimeType = femaDto.MimeType,
-                        IdTipoArchivo = femaDto.IdTipoArchivo,
+                        //IdTipoArchivo = femaDto.IdTipoArchivo,
+                        IdTipoArchivo = 1,
                         IdEstado = femaDto.IdEstado,
                         CodFema = fema.CodFema
                     };
 
                     _context.Archivos.Add(archivo);
-                    await _context.SaveChangesAsync();
+                     _context.SaveChanges();
 
                     var femaedificio = new FemaEdificio
                     {
@@ -578,7 +590,7 @@ namespace Back_Vinculacion_Fema.Controllers
                     };
 
                     _context.FemaEdificios.Add(femaedificio);
-                    await _context.SaveChangesAsync();
+                     _context.SaveChanges();
 
                     var femaextensionrevision = new FemaExtensionRevision
                     {
@@ -595,7 +607,7 @@ namespace Back_Vinculacion_Fema.Controllers
                     };
 
                     _context.FemaExtensionRevisions.Add(femaextensionrevision);
-                    await _context.SaveChangesAsync();
+                     _context.SaveChanges();
 
 
                     var femaevaluacion = new FemaEvaluacion
@@ -603,14 +615,17 @@ namespace Back_Vinculacion_Fema.Controllers
                         CodFema = fema.CodFema,
                         CodEvalExterior = femaDto.CodEvalExterior,
                         CodEvalInterior = femaDto.CodEvalInterior,
-                        DisenioRevisado = femaDto.DisenioRevisado,
-                        Fuente = femaDto.Fuente,
-                        PeligrosGeologicos = femaDto.PeligorsGeologicos,
-                        PersonaContacto = femaDto.PersonaContacto
+                        //DisenioRevisado = femaDto.DisenioRevisado,
+                        DisenioRevisado = femaDto.RevisionPlanos,
+                        //Fuente = femaDto.Fuente,
+                        Fuente = "Admin",
+                        PeligrosGeologicos = femaDto.PeligorsGeologicos.ToString(),
+                        //PersonaContacto = femaDto.PersonaContacto
+                        PersonaContacto = femaDto.ContactoRegistrado
                     };
 
                     _context.FemaEvaluacions.Add(femaevaluacion);
-                    await _context.SaveChangesAsync();
+                     _context.SaveChanges();
 
 
                     var femaevalestructuradum = new FemaEvalEstructuradum
@@ -623,7 +638,7 @@ namespace Back_Vinculacion_Fema.Controllers
                     };
 
                     _context.FemaEvalEstructurada.Add(femaevalestructuradum);
-                    await _context.SaveChangesAsync();
+                     _context.SaveChanges();
 
 
                     var femaevalnoestructuradum = new FemaEvalNoEstructuradum
@@ -636,7 +651,7 @@ namespace Back_Vinculacion_Fema.Controllers
                     };
 
                     _context.FemaEvalNoEstructurada.Add(femaevalnoestructuradum);
-                    await _context.SaveChangesAsync();
+                     _context.SaveChanges();
 
                     transaction.Commit();
 
@@ -1011,7 +1026,7 @@ namespace Back_Vinculacion_Fema.Controllers
                     }
 
                     _context.Entry(existingFormulario).State = EntityState.Modified;
-                    await _context.SaveChangesAsync();
+                    _context.SaveChanges();
 
                     transaction.Commit();
                     return Ok(new { Id = existingFormulario.CodFema });
