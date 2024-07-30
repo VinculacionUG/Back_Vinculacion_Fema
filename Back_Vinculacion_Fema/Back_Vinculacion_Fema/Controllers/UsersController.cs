@@ -676,7 +676,7 @@ namespace Back_Vinculacion_Fema.Controllers
             }
         }
 
-        /*[HttpGet("FormularioFEMAHistAll")]
+        [HttpGet("FormularioFEMAHistAll")]
         public async Task<IActionResult> GetFormulario()
         {
             var formulario = await _context.Femas
@@ -735,7 +735,7 @@ namespace Back_Vinculacion_Fema.Controllers
                 FemaPuntuacion = formulario.FemaPuntuacions.Select(o => new FemaPuntuacionDto
                 {
                     CodPuntuacionMatriz = o.CodPuntuacionMatriz,
-                    ResultadoFinal = o.ResultadoFinal,
+                    ResultadoFinal = o.ResultadoFinal.ToString(),
                     EsEst = o.EsEst,
                     EsDnk = o.EsDnk
                 }).FirstOrDefault(),
@@ -777,7 +777,7 @@ namespace Back_Vinculacion_Fema.Controllers
             }).ToList();
 
             return Ok(femaDtos);
-        }*/
+        }
 
         [HttpGet("FormularioFEMAByFecha/{FechaEncuesta}")]
         public async Task<IActionResult> GetFormularioFechaEncuesta(DateTime FechaEncuesta)
