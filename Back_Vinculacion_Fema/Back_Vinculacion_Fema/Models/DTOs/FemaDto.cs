@@ -12,8 +12,13 @@ namespace Back_Vinculacion_Fema.Models.DTOs
         public short CodTipoUsoEdificacion { get; set; }
         public string Latitud { get; set; }
         public string Longitud { get; set; }
+<<<<<<< Updated upstream
         public string NomEncuestador { get; set; }
         public Fecha FechaEncuesta { get; set; }
+=======
+        //public string NomEncuestador { get; set; }
+        public DateTime FechaEncuesta { get; set; }
+>>>>>>> Stashed changes
         public string HoraEncuesta { get; set; }
         //public TimeSpan HoraEncuesta { get; set; }
         public string Comentarios { get; set; }
